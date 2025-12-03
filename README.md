@@ -1,5 +1,5 @@
-# Firebase Studio
+# Nirmaan Edu PWA
 
-This is a NextJS starter in Firebase Studio.
+This is a Next.js app for a modern, engaging learning platform.
 
-To get started, take a look at src/app/page.tsx.
+To get started, run `npm run dev` and navigate to `http://localhost:9002`.

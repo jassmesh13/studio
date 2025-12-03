@@ -1,3 +1,100 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "login-background",
+      "description": "Abstract background for login page",
+      "imageUrl": "https://images.unsplash.com/photo-1548504769-900b70ed122e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxhYnN0cmFjdCUyMG9yYW5nZXxlbnwwfHx8fDE3NjQ3NjIxMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract orange"
+    },
+    {
+      "id": "1",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ3MDYyMzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "2",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1636377985931-898218afd306?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ3NTYxMDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "3",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NDcwNjIzNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "4",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjQ3NTYxMDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "5",
+      "description": "User avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1557053910-d9eadeed1c58?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2NDcwNjIzNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "10",
+      "description": "Course thumbnail for Web Development",
+      "imageUrl": "https://images.unsplash.com/photo-1591439657848-9f4b9ce436b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2RlJTIwY29tcHV0ZXJ8ZW58MHx8fHwxNzY0Nzk1MTc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code computer"
+    },
+    {
+      "id": "11",
+      "description": "Course thumbnail for Advanced React",
+      "imageUrl": "https://images.unsplash.com/photo-1653499676737-becf2c9562c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxyZWFjdCUyMGxvZ298ZW58MHx8fHwxNzY0NzYyNzI5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "react logo"
+    },
+    {
+      "id": "12",
+      "description": "Course thumbnail for UI/UX Design",
+      "imageUrl": "https://images.unsplash.com/photo-1724676792636-46e290f66168?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkZXNpZ24lMjBza2V0Y2h8ZW58MHx8fHwxNzY0NzMyODcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "design sketch"
+    },
+    {
+      "id": "13",
+      "description": "Case study image for E-commerce",
+      "imageUrl": "https://images.unsplash.com/photo-1594488518065-832318c2405b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c2hvcHBpbmclMjBjYXJ0fGVufDB8fHx8MTc2NDc2OTYxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shopping cart"
+    },
+    {
+      "id": "14",
+      "description": "Case study image for Mobile Banking",
+      "imageUrl": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb2JpbGUlMjBwaG9uZXxlbnwwfHx8fDE3NjQ2OTE1NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mobile phone"
+    },
+    {
+      "id": "15",
+      "description": "Case study image for SaaS Onboarding",
+      "imageUrl": "https://images.unsplash.com/photo-1659018966825-43297e655ccf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXNoYm9hcmQlMjBjaGFydHxlbnwwfHx8fDE3NjQ3NzQ0NjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dashboard chart"
+    },
+    {
+      "id": "20",
+      "description": "Badge for Course Completer",
+      "imageUrl": "https://images.unsplash.com/photo-1585944374711-d6221223317b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiYWRnZSUyMGNoZWNrbWFya3xlbnwwfHx8fDE3NjQ3OTUxNzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "badge checkmark"
+    },
+    {
+      "id": "21",
+      "description": "Badge for Streak Starter",
+      "imageUrl": "https://images.unsplash.com/photo-1741306120610-aa67482b373c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxiYWRnZSUyMGZsYW1lfGVufDB8fHx8MTc2NDc5NTE4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "badge flame"
+    },
+    {
+      "id": "22",
+      "description": "Badge for Top Learner",
+      "imageUrl": "https://images.unsplash.com/photo-1638279101904-3e51b78460b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxiYWRnZSUyMGNyb3dufGVufDB8fHx8MTc2NDc5NTE3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "badge crown"
+    },
+    {
+      "id": "23",
+      "description": "Badge for Case Study Pro",
+      "imageUrl": "https://images.unsplash.com/photo-1606667418372-d74143e13d34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiYWRnZSUyMGJyaWVmY2FzZXxlbnwwfHx8fDE3NjQ3OTUxNzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "badge briefcase"
+    }
+  ]
 }
