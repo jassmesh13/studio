@@ -1,3 +1,5 @@
+
+'use client';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { caseStudies } from '@/lib/data';
@@ -7,9 +9,47 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FileUp, Mic, Video } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function CaseStudyDetailPage({ params }: { params: { id: string } }) {
   const caseStudy = caseStudies.find((c) => c.id === params.id);
+  const [hasCameraPermission, setHasCameraPermission] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getCameraPermission = async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('Camera API not supported in this browser.');
+        toast({
+          variant: 'destructive',
+          title: 'Camera Not Supported',
+          description: 'Your browser does not support camera access.',
+        });
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setHasCameraPermission(true);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+        setHasCameraPermission(false);
+        toast({
+          variant: 'destructive',
+          title: 'Camera Access Denied',
+          description: 'Please enable camera permissions in your browser settings to use this app.',
+        });
+      }
+    };
+
+    getCameraPermission();
+  }, [toast]);
 
   if (!caseStudy) {
     notFound();
@@ -20,7 +60,7 @@ export default function CaseStudyDetailPage({ params }: { params: { id: string }
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-3xl font-headline">{caseStudy.title}</CardTitle>
-          <CardDescription className="text-base">{caseStudy.description}</p>
+          <CardDescription className="text-base">{caseStudy.description}</CardDescription>
           <p className="text-sm text-muted-foreground">Due Date: {new Date(caseStudy.dueDate).toLocaleDateString()}</p>
         </CardHeader>
       </Card>
@@ -63,9 +103,22 @@ export default function CaseStudyDetailPage({ params }: { params: { id: string }
                 <div className="grid gap-2">
                     <Label className="text-lg font-semibold">3. Elevator Pitch</Label>
                     <p className="text-sm text-muted-foreground">Record a 60-second audio or video pitch for your proposed solution.</p>
-                    <div className="flex gap-2">
-                        <Button variant="outline"><Mic className="mr-2 h-4 w-4" /> Record Audio</Button>
-                        <Button variant="outline"><Video className="mr-2 h-4 w-4" /> Record Video</Button>
+                    <div className="space-y-4">
+                        <div className="flex gap-2">
+                            <Button variant="outline"><Mic className="mr-2 h-4 w-4" /> Record Audio</Button>
+                            <Button variant="outline"><Video className="mr-2 h-4 w-4" /> Record Video</Button>
+                        </div>
+                        <div className="w-full aspect-video rounded-md bg-muted flex items-center justify-center">
+                          <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
+                        </div>
+                        { !hasCameraPermission && (
+                            <Alert variant="destructive">
+                                <AlertTitle>Camera Access Required</AlertTitle>
+                                <AlertDescription>
+                                    Please allow camera access to use this feature.
+                                </AlertDescription>
+                            </Alert>
+                        )}
                     </div>
                 </div>
 
