@@ -55,14 +55,14 @@ export default function CaseStudyDetailPage() {
 
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto p-4">
-        <header className="flex items-center justify-between w-full mb-8">
+        <header className="flex items-center w-full mb-8">
+            <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
+                <ArrowLeft className="w-6 h-6"/>
+            </Button>
             <div className="bg-primary/20 text-primary p-2 rounded-lg">
                 <span className="font-extrabold text-3xl">N</span>
             </div>
-            <div className="text-right">
-                <Button variant="ghost" size="icon" onClick={() => router.back()} className="mb-2">
-                    <ArrowLeft className="w-6 h-6"/>
-                </Button>
+            <div className="text-right flex-grow">
                 <p className="text-sm font-semibold text-muted-foreground">Case Study #{caseStudy.caseNumber}</p>
             </div>
         </header>
