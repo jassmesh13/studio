@@ -2,12 +2,13 @@
 'use client';
 import Image from 'next/image';
 import { notFound, useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, CheckCircle, Circle, FileText, PlayCircle, Puzzle } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, CheckCircle, ChevronRight } from 'lucide-react';
 import { courses } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card } from '@/components/ui/card';
+import { AppSidebar } from '@/components/app/app-sidebar';
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -19,110 +20,62 @@ export default function CourseDetailPage() {
     notFound();
   }
 
-  const image = PlaceHolderImages.find(p => p.id === course.imageUrl);
-
-  const getIcon = (type: 'video' | 'pdf' | 'quiz') => {
-    switch (type) {
-      case 'video': return <PlayCircle className="w-5 h-5 text-muted-foreground" />;
-      case 'pdf': return <FileText className="w-5 h-5 text-muted-foreground" />;
-      case 'quiz': return <Puzzle className="w-5 h-5 text-muted-foreground" />;
-    }
-  };
-
-  const getContentInfo = (content: {type: 'video' | 'pdf' | 'quiz', duration?: string, pages?: number, questions?: number}) => {
-    switch (content.type) {
-        case 'video': return `${content.duration}`;
-        case 'pdf': return `${content.pages} pages`;
-        case 'quiz': return `${content.questions} questions`;
-    }
-  }
-
-
   return (
-    <div>
-        <div className="flex items-center gap-4 mb-6">
-            <Button variant="outline" size="icon" onClick={() => router.back()}>
+    <div className="flex flex-col h-screen bg-accent/30">
+        <header className="flex items-center gap-4 bg-primary text-primary-foreground p-4">
+            <Button variant="ghost" size="icon" onClick={() => router.back()}>
                 <ArrowLeft />
                 <span className="sr-only">Back</span>
             </Button>
-            <h1 className="text-2xl font-bold font-headline">Course Details</h1>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-            <div className="md:col-span-2">
-                <Card className="overflow-hidden mb-6">
-                    <div className="relative w-full h-64">
-                        {image && (
-                            <Image
-                                src={image.imageUrl}
-                                alt={course.title}
-                                data-ai-hint={image.imageHint}
-                                fill
-                                className="object-cover"
-                            />
-                        )}
-                    </div>
-                    <CardHeader>
-                        <CardTitle className="text-3xl font-headline">{course.title}</CardTitle>
-                        <CardDescription className="text-base">{course.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <h2 className="text-2xl font-bold mb-4 font-headline">Course Content</h2>
-                        <Accordion type="single" collapsible defaultValue={course.chapters?.[0].id}>
-                        {course.chapters?.map((chapter) => (
-                            <AccordionItem key={chapter.id} value={chapter.id}>
-                            <AccordionTrigger className="text-lg font-semibold hover:no-underline">
-                                <div className="flex items-center gap-3">
-                                    {chapter.completed ? <CheckCircle className="w-6 h-6 text-green-500" /> : <Circle className="w-6 h-6 text-muted-foreground" />}
-                                    {chapter.title}
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent>
-                                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-md">
-                                    <div className="flex items-center gap-3">
-                                        {getIcon(chapter.content.type)}
-                                        <span className="text-sm font-medium capitalize">{chapter.content.type}</span>
+            <h1 className="text-xl font-bold">{course.title}</h1>
+        </header>
+
+        <div className="flex justify-center py-4">
+            <Tabs defaultValue="lessons" className="w-full max-w-md px-4">
+                <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full">
+                    <TabsTrigger value="lessons" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Lessons</TabsTrigger>
+                    <TabsTrigger value="materials" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Material</TabsTrigger>
+                </TabsList>
+                <TabsContent value="lessons">
+                    <div className="space-y-4 pt-4">
+                        {course.chapters?.map((chapter, index) => {
+                            const image = PlaceHolderImages.find(p => p.id === chapter.imageUrl);
+                            return (
+                                <Card key={chapter.id} className="p-3 bg-card shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        {image && (
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+                                                <Image src={image.imageUrl} alt={chapter.title} data-ai-hint={image.imageHint} fill className="object-cover" />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <h3 className="font-bold">LESSON {index + 1}</h3>
+                                            <p className="text-sm text-muted-foreground mb-1">{chapter.description}</p>
+                                            {chapter.completed && (
+                                                <div className="flex items-center gap-1 text-green-600">
+                                                    <CheckCircle className="w-4 h-4" />
+                                                    <span className="text-sm font-medium">Completed</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <ChevronRight className="w-5 h-5 text-muted-foreground" />
                                     </div>
-                                    <span className="text-sm text-muted-foreground">{getContentInfo(chapter.content)}</span>
-                                </div>
-                            </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                        </Accordion>
-                    </CardContent>
-                </Card>
-            </div>
-            <div className="md:col-span-1">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Your Progress</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col items-center text-center">
-                        <div className="relative h-32 w-32">
-                            <svg className="w-full h-full" viewBox="0 0 36 36">
-                                <path
-                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    fill="none"
-                                    stroke="hsl(var(--border))"
-                                    strokeWidth="3"
-                                />
-                                <path
-                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                                    fill="none"
-                                    stroke="hsl(var(--primary))"
-                                    strokeWidth="3"
-                                    strokeDasharray={`${course.progress}, 100`}
-                                    strokeLinecap="round"
-                                />
-                            </svg>
-                             <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-3xl font-bold">{course.progress}%</span>
-                             </div>
-                        </div>
-                        <p className="mt-4 text-muted-foreground">You are doing great! Keep up the good work.</p>
-                    </CardContent>
-                </Card>
-            </div>
+                                </Card>
+                            )
+                        })}
+                    </div>
+                </TabsContent>
+                <TabsContent value="materials">
+                     <div className="flex items-center justify-center h-48">
+                        <p className="text-muted-foreground">Material content goes here.</p>
+                    </div>
+                </TabsContent>
+            </Tabs>
         </div>
+      <div className="mt-auto">
+        <AppSidebar />
+      </div>
     </div>
   );
 }
+

@@ -13,6 +13,8 @@ export type Chapter = {
     id: string;
     title: string;
     completed: boolean;
+    description?: string;
+    imageUrl?: string;
     content: {
         type: 'video' | 'pdf' | 'quiz';
         duration?: string;

@@ -131,6 +131,18 @@
       "description": "Child looking through a microscope",
       "imageUrl": "https://images.unsplash.com/photo-1574974641324-b3c317d7c93e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzY2llbmNlJTIwZXhwZXJpbWVudHxlbnwwfHx8fDE3NjUxMTkzNjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "science experiment"
+    },
+    {
+      "id": "l1",
+      "description": "Rocket taking off from a clock",
+      "imageUrl": "https://images.unsplash.com/photo-1708681521348-a53d115f5399?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2NrZXQlMjBjbG9ja3xlbnwwfHx8fDE3MjE4MTg0NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rocket clock"
+    },
+    {
+      "id": "l2",
+      "description": "Rocketship toy on a shelf",
+      "imageUrl": "https://images.unsplash.com/photo-1698842103448-a97e6878b277?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2NrZXQlMjB0b3l8ZW58MHx8fHwxNzIxODE4NDg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rocket toy"
     }
   ]
 }

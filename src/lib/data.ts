@@ -23,10 +23,11 @@ export const courses: Course[] = [
     lessons: 1438,
     classRank: 56,
     chapters: [
-      { id: 'c1-1', title: 'Chapter 1: Getting Started with HTML', completed: true, content: { type: 'video', duration: '15 min' } },
-      { id: 'c1-2', title: 'Chapter 2: Styling with CSS', completed: true, content: { type: 'pdf', pages: 25 } },
-      { id: 'c1-3', title: 'Chapter 3: Interactive JavaScript', completed: false, content: { type: 'quiz', questions: 10 } },
-      { id: 'c1-4', title: 'Chapter 4: Building Your First Website', completed: false, content: { type: 'video', duration: '45 min' } },
+      { id: 'c1-1', title: 'Lesson 1', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '15 min' } },
+      { id: 'c1-2', title: 'Lesson 2', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'pdf', pages: 25 } },
+      { id: 'c1-3', title: 'Lesson 3', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 10 } },
+      { id: 'c1-4', title: 'Lesson 4', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '45 min' } },
+      { id: 'c1-5', title: 'Lesson 5', completed: false, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '45 min' } },
     ]
   },
   {
@@ -39,11 +40,10 @@ export const courses: Course[] = [
     lessons: 1230,
     classRank: 15,
     chapters: [
-        { id: 'c2-1', title: 'Chapter 1: Render Props and HOCs', completed: true, content: { type: 'video', duration: '25 min' } },
-        { id: 'c2-2', title: 'Chapter 2: State Management with Context', completed: true, content: { type: 'pdf', pages: 30 } },
-        { id: 'c2-3', title: 'Chapter 3: Performance Optimization', completed: false, content: { type: 'quiz', questions: 15 } },
-        { id: 'c2-4', title: 'Chapter 4: TypeScript in React', completed: false, content: { type: 'video', duration: '50 min' } },
-      ]
+        { id: 'c2-1', title: 'Lesson 1', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '25 min' } },
+        { id: 'c2-2', title: 'Lesson 2', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'pdf', pages: 30 } },
+        { id: 'c2-3', title: 'Lesson 3', completed: false, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 15 } },
+    ]
   },
   {
     id: '3',
@@ -55,10 +55,9 @@ export const courses: Course[] = [
     lessons: 1780,
     classRank: 25,
     chapters: [
-        { id: 'c3-1', title: 'Chapter 1: The Psychology of Design', completed: true, content: { type: 'video', duration: '20 min' } },
-        { id: 'c3-2', title: 'Chapter 2: Wireframing and Prototyping', completed: true, content: { type: 'pdf', pages: 40 } },
-        { id: 'c3-3', title: 'Chapter 3: User Testing', completed: true, content: { type: 'quiz', questions: 12 } },
-        { id: 'c3-4', title: 'Chapter 4: Final Project', completed: false, content: { type: 'video', duration: '60 min' } },
+        { id: 'c3-1', title: 'Lesson 1', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '20 min' } },
+        { id: 'c3-2', title: 'Lesson 2', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'pdf', pages: 40 } },
+        { id: 'c3-3', title: 'Lesson 3', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 12 } },
     ]
   },
 ];
@@ -119,7 +118,7 @@ export const pendingTasks: Task[] = [
 
 export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
     { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
-    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '2024-08-25', imageUrl: '31' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
     { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
     { id: '4', title: 'Guest Speaker: A Famous Scientist', description: 'An inspiring talk on innovation and discovery.', date: '2024-09-10', imageUrl: '33' },
     { id: '5', title: 'Annual Sports Day', description: 'Get ready for a day of fun and friendly competition.', date: '2024-09-15', imageUrl: '34' },
