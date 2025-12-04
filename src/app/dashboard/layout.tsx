@@ -1,5 +1,6 @@
 
 import type { Metadata } from 'next';
+import { AppSidebar } from '@/components/app/app-sidebar';
 
 export const metadata: Metadata = {
   title: 'Dashboard - Nirmaan Edu',
@@ -9,9 +10,10 @@ export const metadata: Metadata = {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex min-h-screen w-full flex-col bg-background">
-            <main className="flex flex-1 flex-col">
+            <main className="flex flex-1 flex-col p-4 md:p-6">
               {children}
             </main>
+            <AppSidebar />
         </div>
       );
 }

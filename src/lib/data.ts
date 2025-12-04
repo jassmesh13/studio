@@ -146,6 +146,7 @@ export const gamificationData: Gamification = {
 
 export const profileData: Profile = {
     ...mainUser,
+    username: 'alia_sharma',
     email: 'alia.sharma@example.com',
     bio: 'Aspiring full-stack developer with a passion for creating beautiful and functional web applications. Currently learning about advanced React and UI/UX design.',
     achievements: gamificationData.badges,

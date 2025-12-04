@@ -83,6 +83,7 @@ export type Gamification = {
 };
 
 export type Profile = User & {
+    username: string;
     email: string;
     bio: string;
     achievements: Badge[];
