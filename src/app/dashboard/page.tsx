@@ -1,6 +1,5 @@
 import { LeaderboardWidget } from "@/components/app/dashboard/leaderboard-widget";
 import { PendingTasks } from "@/components/app/dashboard/pending-tasks";
-import { SmartTaskSuggestions } from "@/components/app/dashboard/smart-task-suggestions";
 import { WhatsNew } from "@/components/app/dashboard/whats-new";
 import { mainUser } from "@/lib/data";
 
@@ -14,7 +13,6 @@ export default function DashboardPage() {
                         <WhatsNew />
                         <PendingTasks />
                     </div>
-                    <SmartTaskSuggestions />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 md:gap-8">
                     <LeaderboardWidget />
