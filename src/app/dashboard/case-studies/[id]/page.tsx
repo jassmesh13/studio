@@ -14,7 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function CaseStudyDetailPage({ params }: { params: { id: string } }) {
-  const caseStudy = caseStudies.find((c) => c.id === params.id);
+  const { id } = params;
+  const caseStudy = caseStudies.find((c) => c.id === id);
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
