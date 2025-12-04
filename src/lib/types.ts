@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 
 export type User = {
@@ -36,6 +37,8 @@ export type CaseStudy = {
     imageUrl: string;
     status: 'Completed' | 'In Progress' | 'Not Started';
     dueDate: string;
+    category?: string;
+    caseNumber?: number;
 };
 
 export type Task = {

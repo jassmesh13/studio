@@ -1,56 +1,72 @@
-import Image from 'next/image';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { caseStudies } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
+import { Settings, BookOpen } from 'lucide-react';
+import { AppSidebar } from '@/components/app/app-sidebar';
 
 export default function CaseStudiesPage() {
+    const stats = [
+        { label: 'Attempted', value: 15 },
+        { label: 'Solved', value: 10 },
+        { label: 'On-time', value: 5 },
+    ];
+
   return (
-    <div>
-      <h1 className="text-3xl font-bold font-headline mb-6">Case Studies</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {caseStudies.map((study) => {
-            const image = PlaceHolderImages.find(p => p.id === study.imageUrl);
-            const statusVariant = study.status === 'Completed' ? 'default' : study.status === 'In Progress' ? 'secondary' : 'outline';
-            return (
-          <Card key={study.id} className="flex flex-col">
-            <CardHeader className="p-0">
-                <div className="relative h-48 w-full">
-                {image && (
-                    <Image
-                        src={image.imageUrl}
-                        alt={study.title}
-                        data-ai-hint={image.imageHint}
-                        fill
-                        className="object-cover rounded-t-lg"
-                    />
-                )}
-              </div>
-            </CardHeader>
-            <div className="p-6 flex-grow">
-                <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl">{study.title}</CardTitle>
-                    <Badge variant={statusVariant} className={cn(
-                        study.status === 'Completed' && 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800',
-                        study.status === 'In Progress' && 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-800'
-                    )}>
-                        {study.status}
-                    </Badge>
+    <div className="flex flex-col gap-6 pb-24">
+        <header className="flex items-center justify-between bg-primary text-primary-foreground p-4 rounded-b-3xl -mx-4 -mt-6">
+            <div className="flex items-center gap-4">
+                <div className="bg-white/20 p-2 rounded-lg">
+                    <span className="font-bold text-3xl">N</span>
                 </div>
-                <CardDescription>{study.description}</CardDescription>
+                <h1 className="text-2xl md:text-3xl font-bold font-headline">Case studies</h1>
             </div>
-            <CardFooter className="flex justify-between items-center">
-              <p className="text-sm text-muted-foreground">Due: {new Date(study.dueDate).toLocaleDateString()}</p>
-              <Button asChild>
-                <Link href={`/dashboard/case-studies/${study.id}`}>View Details</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-        )})}
+            <Button variant="ghost" size="icon">
+                <Settings className="w-6 h-6" />
+            </Button>
+        </header>
+
+        <div className="grid grid-cols-3 gap-4">
+            {stats.map((stat) => (
+                <Card key={stat.label} className="bg-accent/50 border-primary/20 text-center p-4">
+                    <p className="text-3xl font-bold text-primary">{stat.value}</p>
+                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </Card>
+            ))}
+        </div>
+
+      <div className="grid gap-4">
+        {caseStudies.map((study) => {
+            const badgeColor = 
+                study.category === 'Financial literacy' ? 'bg-yellow-200 text-yellow-800' :
+                study.category === 'Emotional Intelligence' ? 'bg-green-200 text-green-800' :
+                study.category === 'Cognitive Ability' ? 'bg-orange-200 text-orange-800' :
+                'bg-blue-200 text-blue-800';
+
+            return (
+                <Link href={`/dashboard/case-studies/${study.id}`} key={study.id}>
+                    <Card className="bg-accent/30 p-4 hover:bg-accent/50 transition-colors">
+                        <div className="flex items-start gap-4">
+                            <div className="bg-yellow-400 p-3 rounded-lg relative">
+                                <BookOpen className="w-8 h-8 text-white" />
+                                <div className="absolute -top-1 -right-1 bg-red-500 w-3 h-4 rounded-sm transform rotate-12"></div>
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-lg">{study.title}</h3>
+                                <p className="text-sm text-muted-foreground">{study.description}</p>
+                                <Badge className={cn("mt-2 border-none", badgeColor)}>{study.category}</Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground self-end">Casestudy #{study.caseNumber}</p>
+                        </div>
+                    </Card>
+                </Link>
+            )
+        })}
       </div>
+      <AppSidebar />
     </div>
   );
 }

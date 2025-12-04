@@ -1,3 +1,4 @@
+
 import type { User, Course, CaseStudy, Task, Gamification, Profile } from '@/lib/types';
 
 export const users: User[] = [
@@ -56,27 +57,43 @@ export const courses: Course[] = [
 export const caseStudies: CaseStudy[] = [
     {
         id: '1',
-        title: 'E-commerce Checkout Redesign',
-        description: 'Analyze and redesign the checkout flow of a major e-commerce platform to improve conversion rates.',
+        title: 'What should Nyra do?',
+        description: 'Help Nyra in solving her problem',
         imageUrl: '13',
         status: 'In Progress',
         dueDate: '2024-08-15',
+        category: 'Financial literacy',
+        caseNumber: 32,
     },
     {
         id: '2',
-        title: 'Mobile Banking App Usability Test',
-        description: 'Conduct a usability test on a new mobile banking application and provide actionable feedback.',
+        title: 'Is Ibrahim right?',
+        description: 'Help Ibrahim in solving her problem',
         imageUrl: '14',
         status: 'Completed',
         dueDate: '2024-07-20',
+        category: 'Emotional Intelligence',
+        caseNumber: 38,
     },
     {
         id: '3',
-        title: 'SaaS Onboarding Experience',
-        description: 'Design a new onboarding flow for a B2B SaaS product to increase user activation.',
+        title: 'How can we save Adi?',
+        description: 'Help Adi in solving her problem',
         imageUrl: '15',
         status: 'Not Started',
         dueDate: '2024-09-01',
+        category: 'Cognitive Ability',
+        caseNumber: 41,
+    },
+    {
+        id: '4',
+        title: 'Tarun needs your advice',
+        description: 'Help Tarun in solving her problem',
+        imageUrl: '16',
+        status: 'Not Started',
+        dueDate: '2024-09-10',
+        category: 'Communication',
+        caseNumber: 43,
     }
 ];
 

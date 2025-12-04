@@ -1,3 +1,4 @@
+
 import { LeaderboardWidget } from "@/components/app/dashboard/leaderboard-widget";
 import { PendingTasks } from "@/components/app/dashboard/pending-tasks";
 import { WhatsNew } from "@/components/app/dashboard/whats-new";
@@ -8,13 +9,12 @@ import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
 import { Settings, Star, Globe, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { AppSidebar } from "@/components/app/app-sidebar";
 
 export default function DashboardPage() {
     const userAvatar = PlaceHolderImages.find(p => p.id === mainUser.avatarUrl);
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 pb-24">
             <header className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="bg-primary/20 text-primary p-2 rounded-lg">
@@ -61,7 +61,6 @@ export default function DashboardPage() {
             </Card>
 
             <CaseStudyWidget />
-            <AppSidebar />
         </div>
     );
 }
