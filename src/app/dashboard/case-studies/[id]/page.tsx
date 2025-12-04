@@ -7,6 +7,7 @@ import { ArrowLeft, Mic } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Image from 'next/image';
 
 export default function CaseStudyDetailPage() {
   const params = useParams();
@@ -60,14 +61,14 @@ export default function CaseStudyDetailPage() {
                 <ArrowLeft className="w-6 h-6"/>
             </Button>
             <div className="bg-primary/20 text-primary p-2 rounded-lg">
-                <span className="font-extrabold text-3xl">N</span>
+                <Image src="/logo.png" alt="Nirmaan Logo" width={24} height={24} />
             </div>
             <div className="text-right flex-grow">
                 <p className="text-sm font-semibold text-muted-foreground">Case Study #{caseStudy.caseNumber}</p>
             </div>
         </header>
 
-        <main className="flex-grow flex flex-col items-center p-4">
+        <main className="flex-grow flex flex-col items-center p-4 overflow-y-auto">
             <div className="bg-orange-100 p-6 rounded-2xl w-full relative mb-6">
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-purple-300 rounded-full flex items-center justify-center">
                     <span className="text-3xl">🙋‍♀️</span>
