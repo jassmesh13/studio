@@ -94,7 +94,7 @@ export default function CaseStudyDetailPage() {
                     <AlertTitle>Camera Access Required</AlertTitle>
                     <AlertDescription>
                         Please allow camera access to record your answer.
-                    </Description>
+                    </AlertDescription>
                 </Alert>
             )}
             
