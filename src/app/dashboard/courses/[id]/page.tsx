@@ -1,6 +1,7 @@
+
 'use client';
 import Image from 'next/image';
-import { notFound, useRouter } from 'next/navigation';
+import { notFound, useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, CheckCircle, Circle, FileText, PlayCircle, Puzzle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,8 +9,10 @@ import { courses } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const course = courses.find((c) => c.id === params.id);
+export default function CourseDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const course = courses.find((c) => c.id === id);
   const router = useRouter();
 
   if (!course) {
