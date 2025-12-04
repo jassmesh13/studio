@@ -28,7 +28,8 @@ export const courses: Course[] = [
       { id: 'c1-3', title: 'Lesson 3', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 10 } },
       { id: 'c1-4', title: 'Lesson 4', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '45 min' } },
       { id: 'c1-5', title: 'Lesson 5', completed: false, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '45 min' } },
-    ]
+    ],
+    caseStudyIds: ['1', '2', '3', '4']
   },
   {
     id: '2',
@@ -43,7 +44,8 @@ export const courses: Course[] = [
         { id: 'c2-1', title: 'Lesson 1', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '25 min' } },
         { id: 'c2-2', title: 'Lesson 2', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'pdf', pages: 30 } },
         { id: 'c2-3', title: 'Lesson 3', completed: false, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 15 } },
-    ]
+    ],
+    caseStudyIds: ['1', '2']
   },
   {
     id: '3',
@@ -58,7 +60,8 @@ export const courses: Course[] = [
         { id: 'c3-1', title: 'Lesson 1', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'video', duration: '20 min' } },
         { id: 'c3-2', title: 'Lesson 2', completed: true, imageUrl: 'l1', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'pdf', pages: 40 } },
         { id: 'c3-3', title: 'Lesson 3', completed: true, imageUrl: 'l2', description: 'In the lessns we leran new words and for vacalaburities continues and articl', content: { type: 'quiz', questions: 12 } },
-    ]
+    ],
+    caseStudyIds: ['3', '4']
   },
 ];
 
@@ -66,9 +69,9 @@ export const caseStudies: CaseStudy[] = [
     {
         id: '1',
         title: 'What should Nyra do?',
-        description: 'Help Nyra in solving her problem',
+        description: 'This case study teaches about friendship and life lesson.',
         imageUrl: '13',
-        status: 'In Progress',
+        status: 'Completed',
         dueDate: '2024-08-15',
         category: 'Financial literacy',
         caseNumber: 32,
@@ -77,7 +80,8 @@ export const caseStudies: CaseStudy[] = [
             quote: "Please don't tell the teacher about my assignment, I was sick all night.",
             prompt: "If you were in this situation, what would you do?",
             explanation: "Also explain why you think your choice is the best one."
-        }
+        },
+        tags: ['Financial literacy', 'Friendship']
     },
     {
         id: '2',
@@ -88,26 +92,29 @@ export const caseStudies: CaseStudy[] = [
         dueDate: '2024-07-20',
         category: 'Emotional Intelligence',
         caseNumber: 38,
+        tags: ['Emotional Intelligence']
     },
     {
         id: '3',
         title: 'How can we save Adi?',
         description: 'Help Adi in solving her problem',
         imageUrl: '15',
-        status: 'Not Started',
+        status: 'Completed',
         dueDate: '2024-09-01',
         category: 'Cognitive Ability',
         caseNumber: 41,
+        tags: ['Cognitive Ability']
     },
     {
         id: '4',
         title: 'Tarun needs your advice',
         description: 'Help Tarun in solving her problem',
         imageUrl: '16',
-        status: 'Not Started',
+        status: 'Completed',
         dueDate: '2024-09-10',
         category: 'Communication',
         caseNumber: 43,
+        tags: ['Communication']
     }
 ];
 

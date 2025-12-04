@@ -33,6 +33,7 @@ export type Course = {
     points?: number;
     lessons?: number;
     classRank?: number;
+    caseStudyIds?: string[];
 };
 
 export type CaseStudyContent = {
@@ -52,6 +53,7 @@ export type CaseStudy = {
     category?: string;
     caseNumber?: number;
     content?: CaseStudyContent;
+    tags?: string[];
 };
 
 export type Task = {

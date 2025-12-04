@@ -143,6 +143,12 @@
       "description": "Rocketship toy on a shelf",
       "imageUrl": "https://images.unsplash.com/photo-1698842103448-a97e6878b277?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyb2NrZXQlMjB0b3l8ZW58MHx8fHwxNzIxODE4NDg3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rocket toy"
+    },
+    {
+      "id": "avatar-nyra",
+      "description": "Cartoon avatar for Nyra",
+      "imageUrl": "https://images.unsplash.com/photo-1722270608841-35d7372a2e85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxnaXJsJTIwYXZhdGFyfGVufDB8fHx8MTc2NDgwNTgzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "girl avatar"
     }
   ]
 }
