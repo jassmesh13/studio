@@ -28,6 +28,9 @@ export type Course = {
     progress: number;
     imageUrl: string;
     chapters?: Chapter[];
+    points?: number;
+    lessons?: number;
+    classRank?: number;
 };
 
 export type CaseStudyContent = {

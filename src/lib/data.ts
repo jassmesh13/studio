@@ -15,10 +15,13 @@ export const mainUser: User = { id: '6', name: 'Alia', avatarUrl: '1', points: 3
 export const courses: Course[] = [
   {
     id: '1',
-    title: 'Introduction to Web Development',
+    title: 'Life Skills',
     description: 'Master the fundamentals of HTML, CSS, and JavaScript.',
     progress: 75,
     imageUrl: '10',
+    points: 390,
+    lessons: 1438,
+    classRank: 56,
     chapters: [
       { id: 'c1-1', title: 'Chapter 1: Getting Started with HTML', completed: true, content: { type: 'video', duration: '15 min' } },
       { id: 'c1-2', title: 'Chapter 2: Styling with CSS', completed: true, content: { type: 'pdf', pages: 25 } },
@@ -28,10 +31,13 @@ export const courses: Course[] = [
   },
   {
     id: '2',
-    title: 'Advanced React Patterns',
+    title: '21st Century skills',
     description: 'Learn advanced techniques for building scalable React applications.',
     progress: 40,
     imageUrl: '11',
+    points: 250,
+    lessons: 1230,
+    classRank: 15,
     chapters: [
         { id: 'c2-1', title: 'Chapter 1: Render Props and HOCs', completed: true, content: { type: 'video', duration: '25 min' } },
         { id: 'c2-2', title: 'Chapter 2: State Management with Context', completed: true, content: { type: 'pdf', pages: 30 } },
@@ -41,10 +47,13 @@ export const courses: Course[] = [
   },
   {
     id: '3',
-    title: 'UI/UX Design Principles',
+    title: 'Communication Skills',
     description: 'A comprehensive guide to creating intuitive and beautiful user interfaces.',
     progress: 90,
     imageUrl: '12',
+    points: 350,
+    lessons: 1780,
+    classRank: 25,
     chapters: [
         { id: 'c3-1', title: 'Chapter 1: The Psychology of Design', completed: true, content: { type: 'video', duration: '20 min' } },
         { id: 'c3-2', title: 'Chapter 2: Wireframing and Prototyping', completed: true, content: { type: 'pdf', pages: 40 } },
