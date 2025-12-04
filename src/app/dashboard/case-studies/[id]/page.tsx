@@ -1,6 +1,6 @@
 
 'use client';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { caseStudies } from '@/lib/data';
 import { Label } from '@/components/ui/label';
@@ -13,8 +13,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export default function CaseStudyDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function CaseStudyDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
   const caseStudy = caseStudies.find((c) => c.id === id);
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -110,7 +111,7 @@ export default function CaseStudyDetailPage({ params }: { params: { id: string }
                             <Button variant="outline"><Video className="mr-2 h-4 w-4" /> Record Video</Button>
                         </div>
                         <div className="w-full aspect-video rounded-md bg-muted flex items-center justify-center">
-                          <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
+                          <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
                         </div>
                         { !hasCameraPermission && (
                             <Alert variant="destructive">
