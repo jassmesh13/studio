@@ -86,8 +86,12 @@ export const pendingTasks: Task[] = [
 ];
 
 export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
-    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2 days ago', imageUrl: '30' },
-    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '1 week ago', imageUrl: '31' },
+    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '2024-08-25', imageUrl: '31' },
+    { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
+    { id: '4', title: 'Guest Speaker: A Famous Scientist', description: 'An inspiring talk on innovation and discovery.', date: '2024-09-10', imageUrl: '33' },
+    { id: '5', title: 'Annual Sports Day', description: 'Get ready for a day of fun and friendly competition.', date: '2024-09-15', imageUrl: '34' },
+    { id: '6', title: 'Science Fair 2024', description: 'Witness the amazing projects by our students.', date: '2024-09-22', imageUrl: '35' },
 ];
 
 export const gamificationData: Gamification = {
