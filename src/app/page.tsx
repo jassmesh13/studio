@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -10,13 +11,14 @@ export default function LandingPage() {
         </Button>
       </header>
       <main className="flex-grow flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-7xl font-extrabold text-primary mb-4" style={{
-          background: 'linear-gradient(180deg, #FF8C42 0%, #FF5C00 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
-          Nirmaan
-        </h1>
+        <Image
+          src="/logo.png"
+          alt="Nirmaan Logo"
+          width={300}
+          height={100}
+          className="mb-4"
+          priority
+        />
         <p className="text-2xl text-foreground/80">
           Shaping a Generation that
         </p>
