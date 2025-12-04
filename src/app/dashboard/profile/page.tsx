@@ -1,3 +1,4 @@
+'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,12 +11,22 @@ import { profileData } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import Image from 'next/image';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
     const userAvatar = PlaceHolderImages.find(p => p.id === profileData.avatarUrl);
+    const router = useRouter();
 
   return (
     <div className="grid gap-6">
+        <div className="flex items-center gap-4">
+            <Button variant="outline" size="icon" onClick={() => router.back()}>
+                <ArrowLeft />
+                <span className="sr-only">Back</span>
+            </Button>
+            <h1 className="text-2xl font-bold font-headline">Profile</h1>
+        </div>
         <Card>
             <CardHeader className="flex flex-col items-center text-center">
                 <Avatar className="h-24 w-24 mb-4">

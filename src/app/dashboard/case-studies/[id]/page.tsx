@@ -1,6 +1,6 @@
 
 'use client';
-import { notFound, useParams } from 'next/navigation';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { caseStudies } from '@/lib/data';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { FileUp, Mic, Video } from 'lucide-react';
+import { FileUp, Mic, Video, ArrowLeft } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -16,6 +16,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 export default function CaseStudyDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
   const caseStudy = caseStudies.find((c) => c.id === id);
   const [hasCameraPermission, setHasCameraPermission] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -59,6 +60,13 @@ export default function CaseStudyDetailPage() {
 
   return (
     <div>
+        <div className="flex items-center gap-4 mb-6">
+            <Button variant="outline" size="icon" onClick={() => router.back()}>
+                <ArrowLeft />
+                <span className="sr-only">Back</span>
+            </Button>
+            <h1 className="text-2xl font-bold font-headline">Case Study Details</h1>
+        </div>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="text-3xl font-headline">{caseStudy.title}</CardTitle>
