@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
     return (
         <div className="flex flex-col gap-6 pb-24">
-            <header className="flex items-center justify-between">
+            <header className="flex items-center justify-between sticky top-0 bg-background z-10 pt-4 -mt-4 -mx-4 px-4 pb-2">
                 <div className="flex items-center gap-4">
                     <div className="bg-primary/20 text-primary p-2 rounded-lg">
                         <span className="font-bold text-3xl">N</span>

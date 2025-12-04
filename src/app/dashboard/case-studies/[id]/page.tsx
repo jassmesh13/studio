@@ -54,8 +54,8 @@ export default function CaseStudyDetailPage() {
   }
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto p-4">
-        <header className="flex items-center w-full mb-8">
+    <div className="flex flex-col h-screen max-w-2xl mx-auto">
+        <header className="flex items-center w-full p-4 sticky top-0 bg-background z-10">
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
                 <ArrowLeft className="w-6 h-6"/>
             </Button>
@@ -67,7 +67,7 @@ export default function CaseStudyDetailPage() {
             </div>
         </header>
 
-        <main className="flex-grow flex flex-col items-center">
+        <main className="flex-grow flex flex-col items-center p-4">
             <div className="bg-orange-100 p-6 rounded-2xl w-full relative mb-6">
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-purple-300 rounded-full flex items-center justify-center">
                     <span className="text-3xl">🙋‍♀️</span>
@@ -94,7 +94,7 @@ export default function CaseStudyDetailPage() {
                     <AlertTitle>Camera Access Required</AlertTitle>
                     <AlertDescription>
                         Please allow camera access to record your answer.
-                    </AlertDescription>
+                    </Description>
                 </Alert>
             )}
             

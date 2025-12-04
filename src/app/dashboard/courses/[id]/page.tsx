@@ -27,7 +27,7 @@ export default function CourseDetailPage() {
 
   return (
     <div className="flex flex-col h-screen bg-accent/30">
-        <header className="flex items-center gap-4 bg-primary text-primary-foreground p-4">
+        <header className="flex items-center gap-4 bg-primary text-primary-foreground p-4 sticky top-0 z-10">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
                 <ArrowLeft />
                 <span className="sr-only">Back</span>
