@@ -30,6 +30,13 @@ export type Course = {
     chapters?: Chapter[];
 };
 
+export type CaseStudyContent = {
+    scenario: string;
+    quote: string;
+    prompt: string;
+    explanation: string;
+}
+
 export type CaseStudy = {
     id: string;
     title: string;
@@ -39,6 +46,7 @@ export type CaseStudy = {
     dueDate: string;
     category?: string;
     caseNumber?: number;
+    content?: CaseStudyContent;
 };
 
 export type Task = {

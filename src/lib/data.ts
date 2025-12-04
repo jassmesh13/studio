@@ -64,6 +64,12 @@ export const caseStudies: CaseStudy[] = [
         dueDate: '2024-08-15',
         category: 'Financial literacy',
         caseNumber: 32,
+        content: {
+            scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
+            quote: "Please don't tell the teacher about my assignment, I was sick all night.",
+            prompt: "If you were in this situation, what would you do?",
+            explanation: "Also explain why you think your choice is the best one."
+        }
     },
     {
         id: '2',
