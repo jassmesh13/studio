@@ -1,14 +1,15 @@
 import type { User, Course, CaseStudy, Task, Gamification, Profile } from '@/lib/types';
 
 export const users: User[] = [
-  { id: '1', name: 'Alia Sharma', avatarUrl: '1', points: 1250, rank: 3 },
-  { id: '2', name: 'Ben Carter', avatarUrl: '2', points: 1500, rank: 1 },
-  { id: '3', name: 'Chloe Davis', avatarUrl: '3', points: 1100, rank: 5 },
-  { id: '4', name: 'David Evans', avatarUrl: '4', points: 1400, rank: 2 },
-  { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 1150, rank: 4 },
+  { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
+  { id: '2', name: 'Nakul', avatarUrl: '2', points: 450, rank: 2 },
+  { id: '3', name: 'Suresh', avatarUrl: '3', points: 400, rank: 3 },
+  { id: '4', name: 'David Evans', avatarUrl: '4', points: 350, rank: 4 },
+  { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
 ];
 
-export const mainUser: User = users[0];
+export const mainUser: User = { id: '6', name: 'Alia', avatarUrl: '1', points: 390, rank: 1438 };
+
 
 export const courses: Course[] = [
   {
@@ -80,14 +81,13 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 export const pendingTasks: Task[] = [
-    { id: '1', title: 'Complete Chapter 3 of "Intro to Web Dev"', type: 'Course', dueDate: '3 days' },
-    { id: '2', title: 'Submit "E-commerce Checkout Redesign" Analysis', type: 'Case Study', dueDate: '5 days' },
-    { id: '3', title: 'Peer-review a classmate\'s submission', type: 'Review', dueDate: '1 week' },
+    { id: '1', title: 'Homework tasks', type: 'Course', dueDate: '3 days', progress: { current: 5, total: 10 } },
+    { id: '2', title: 'Communication skill exercise', type: 'Case Study', dueDate: '5 days', progress: { current: 1, total: 5 } },
 ];
 
-export const whatsNew: { id: string; title: string; description: string; date: string; }[] = [
-    { id: '1', title: 'New Course Available!', description: 'Enroll in our new "Advanced React Patterns" course today.', date: '2 days ago' },
-    { id: '2', title: 'Summer Hackathon Announcement', description: 'Join the Nirmaan Edu Summer Hackathon. Prizes await!', date: '1 week ago' },
+export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
+    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2 days ago', imageUrl: '30' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '1 week ago', imageUrl: '31' },
 ];
 
 export const gamificationData: Gamification = {

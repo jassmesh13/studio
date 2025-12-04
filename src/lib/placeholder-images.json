@@ -95,6 +95,18 @@
       "description": "Badge for Case Study Pro",
       "imageUrl": "https://images.unsplash.com/photo-1606667418372-d74143e13d34?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiYWRnZSUyMGJyaWVmY2FzZXxlbnwwfHx8fDE3NjQ3OTUxNzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "badge briefcase"
+    },
+    {
+      "id": "30",
+      "description": "Woman pointing at whiteboard",
+      "imageUrl": "https://images.unsplash.com/photo-1752649936390-561408d22108?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3b21hbiUyMHRlYWNoaW5nfGVufDB8fHx8MTc2NDc1OTQ0MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman teaching"
+    },
+    {
+      "id": "31",
+      "description": "Child writing on a notebook",
+      "imageUrl": "https://images.unsplash.com/photo-1596066190600-3af9aadaaea1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjaGlsZCUyMGxlYXJuaW5nfGVufDB8fHx8MTc2NDc1NTU1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "child learning"
     }
   ]
 }

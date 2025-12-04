@@ -43,6 +43,10 @@ export type Task = {
     title: string;
     type: string;
     dueDate: string;
+    progress: {
+        current: number;
+        total: number;
+    }
 };
 
 export type Badge = {

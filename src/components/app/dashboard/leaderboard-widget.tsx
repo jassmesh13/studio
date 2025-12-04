@@ -1,43 +1,78 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { gamificationData, mainUser } from "@/lib/data";
+import { gamificationData } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Crown, Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function LeaderboardWidget() {
-    const topThree = gamificationData.leaderboard.slice(0, 3);
-    const userRank = mainUser.rank;
+    const topThree = gamificationData.leaderboard.slice(0, 3).sort((a,b) => {
+        if (a.rank === 1) return -1;
+        if (b.rank === 1) return 1;
+        return a.rank - b.rank;
+    });
+
+    const user1 = topThree.find(u => u.rank === 1);
+    const user2 = topThree.find(u => u.rank === 2);
+    const user3 = topThree.find(u => u.rank === 3);
+
+    const user1Avatar = user1 ? PlaceHolderImages.find(p => p.id === user1.avatarUrl) : null;
+    const user2Avatar = user2 ? PlaceHolderImages.find(p => p.id === user2.avatarUrl) : null;
+    const user3Avatar = user3 ? PlaceHolderImages.find(p => p.id === user3.avatarUrl) : null;
+
+
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Leaderboard</CardTitle>
-                <CardDescription>Your current rank is #{userRank}. Keep it up!</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ul className="space-y-4">
-                    {topThree.map((user, index) => {
-                        const avatar = PlaceHolderImages.find(p => p.id === user.avatarUrl);
-                        return (
-                            <li key={user.id} className="flex items-center gap-4">
-                                <div className="font-bold text-lg w-5 text-center">
-                                    {index === 0 ? <Crown className="w-5 h-5 text-yellow-500" /> : user.rank}
-                                </div>
-                                <Avatar className="h-9 w-9">
-                                    {avatar && <AvatarImage src={avatar.imageUrl} alt={user.name} data-ai-hint={avatar.imageHint} />}
-                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
-                                    <p className="font-medium">{user.name}</p>
-                                    <p className="text-sm text-muted-foreground">{user.points} points</p>
-                                </div>
-                                {user.id === mainUser.id && (
-                                    <Trophy className="w-5 h-5 text-primary" />
-                                )}
-                            </li>
-                        )
-                    })}
-                </ul>
-            </CardContent>
-        </Card>
+        <div className="w-full">
+            <h2 className="text-xl font-bold text-primary mb-4 flex items-center justify-center gap-2">
+                <Trophy className="w-6 h-6 text-yellow-400" />
+                Leaderboard
+                <Trophy className="w-6 h-6 text-yellow-400" />
+            </h2>
+            <div className="flex items-end justify-center gap-2 w-full max-w-sm mx-auto">
+                {/* 2nd Place */}
+                {user2 && (
+                    <div className="flex flex-col items-center w-1/4">
+                        <Avatar className="w-12 h-12 border-2 border-slate-300">
+                           {user2Avatar && <AvatarImage src={user2Avatar.imageUrl} alt={user2.name} data-ai-hint={user2Avatar.imageHint} />}
+                           <AvatarFallback>{user2.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <p className="text-sm font-semibold mt-1 truncate">{user2.name}</p>
+                        <div className="bg-primary/80 text-white rounded-lg p-2 mt-1 w-full text-center">
+                            <p className="font-bold text-xl">2</p>
+                            <p className="text-xs">{user2.points} pts</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* 1st Place */}
+                {user1 && (
+                     <div className="flex flex-col items-center w-1/3">
+                        <Avatar className="w-16 h-16 border-4 border-yellow-400">
+                           {user1Avatar && <AvatarImage src={user1Avatar.imageUrl} alt={user1.name} data-ai-hint={user1Avatar.imageHint} />}
+                           <AvatarFallback>{user1.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <p className="text-base font-bold mt-1 text-primary truncate">{user1.name}</p>
+                        <div className="bg-primary text-white rounded-lg p-4 mt-1 w-full text-center">
+                            <p className="font-bold text-3xl">1</p>
+                            <p className="text-sm">{user1.points} pts</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* 3rd Place */}
+                {user3 && (
+                    <div className="flex flex-col items-center w-1/4">
+                        <Avatar className="w-12 h-12 border-2 border-amber-600">
+                           {user3Avatar && <AvatarImage src={user3Avatar.imageUrl} alt={user3.name} data-ai-hint={user3Avatar.imageHint} />}
+                           <AvatarFallback>{user3.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <p className="text-sm font-semibold mt-1 truncate">{user3.name}</p>
+                        <div className="bg-primary/70 text-white rounded-lg p-2 mt-1 w-full text-center">
+                            <p className="font-bold text-xl">3</p>
+                            <p className="text-xs">{user3.points} pts</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
     )
 }
