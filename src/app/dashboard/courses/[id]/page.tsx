@@ -54,7 +54,7 @@ export default function CourseDetailPage() {
                                                 </div>
                                             )}
                                             <div className="flex-1">
-                                                <h3 className="font-bold">LESSON {index + 1}</h3>
+                                                <h3 className="font-bold">Chapter {index + 1}: {chapter.title}</h3>
                                                 <p className="text-sm text-muted-foreground mb-1">{chapter.description}</p>
                                                 {chapter.completed && (
                                                     <div className="flex items-center gap-1 text-green-600">
