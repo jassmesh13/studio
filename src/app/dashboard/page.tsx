@@ -28,7 +28,7 @@ export default function DashboardPage() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
-                            <Settings className="w-6 h-6 text-primary" />
+                            <Settings className="w-7 h-7 text-primary" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
