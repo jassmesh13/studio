@@ -1,5 +1,5 @@
 
-import type { User, Course, CaseStudy, Task, Gamification, Profile } from '@/lib/types';
+import type { User, Course, CaseStudy, Task, Gamification, Profile, School } from '@/lib/types';
 
 export const users: User[] = [
   { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
@@ -160,3 +160,11 @@ export const profileData: Profile = {
         }
     }
 }
+
+export const schools: School[] = [
+    { id: '1', name: 'Delhi Public School' },
+    { id: '2', name: 'Kendriya Vidyalaya' },
+    { id: '3', name: 'The Doon School' },
+    { id: '4', name: 'St. Xavier\'s Collegiate School' },
+    { id: '5', name: 'La Martiniere for Boys' }
+];

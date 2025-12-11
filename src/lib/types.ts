@@ -96,4 +96,9 @@ export type Profile = User & {
             showProfile: boolean;
         }
     }
-}
+};
+
+export type School = {
+    id: string;
+    name: string;
+};
