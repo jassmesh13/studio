@@ -84,6 +84,7 @@ export const caseStudies: CaseStudy[] = [
         category: 'Financial literacy',
         caseNumber: 32,
         points: 5,
+        type: 'video',
         content: {
             scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
             quote: "Please don't tell the teacher about my assignment, I was sick all night.",
@@ -102,6 +103,13 @@ export const caseStudies: CaseStudy[] = [
         category: 'Emotional Intelligence',
         caseNumber: 38,
         points: 10,
+        type: 'audio',
+        content: {
+            scenario: "Ibrahim's friend is telling mean jokes about another student. Ibrahim feels uncomfortable but doesn't want to lose his friend.",
+            quote: "Hey, that's not funny. You should stop.",
+            prompt: "If you were Ibrahim, how would you handle this?",
+            explanation: "Explain your reasoning and what might happen after."
+        },
         tags: ['Emotional Intelligence']
     },
     {
@@ -114,6 +122,24 @@ export const caseStudies: CaseStudy[] = [
         category: 'Cognitive Ability',
         caseNumber: 41,
         points: 5,
+        type: 'mcq',
+        content: {
+            scenario: "Adi found a wallet full of money on the playground. There's no ID inside.",
+            quote: "Wow, so much money! I could buy that new video game!",
+            prompt: "What is the best thing for Adi to do?",
+            explanation: "Select the best option below."
+        },
+        mcqs: [
+            {
+                id: 'mcq1',
+                question: 'What will you do?',
+                options: [
+                    { id: 'opt1', text: 'Tell Teacher' },
+                    { id: 'opt2', text: 'Help your friend' },
+                    { id: 'opt3', text: 'Neither tell teacher nor help friend' }
+                ]
+            }
+        ],
         tags: ['Cognitive Ability']
     },
     {
@@ -126,6 +152,13 @@ export const caseStudies: CaseStudy[] = [
         category: 'Communication',
         caseNumber: 43,
         points: 8,
+        type: 'audio',
+        content: {
+            scenario: "Tarun wants to join the school choir but is very shy about singing in front of people. Auditions are next week.",
+            quote: "I love singing, but I'm too scared to audition.",
+            prompt: "What advice would you give Tarun?",
+            explanation: "Record your advice and encouragement for Tarun."
+        },
         tags: ['Communication']
     }
 ];

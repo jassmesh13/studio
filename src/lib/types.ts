@@ -44,6 +44,12 @@ export type CaseStudyContent = {
     explanation: string;
 }
 
+export type MCQ = {
+    id: string;
+    question: string;
+    options: { id: string; text: string; }[];
+}
+
 export type CaseStudy = {
     id: string;
     title: string;
@@ -56,6 +62,8 @@ export type CaseStudy = {
     content?: CaseStudyContent;
     tags?: string[];
     points?: number;
+    type: 'video' | 'audio' | 'mcq';
+    mcqs?: MCQ[];
 };
 
 export type Task = {
