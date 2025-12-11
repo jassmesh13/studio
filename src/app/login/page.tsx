@@ -17,7 +17,7 @@ export default function LoginPage() {
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
             <Image src="/logo.png" alt="Nirmaan Logo" width={240} height={60} className="mx-auto" />
-            <p className="text-balance text-muted-foreground">Enter your email below to login to your account</p>
+            <p className="text-balance text-muted-foreground">Enter your User ID below to login to your account</p>
           </div>
           <Card>
             <CardHeader>
@@ -27,8 +27,8 @@ export default function LoginPage() {
             <CardContent>
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="m@example.com" required />
+                  <Label htmlFor="userId">User Id</Label>
+                  <Input id="userId" type="text" placeholder="your-user-id" required />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
