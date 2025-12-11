@@ -60,7 +60,12 @@ export default function CoursesPage() {
                         <p className="font-bold text-lg">#{course.classRank}</p>
                     </div>
                 </div>
-                <Progress value={course.progress} className="h-2 mb-4" />
+                <div className="relative w-full mb-4">
+                    <Progress value={course.progress} className="h-6" />
+                    <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-primary-foreground drop-shadow">
+                        {course.progress}% Completed
+                    </span>
+                </div>
                 <Button asChild className="w-full">
                     <Link href={`/dashboard/courses/${course.id}`}>
                         CHECK
