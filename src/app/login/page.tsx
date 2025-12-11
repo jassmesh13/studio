@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -15,7 +16,7 @@ export default function LoginPage() {
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold font-headline text-primary">Nirmaan Edu</h1>
+            <Image src="/logo.png" alt="Nirmaan Logo" width={240} height={60} className="mx-auto" />
             <p className="text-balance text-muted-foreground">Enter your email below to login to your account</p>
           </div>
           <Card>
