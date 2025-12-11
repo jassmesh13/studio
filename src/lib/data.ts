@@ -1,5 +1,6 @@
 
-import type { User, Course, CaseStudy, Task, Gamification, Profile, School } from '@/lib/types';
+
+import type { User, Course, CaseStudy, Task, Gamification, Profile, School, Habit } from '@/lib/types';
 
 export const users: User[] = [
   { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
@@ -167,4 +168,40 @@ export const schools: School[] = [
     { id: '3', name: 'The Doon School' },
     { id: '4', name: 'St. Xavier\'s Collegiate School' },
     { id: '5', name: 'La Martiniere for Boys' }
+];
+
+export const habits: Habit[] = [
+    {
+        id: 'habit-1',
+        question: "Hey, Did you wake up early today ?",
+        emoji: "🌅",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    },
+    {
+        id: 'habit-2',
+        question: "Did you also meditate today ?",
+        emoji: "🧘",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    },
+    {
+        id: 'habit-3',
+        question: "Did you completed your homework ?",
+        emoji: "📚",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    }
 ];

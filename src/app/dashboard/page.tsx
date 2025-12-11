@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { HabitTracker } from "@/components/app/dashboard/habit-tracker";
 
 export default function DashboardPage() {
     const userAvatar = PlaceHolderImages.find(p => p.id === mainUser.avatarUrl);
@@ -46,6 +47,7 @@ export default function DashboardPage() {
 
             <WhatsNew />
             <PendingTasks />
+            <HabitTracker />
             
             <div className="bg-accent rounded-2xl p-4 flex flex-col items-center text-center relative">
                 <LeaderboardWidget />

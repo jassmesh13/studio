@@ -1,4 +1,5 @@
 
+
 import type { LucideIcon } from 'lucide-react';
 
 export type User = {
@@ -101,4 +102,12 @@ export type Profile = User & {
 export type School = {
     id: string;
     name: string;
+};
+
+export type Habit = {
+    id: string;
+    question: string;
+    emoji: string;
+    points: number;
+    options: { label: string; value: string; }[];
 };
