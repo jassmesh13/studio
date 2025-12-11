@@ -123,10 +123,13 @@ export default function CaseStudiesPage() {
                                 <p className="text-sm text-muted-foreground">{study.description}</p>
                                 <div className="flex items-center gap-2 mt-2">
                                     <Badge className={cn("border-none", badgeColor)}>{study.category}</Badge>
-                                    <Badge variant="outline" className="border-green-500 text-green-600 bg-green-100">+{study.points} Points</Badge>
                                 </div>
                             </div>
                             <div className="text-right self-end space-y-1">
+                                <div className="bg-green-100 text-green-700 p-2 rounded-md text-center text-xs font-bold">
+                                    <p>+{study.points}</p>
+                                    <p>Points</p>
+                                </div>
                                 <p className="text-xs text-muted-foreground">Casestudy #{study.caseNumber}</p>
                                 <div className="flex items-center justify-end gap-1 text-red-500 text-xs font-semibold">
                                     <Clock className="w-3 h-3" />
