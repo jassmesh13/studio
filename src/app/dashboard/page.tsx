@@ -7,9 +7,11 @@ import { mainUser } from "@/lib/data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
-import { Settings, Star, Globe, Shield } from "lucide-react";
+import { Settings, Star, Globe, Shield, LogOut } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from 'next/image';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export default function DashboardPage() {
     const userAvatar = PlaceHolderImages.find(p => p.id === mainUser.avatarUrl);
@@ -23,9 +25,23 @@ export default function DashboardPage() {
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold font-headline text-primary">Dashboard</h1>
                 </div>
-                <Button variant="ghost" size="icon">
-                    <Settings className="w-6 h-6 text-primary" />
-                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <Settings className="w-6 h-6 text-primary" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem>Notifications setting</DropdownMenuItem>
+                        <DropdownMenuItem>Privacy setting</DropdownMenuItem>
+                        <DropdownMenuItem>Help</DropdownMenuItem>
+                        <DropdownMenuItem>Feedback</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link href="/"><LogOut className="mr-2 h-4 w-4" />Signout</Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </header>
 
             <WhatsNew />

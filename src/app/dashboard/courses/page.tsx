@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { courses } from '@/lib/data';
-import { Settings, Star, Globe, Shield } from 'lucide-react';
+import { Settings, Star, Globe, Shield, LogOut } from 'lucide-react';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import Image from 'next/image';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export default function CoursesPage() {
   return (
@@ -18,9 +19,23 @@ export default function CoursesPage() {
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold font-headline text-primary">Courses</h1>
             </div>
-            <Button variant="ghost" size="icon">
-                <Settings className="w-6 h-6 text-primary" />
-            </Button>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <Settings className="w-6 h-6 text-primary" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem>Notifications setting</DropdownMenuItem>
+                    <DropdownMenuItem>Privacy setting</DropdownMenuItem>
+                    <DropdownMenuItem>Help</DropdownMenuItem>
+                    <DropdownMenuItem>Feedback</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link href="/"><LogOut className="mr-2 h-4 w-4" />Signout</Link>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </header>
 
       <div className="grid gap-6">
