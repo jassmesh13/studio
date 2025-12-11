@@ -11,15 +11,15 @@ import Image from 'next/image';
 export default function CoursesPage() {
   return (
     <div className="flex flex-col gap-6 pb-24">
-        <header className="flex items-center justify-between bg-primary text-primary-foreground p-4 rounded-b-3xl sticky top-0 z-10 -mx-4 -mt-4 mb-2">
+        <header className="flex items-center justify-between sticky top-0 bg-background z-10 pt-4 -mt-4 -mx-4 px-4 pb-2">
             <div className="flex items-center gap-4">
-                <div className="bg-white/20 p-2 rounded-lg">
+                <div className="bg-primary/20 text-primary p-2 rounded-lg">
                     <Image src="/icon.png" alt="Nirmaan Logo" width={24} height={24} />
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold font-headline">Courses</h1>
+                <h1 className="text-2xl md:text-3xl font-bold font-headline text-primary">Courses</h1>
             </div>
             <Button variant="ghost" size="icon">
-                <Settings className="w-6 h-6" />
+                <Settings className="w-6 h-6 text-primary" />
             </Button>
         </header>
 
