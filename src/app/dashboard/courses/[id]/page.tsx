@@ -37,9 +37,9 @@ export default function CourseDetailPage() {
         <div className="flex-1 overflow-y-auto pb-8">
             <div className="flex justify-center py-4">
                 <Tabs defaultValue="chapters" className="w-full max-w-md px-4">
-                    <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full">
-                        <TabsTrigger value="chapters" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Chapters</TabsTrigger>
-                        <TabsTrigger value="case-studies" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Case Studies</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-2 bg-primary/20 rounded-full p-1.5 h-auto">
+                        <TabsTrigger value="chapters" className="text-base font-bold text-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-full h-12">Chapters</TabsTrigger>
+                        <TabsTrigger value="case-studies" className="text-base font-bold text-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg rounded-full h-12">Case Studies</TabsTrigger>
                     </TabsList>
                     <TabsContent value="chapters">
                         <div className="space-y-4 pt-4">
