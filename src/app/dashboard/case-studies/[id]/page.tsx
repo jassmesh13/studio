@@ -61,7 +61,7 @@ export default function CaseStudyDetailPage() {
                 <ArrowLeft className="w-6 h-6"/>
             </Button>
             <div className="bg-primary/20 text-primary p-2 rounded-lg">
-                <Image src="/logo.png" alt="Nirmaan Logo" width={24} height={24} />
+                <Image src="/icon.png" alt="Nirmaan Logo" width={24} height={24} />
             </div>
             <div className="text-right flex-grow">
                 <p className="text-sm font-semibold text-muted-foreground">Case Study #{caseStudy.caseNumber}</p>

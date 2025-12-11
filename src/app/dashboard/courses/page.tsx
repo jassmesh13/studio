@@ -14,7 +14,7 @@ export default function CoursesPage() {
         <header className="flex items-center justify-between bg-primary text-primary-foreground p-4 rounded-b-3xl sticky top-0 z-10 -mx-4 -mt-4 mb-2">
             <div className="flex items-center gap-4">
                 <div className="bg-white/20 p-2 rounded-lg">
-                    <Image src="/logo.png" alt="Nirmaan Logo" width={24} height={24} />
+                    <Image src="/icon.png" alt="Nirmaan Logo" width={24} height={24} />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold font-headline">Courses</h1>
             </div>

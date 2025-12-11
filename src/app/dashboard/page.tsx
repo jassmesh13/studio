@@ -19,7 +19,7 @@ export default function DashboardPage() {
             <header className="flex items-center justify-between sticky top-0 bg-background z-10 pt-4 -mt-4 -mx-4 px-4 pb-2">
                 <div className="flex items-center gap-4">
                     <div className="bg-primary/20 text-primary p-2 rounded-lg">
-                        <Image src="/logo.png" alt="Nirmaan Logo" width={24} height={24} />
+                        <Image src="/icon.png" alt="Nirmaan Logo" width={24} height={24} />
                     </div>
                     <h1 className="text-2xl md:text-3xl font-bold font-headline text-primary">Dashboard</h1>
                 </div>
