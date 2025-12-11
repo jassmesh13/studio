@@ -78,7 +78,7 @@ export default function CaseStudyDetailPage() {
             </div>
         </header>
 
-        <main className="flex-grow flex flex-col items-center p-4 overflow-y-auto">
+        <main className="flex-grow flex flex-col items-center p-4 overflow-y-auto pb-24">
             <div className="bg-orange-100 p-6 rounded-2xl w-full relative mb-6">
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-purple-300 rounded-full flex items-center justify-center">
                     <span className="text-3xl">🙋‍♀️</span>
