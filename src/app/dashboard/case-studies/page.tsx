@@ -130,11 +130,11 @@ export default function CaseStudiesPage() {
                                     <p>+{study.points}</p>
                                     <p>Points</p>
                                 </div>
-                                <p className="text-xs text-muted-foreground">Casestudy #{study.caseNumber}</p>
                                 <div className="flex items-center justify-end gap-1 text-red-500 text-xs font-semibold">
                                     <Clock className="w-3 h-3" />
                                     <span>{timeLeft[study.id] || 'Loading...'}</span>
                                 </div>
+                                <p className="text-xs text-muted-foreground">Casestudy #{study.caseNumber}</p>
                             </div>
                         </div>
                     </Card>
