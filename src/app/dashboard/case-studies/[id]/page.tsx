@@ -121,6 +121,8 @@ export default function CaseStudyDetailPage() {
       );
     }
 
+    const article = caseStudy.type === 'audio' ? 'an' : 'a';
+
     return (
       <>
         {hasCameraPermission === false && (
@@ -135,7 +137,7 @@ export default function CaseStudyDetailPage() {
           {caseStudy.type === 'video' ? <Video className="w-6 h-6 mr-2" /> : <Mic className="w-6 h-6 mr-2" />}
           Click to Record {caseStudy.type === 'video' ? 'Video' : 'Audio'}
         </Button>
-        <p className="text-muted-foreground mt-4">You can record an {caseStudy.type} answer.</p>
+        <p className="text-muted-foreground mt-4">You can record {article} {caseStudy.type} answer.</p>
       </>
     );
   };
