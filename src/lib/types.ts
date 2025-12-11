@@ -95,6 +95,11 @@ export type Gamification = {
 export type Profile = User & {
     username: string;
     email: string;
+    phone: string;
+    school: string;
+    class: string;
+    age: number;
+    gender: 'Male' | 'Female' | 'Other';
     bio: string;
     achievements: Badge[];
     settings: {

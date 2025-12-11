@@ -11,7 +11,7 @@ export default function ProfilePage() {
     const userAvatar = PlaceHolderImages.find(p => p.id === profileData.avatarUrl);
 
   return (
-    <div className="flex flex-col items-center max-w-sm mx-auto p-4">
+    <div className="flex flex-col items-center max-w-sm mx-auto p-4 pb-24">
         <div className='w-full flex justify-end'>
             <Button variant="outline" size="sm">Edit profile</Button>
         </div>
@@ -40,8 +40,29 @@ export default function ProfilePage() {
                 <Input type="password" id="password" defaultValue="************" className="bg-muted border-none h-12 rounded-2xl" />
             </div>
             <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="email" className="text-muted-foreground font-semibold">Email</Label>
-                <Input type="email" id="email" defaultValue={profileData.email} className="bg-muted border-none h-12 rounded-2xl" />
+                <Label htmlFor="school" className="text-muted-foreground font-semibold">School</Label>
+                <Input type="text" id="school" defaultValue={profileData.school} className="bg-muted border-none h-12 rounded-2xl" />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="class" className="text-muted-foreground font-semibold">Class</Label>
+                    <Input type="text" id="class" defaultValue={profileData.class} className="bg-muted border-none h-12 rounded-2xl" />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="age" className="text-muted-foreground font-semibold">Age</Label>
+                    <Input type="number" id="age" defaultValue={profileData.age} className="bg-muted border-none h-12 rounded-2xl" />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="gender" className="text-muted-foreground font-semibold">Gender</Label>
+                    <Input type="text" id="gender" defaultValue={profileData.gender} className="bg-muted border-none h-12 rounded-2xl" />
+                </div>
+            </div>
+             <div className="grid w-full items-center gap-1.5">
+                <Label className="text-muted-foreground font-semibold">Contact Details</Label>
+                <div className="flex gap-4">
+                    <Input type="email" id="email" defaultValue={profileData.email} className="bg-muted border-none h-12 rounded-2xl w-full" />
+                    <Input type="tel" id="phone" defaultValue={profileData.phone} className="bg-muted border-none h-12 rounded-2xl w-full" />
+                </div>
             </div>
         </div>
 

@@ -10,7 +10,7 @@ export const users: User[] = [
   { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
 ];
 
-export const mainUser: User = { id: '6', name: 'Alia', avatarUrl: '1', points: 390, rank: 1438 };
+export const mainUser: User = { id: '6', name: 'Alia', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
 
 
 export const courses: Course[] = [
@@ -193,6 +193,11 @@ export const profileData: Profile = {
     ...mainUser,
     username: 'alia_sharma',
     email: 'alia.sharma@example.com',
+    phone: '123-456-7890',
+    school: 'Delhi Public School',
+    class: '10th',
+    age: 15,
+    gender: 'Female',
     bio: 'Aspiring full-stack developer with a passion for creating beautiful and functional web applications. Currently learning about advanced React and UI/UX design.',
     achievements: gamificationData.badges,
     settings: {
