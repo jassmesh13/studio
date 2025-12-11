@@ -66,16 +66,24 @@ export const courses: Course[] = [
   },
 ];
 
+const getFutureDate = (days: number, hours: number = 0) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    date.setHours(date.getHours() + hours);
+    return date.toISOString();
+}
+
 export const caseStudies: CaseStudy[] = [
     {
         id: '1',
         title: 'What should Nyra do?',
         description: 'This case study teaches about friendship and life lesson.',
         imageUrl: '13',
-        status: 'Completed',
-        dueDate: '2024-08-15',
+        status: 'In Progress',
+        dueDate: getFutureDate(2),
         category: 'Financial literacy',
         caseNumber: 32,
+        points: 5,
         content: {
             scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
             quote: "Please don't tell the teacher about my assignment, I was sick all night.",
@@ -89,10 +97,11 @@ export const caseStudies: CaseStudy[] = [
         title: 'Is Ibrahim right?',
         description: 'Help Ibrahim in solving her problem',
         imageUrl: '14',
-        status: 'Completed',
-        dueDate: '2024-07-20',
+        status: 'Not Started',
+        dueDate: getFutureDate(0, 6),
         category: 'Emotional Intelligence',
         caseNumber: 38,
+        points: 10,
         tags: ['Emotional Intelligence']
     },
     {
@@ -101,9 +110,10 @@ export const caseStudies: CaseStudy[] = [
         description: 'Help Adi in solving her problem',
         imageUrl: '15',
         status: 'Completed',
-        dueDate: '2024-09-01',
+        dueDate: getFutureDate(-2),
         category: 'Cognitive Ability',
         caseNumber: 41,
+        points: 5,
         tags: ['Cognitive Ability']
     },
     {
@@ -111,10 +121,11 @@ export const caseStudies: CaseStudy[] = [
         title: 'Tarun needs your advice',
         description: 'Help Tarun in solving her problem',
         imageUrl: '16',
-        status: 'Completed',
-        dueDate: '2024-09-10',
+        status: 'Not Started',
+        dueDate: getFutureDate(5),
         category: 'Communication',
         caseNumber: 43,
+        points: 8,
         tags: ['Communication']
     }
 ];

@@ -1,17 +1,64 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { caseStudies } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { Settings, BookOpen, LogOut } from 'lucide-react';
-import { AppSidebar } from '@/components/app/app-sidebar';
+import { Settings, BookOpen, LogOut, Clock } from 'lucide-react';
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useEffect, useState } from 'react';
+
+const getTimeLeft = (dueDate: string) => {
+    const now = new Date();
+    const due = new Date(dueDate);
+    const diff = due.getTime() - now.getTime();
+
+    if (diff <= 0) {
+        return 'Past due';
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    if (days > 0) {
+        return `${days} day${days > 1 ? 's' : ''} left`;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    if (hours > 0) {
+        return `${hours} hour${hours > 1 ? 's' : ''} left`;
+    }
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    return `${minutes} min${minutes > 1 ? 's' : ''} left`;
+};
 
 
 export default function CaseStudiesPage() {
+    const [timeLeft, setTimeLeft] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const newTimeLeft: Record<string, string> = {};
+            caseStudies.forEach(study => {
+                newTimeLeft[study.id] = getTimeLeft(study.dueDate);
+            });
+            setTimeLeft(newTimeLeft);
+        }, 60000); // Update every minute
+
+        // Initial calculation
+        const initialTimeLeft: Record<string, string> = {};
+        caseStudies.forEach(study => {
+            initialTimeLeft[study.id] = getTimeLeft(study.dueDate);
+        });
+        setTimeLeft(initialTimeLeft);
+
+        return () => clearInterval(interval);
+    }, []);
+
+
     const stats = [
         { label: 'Attempted', value: 15 },
         { label: 'Solved', value: 10 },
@@ -74,16 +121,24 @@ export default function CaseStudiesPage() {
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{study.title}</h3>
                                 <p className="text-sm text-muted-foreground">{study.description}</p>
-                                <Badge className={cn("mt-2 border-none", badgeColor)}>{study.category}</Badge>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <Badge className={cn("border-none", badgeColor)}>{study.category}</Badge>
+                                    <Badge variant="outline" className="border-green-500 text-green-600 bg-green-100">+{study.points} Points</Badge>
+                                </div>
                             </div>
-                            <p className="text-xs text-muted-foreground self-end">Casestudy #{study.caseNumber}</p>
+                            <div className="text-right self-end space-y-1">
+                                <p className="text-xs text-muted-foreground">Casestudy #{study.caseNumber}</p>
+                                <div className="flex items-center justify-end gap-1 text-red-500 text-xs font-semibold">
+                                    <Clock className="w-3 h-3" />
+                                    <span>{timeLeft[study.id] || 'Loading...'}</span>
+                                </div>
+                            </div>
                         </div>
                     </Card>
                 </Link>
             )
         })}
       </div>
-      <AppSidebar />
     </div>
   );
 }

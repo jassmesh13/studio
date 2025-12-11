@@ -55,6 +55,7 @@ export type CaseStudy = {
     caseNumber?: number;
     content?: CaseStudyContent;
     tags?: string[];
+    points?: number;
 };
 
 export type Task = {
