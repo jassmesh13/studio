@@ -36,12 +36,12 @@ export default function CourseDetailPage() {
 
         <div className="flex-1 overflow-y-auto pb-8">
             <div className="flex justify-center py-4">
-                <Tabs defaultValue="lessons" className="w-full max-w-md px-4">
+                <Tabs defaultValue="chapters" className="w-full max-w-md px-4">
                     <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full">
-                        <TabsTrigger value="lessons" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Lessons</TabsTrigger>
-                        <TabsTrigger value="materials" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Material</TabsTrigger>
+                        <TabsTrigger value="chapters" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Chapters</TabsTrigger>
+                        <TabsTrigger value="case-studies" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=active]:rounded-full data-[state=active]:shadow-none">Case Studies</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="lessons">
+                    <TabsContent value="chapters">
                         <div className="space-y-4 pt-4">
                             {course.chapters?.map((chapter, index) => {
                                 const image = PlaceHolderImages.find(p => p.id === chapter.imageUrl);
@@ -70,7 +70,7 @@ export default function CourseDetailPage() {
                             })}
                         </div>
                     </TabsContent>
-                    <TabsContent value="materials">
+                    <TabsContent value="case-studies">
                          <div className="space-y-4 pt-4">
                             {relatedCaseStudies.map((study) => {
                                 if (!study) return null;
