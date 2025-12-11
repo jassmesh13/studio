@@ -34,7 +34,7 @@ export default function CourseDetailPage() {
             <h1 className="text-xl font-bold">{course.title}</h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto pb-8">
+        <div className="flex-1 overflow-y-auto pb-24">
             <div className="flex justify-center py-4">
                 <Tabs defaultValue="chapters" className="w-full max-w-md px-4">
                     <TabsList className="grid w-full grid-cols-2 bg-primary/20 rounded-full p-1.5 h-auto">
