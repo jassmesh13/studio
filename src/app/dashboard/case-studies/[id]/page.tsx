@@ -3,7 +3,7 @@
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { caseStudies } from '@/lib/data';
-import { ArrowLeft, Mic } from 'lucide-react';
+import { ArrowLeft, Mic, Video } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -14,45 +14,55 @@ export default function CaseStudyDetailPage() {
   const id = params.id as string;
   const router = useRouter();
   const caseStudy = caseStudies.find((c) => c.id === id);
-  const [hasCameraPermission, setHasCameraPermission] = useState(false);
+
+  const [isRecordingReady, setIsRecordingReady] = useState(false);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    const getCameraPermission = async () => {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        console.error('Camera API not supported in this browser.');
-        toast({
-          variant: 'destructive',
-          title: 'Camera Not Supported',
-          description: 'Your browser does not support camera access.',
-        });
-        return;
-      }
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        setHasCameraPermission(true);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (error) {
-        console.error('Error accessing camera:', error);
-        setHasCameraPermission(false);
-        toast({
-          variant: 'destructive',
-          title: 'Camera Access Denied',
-          description: 'Please enable camera permissions in your browser settings to use this app.',
-        });
+    // Stop camera stream when component unmounts
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
       }
     };
-
-    getCameraPermission();
-  }, [toast]);
+  }, []);
 
   if (!caseStudy) {
     notFound();
   }
+
+  const handleStartRecordingClick = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      console.error('Camera API not supported in this browser.');
+      toast({
+        variant: 'destructive',
+        title: 'Camera Not Supported',
+        description: 'Your browser does not support camera access.',
+      });
+      setHasCameraPermission(false);
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setHasCameraPermission(true);
+      setIsRecordingReady(true);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      setHasCameraPermission(false);
+      toast({
+        variant: 'destructive',
+        title: 'Camera Access Denied',
+        description: 'Please enable camera permissions in your browser settings to use this app.',
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen max-w-2xl mx-auto">
@@ -86,24 +96,41 @@ export default function CaseStudyDetailPage() {
                 <p>{caseStudy.content?.explanation}</p>
             </div>
 
-            <div className="w-full aspect-video rounded-lg bg-muted mb-4">
-                <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
-            </div>
-
-            { !hasCameraPermission && (
-                <Alert variant="destructive" className="w-full mb-4">
-                    <AlertTitle>Camera Access Required</AlertTitle>
-                    <AlertDescription>
-                        Please allow camera access to record your answer.
-                    </AlertDescription>
-                </Alert>
+            {isRecordingReady ? (
+                <>
+                    <div className="w-full aspect-video rounded-lg bg-muted mb-4">
+                        <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
+                    </div>
+                    {hasCameraPermission === false && (
+                        <Alert variant="destructive" className="w-full mb-4">
+                            <AlertTitle>Camera Access Required</AlertTitle>
+                            <AlertDescription>
+                                Please allow camera access to record your answer.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    <p className="text-muted-foreground mb-4">Please record your answer in 2 min</p>
+                    <Button size="lg" className="rounded-full w-20 h-20 bg-red-500 hover:bg-red-600">
+                        <Mic className="w-8 h-8"/>
+                    </Button>
+                </>
+            ) : (
+                <>
+                     {hasCameraPermission === false && (
+                        <Alert variant="destructive" className="w-full mb-4">
+                            <AlertTitle>Camera Permission Denied</AlertTitle>
+                            <AlertDescription>
+                                Please enable camera permissions in your browser settings and try again.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    <Button size="lg" onClick={handleStartRecordingClick} className="w-full h-14 rounded-full text-lg">
+                        <Video className="w-6 h-6 mr-2" />
+                        Click to Record
+                    </Button>
+                    <p className="text-muted-foreground mt-4">You can record an audio or video answer.</p>
+                </>
             )}
-            
-            <p className="text-muted-foreground mb-4">Please record your answer in 2 min</p>
-
-            <Button size="lg" className="rounded-full w-20 h-20 bg-red-500 hover:bg-red-600">
-                <Mic className="w-8 h-8"/>
-            </Button>
         </main>
     </div>
   );
