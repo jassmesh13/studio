@@ -65,7 +65,7 @@ export default function CaseStudyDetailPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto bg-background">
+    <div className="flex flex-col min-h-screen max-w-2xl mx-auto bg-background">
         <header className="flex items-center w-full p-4 sticky top-0 bg-background z-10 border-b">
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
                 <ArrowLeft className="w-6 h-6"/>
@@ -78,7 +78,7 @@ export default function CaseStudyDetailPage() {
             </div>
         </header>
 
-        <main className="flex-grow flex flex-col items-center p-4 overflow-y-auto pb-24">
+        <main className="flex-grow flex flex-col items-center p-4 pb-24">
             <div className="bg-orange-100 p-6 rounded-2xl w-full relative mb-6">
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-purple-300 rounded-full flex items-center justify-center">
                     <span className="text-3xl">🙋‍♀️</span>
