@@ -65,8 +65,8 @@ export default function CaseStudyDetailPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto">
-        <header className="flex items-center w-full p-4 sticky top-0 bg-background z-10">
+    <div className="flex flex-col h-screen max-w-2xl mx-auto bg-background">
+        <header className="flex items-center w-full p-4 sticky top-0 bg-background z-10 border-b">
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
                 <ArrowLeft className="w-6 h-6"/>
             </Button>

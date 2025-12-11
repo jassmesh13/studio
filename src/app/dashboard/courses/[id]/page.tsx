@@ -8,7 +8,6 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { AppSidebar } from '@/components/app/app-sidebar';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -26,7 +25,7 @@ export default function CourseDetailPage() {
   const relatedCaseStudies = course.caseStudyIds?.map(id => caseStudies.find(cs => cs.id === id)).filter(Boolean) || [];
 
   return (
-    <div className="flex flex-col h-screen bg-accent/30">
+    <div className="flex flex-col h-screen bg-background">
         <header className="flex items-center gap-4 bg-primary text-primary-foreground p-4 sticky top-0 z-10">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
                 <ArrowLeft />
@@ -35,7 +34,7 @@ export default function CourseDetailPage() {
             <h1 className="text-xl font-bold">{course.title}</h1>
         </header>
 
-        <div className="flex-1 overflow-y-auto pb-24">
+        <div className="flex-1 overflow-y-auto pb-8">
             <div className="flex justify-center py-4">
                 <Tabs defaultValue="lessons" className="w-full max-w-md px-4">
                     <TabsList className="grid w-full grid-cols-2 bg-muted rounded-full">
@@ -115,9 +114,6 @@ export default function CourseDetailPage() {
                 </Tabs>
             </div>
         </div>
-      <div className="mt-auto">
-        <AppSidebar />
-      </div>
     </div>
   );
 }
