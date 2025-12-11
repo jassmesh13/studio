@@ -46,7 +46,7 @@ export default function CoursesPage() {
                 <div className="flex justify-around text-center mb-4">
                     <div className="flex flex-col items-center">
                         <Star className="w-6 h-6 text-primary mb-1" />
-                        <p className="text-xs text-muted-foreground">POINTS</p>
+                        <p className="text-xs text-muted-foreground">Casestudy Points</p>
                         <p className="font-bold text-lg">{course.points}</p>
                     </div>
                     <div className="flex flex-col items-center">
