@@ -1,10 +1,30 @@
+
+'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { gamificationData } from "@/lib/data";
+import { getGamificationData } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import type { Gamification } from "@/lib/types";
 
 export function LeaderboardWidget() {
+    const [gamificationData, setGamificationData] = useState<Gamification | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getGamificationData();
+            setGamificationData(data);
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+
+    if (loading || !gamificationData) {
+        return <div>Loading leaderboard...</div>;
+    }
+
     const topThree = gamificationData.leaderboard.slice(0, 3).sort((a,b) => {
         if (a.rank === 1) return -1;
         if (b.rank === 1) return 1;

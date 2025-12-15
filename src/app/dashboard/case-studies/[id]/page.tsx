@@ -1,8 +1,9 @@
 
+
 'use client';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { caseStudies } from '@/lib/data';
+import { getCaseStudyById } from '@/lib/data';
 import { ArrowLeft, Mic, Video, Volume2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -10,12 +11,15 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import type { CaseStudy } from '@/lib/types';
 
 export default function CaseStudyDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
-  const caseStudy = caseStudies.find((c) => c.id === id);
+  
+  const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [isRecordingReady, setIsRecordingReady] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
@@ -23,6 +27,18 @@ export default function CaseStudyDetailPage() {
   const { toast } = useToast();
 
   useEffect(() => {
+    const fetchCaseStudy = async () => {
+      const study = await getCaseStudyById(id);
+      if (!study) {
+        notFound();
+      } else {
+        setCaseStudy(study);
+      }
+      setLoading(false);
+    };
+
+    fetchCaseStudy();
+
     // Stop media stream when component unmounts
     return () => {
       if (videoRef.current && videoRef.current.srcObject) {
@@ -30,10 +46,14 @@ export default function CaseStudyDetailPage() {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, []);
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!caseStudy) {
-    notFound();
+    return notFound();
   }
 
   const handleStartRecordingClick = async () => {

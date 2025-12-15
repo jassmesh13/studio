@@ -3,16 +3,40 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { profileData } from '@/lib/data';
+import { getProfileData } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import type { Profile } from '@/lib/types';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+    const [profileData, setProfileData] = useState<Profile | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getProfileData();
+            setProfileData(data);
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+    
+    if (loading || !profileData) {
+        return <div>Loading...</div>;
+    }
+
     const userAvatar = PlaceHolderImages.find(p => p.id === profileData.avatarUrl);
 
   return (
     <div className="flex flex-col items-center max-w-sm mx-auto p-4 pb-24">
-        <div className='w-full flex justify-end'>
+        <div className='w-full flex justify-between items-center'>
+            <Button variant="ghost" size="icon" onClick={() => router.back()}>
+              <ArrowLeft className="w-6 h-6" />
+            </Button>
             <Button variant="outline" size="sm">Edit profile</Button>
         </div>
         
@@ -65,10 +89,6 @@ export default function ProfilePage() {
                 </div>
             </div>
         </div>
-
-        <Button asChild size="lg" className="w-full mt-8 rounded-full">
-            <Link href="/dashboard">Start Learning</Link>
-        </Button>
     </div>
   );
 }

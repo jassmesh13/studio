@@ -1,15 +1,36 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { courses } from '@/lib/data';
+import { getCourses } from '@/lib/data';
 import { Settings, Star, Globe, Shield, LogOut } from 'lucide-react';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useEffect, useState } from 'react';
+import type { Course } from '@/lib/types';
+
 
 export default function CoursesPage() {
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            const courseData = await getCourses();
+            setCourses(courseData);
+            setLoading(false);
+        };
+        fetchCourses();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
+
   return (
     <div className="flex flex-col gap-6 pb-24">
         <header className="flex items-center justify-between sticky top-0 bg-background z-10 pt-4 -mt-4 -mx-4 px-4 pb-2">

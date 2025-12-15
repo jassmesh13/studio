@@ -1,14 +1,40 @@
+
+'use client';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { gamificationData, mainUser } from '@/lib/data';
+import { getGamificationData, getMainUser } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Crown, Flame, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useEffect, useState } from 'react';
+import type { Gamification, User } from '@/lib/types';
 
 export default function GamificationPage() {
+    const [gamificationData, setGamificationData] = useState<Gamification | null>(null);
+    const [mainUser, setMainUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const [gameData, userData] = await Promise.all([
+                getGamificationData(),
+                getMainUser()
+            ]);
+            setGamificationData(gameData);
+            setMainUser(userData);
+            setLoading(false);
+        };
+        fetchData();
+    }, []);
+
+    if (loading || !gamificationData || !mainUser) {
+        return <div>Loading...</div>;
+    }
+
+
   return (
     <div>
       <h1 className="text-3xl font-bold font-headline mb-6">Gamification</h1>

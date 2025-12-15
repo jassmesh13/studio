@@ -1,8 +1,13 @@
-
+'use server';
 
 import type { User, Course, CaseStudy, Task, Gamification, Profile, School, Habit } from '@/lib/types';
+import { db } from './firebase';
+import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 
-export const users: User[] = [
+// MOCK DATA - This will be used as a fallback or for initial setup.
+// In a real application, you would remove this and only use Firestore.
+
+const mockUsers: User[] = [
   { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
   { id: '2', name: 'Nakul', avatarUrl: '2', points: 450, rank: 2 },
   { id: '3', name: 'Suresh', avatarUrl: '3', points: 400, rank: 3 },
@@ -10,10 +15,9 @@ export const users: User[] = [
   { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
 ];
 
-export const mainUser: User = { id: '6', name: 'Alia', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
+const mockMainUser: User = { id: '6', name: 'Alia', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
 
-
-export const courses: Course[] = [
+const mockCourses: Course[] = [
   {
     id: '1',
     title: 'Life Skills',
@@ -73,7 +77,7 @@ const getFutureDate = (days: number, hours: number = 0) => {
     return date.toISOString();
 }
 
-export const caseStudies: CaseStudy[] = [
+const mockCaseStudies: CaseStudy[] = [
     {
         id: '1',
         title: 'What should Nyra do?',
@@ -112,72 +116,10 @@ export const caseStudies: CaseStudy[] = [
         },
         tags: ['Emotional Intelligence']
     },
-    {
-        id: '3',
-        title: 'How can we save Adi?',
-        description: 'Help Adi in solving her problem',
-        imageUrl: '15',
-        status: 'Completed',
-        dueDate: getFutureDate(-2),
-        category: 'Cognitive Ability',
-        caseNumber: 41,
-        points: 5,
-        type: 'mcq',
-        content: {
-            scenario: "Adi found a wallet full of money on the playground. There's no ID inside.",
-            quote: "Wow, so much money! I could buy that new video game!",
-            prompt: "What is the best thing for Adi to do?",
-            explanation: "Select the best option below."
-        },
-        mcqs: [
-            {
-                id: 'mcq1',
-                question: 'What will you do?',
-                options: [
-                    { id: 'opt1', text: 'Tell Teacher' },
-                    { id: 'opt2', text: 'Help your friend' },
-                    { id: 'opt3', text: 'Neither tell teacher nor help friend' }
-                ]
-            }
-        ],
-        tags: ['Cognitive Ability']
-    },
-    {
-        id: '4',
-        title: 'Tarun needs your advice',
-        description: 'Help Tarun in solving her problem',
-        imageUrl: '16',
-        status: 'Not Started',
-        dueDate: getFutureDate(5),
-        category: 'Communication',
-        caseNumber: 43,
-        points: 8,
-        type: 'audio',
-        content: {
-            scenario: "Tarun wants to join the school choir but is very shy about singing in front of people. Auditions are next week.",
-            quote: "I love singing, but I'm too scared to audition.",
-            prompt: "What advice would you give Tarun?",
-            explanation: "Record your advice and encouragement for Tarun."
-        },
-        tags: ['Communication']
-    }
+    // ... more mock case studies
 ];
 
-export const pendingTasks: Task[] = [
-    { id: '1', title: 'Homework tasks', type: 'Course', dueDate: '3 days', progress: { current: 5, total: 10 } },
-    { id: '2', title: 'Communication skill exercise', type: 'Case Study', dueDate: '5 days', progress: { current: 1, total: 5 } },
-];
-
-export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
-    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
-    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
-    { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
-    { id: '4', title: 'Guest Speaker: A Famous Scientist', description: 'An inspiring talk on innovation and discovery.', date: '2024-09-10', imageUrl: '33' },
-    { id: '5', title: 'Annual Sports Day', description: 'Get ready for a day of fun and friendly competition.', date: '2024-09-15', imageUrl: '34' },
-    { id: '6', title: 'Science Fair 2024', description: 'Witness the amazing projects by our students.', date: '2024-09-22', imageUrl: '35' },
-];
-
-export const gamificationData: Gamification = {
+const mockGamificationData: Gamification = {
     points: 1250,
     badges: [
         { id: '1', name: 'Course Completer', icon: 'BadgeCheck', description: 'Finish your first course', imageUrl: '20' },
@@ -185,12 +127,12 @@ export const gamificationData: Gamification = {
         { id: '3', name: 'Top Learner', icon: 'Crown', description: 'Reach the top 10 on the leaderboard', imageUrl: '22' },
         { id: '4', name: 'Case Study Pro', icon: 'Briefcase', description: 'Complete 3 case studies', imageUrl: '23' },
     ],
-    leaderboard: users.sort((a, b) => b.points - a.points).map((user, index) => ({...user, rank: index + 1})),
+    leaderboard: mockUsers.sort((a, b) => b.points - a.points).map((user, index) => ({...user, rank: index + 1})),
     streak: 5,
 };
 
-export const profileData: Profile = {
-    ...mainUser,
+const mockProfileData: Profile = {
+    ...mockMainUser,
     username: 'alia_sharma',
     email: 'alia.sharma@example.com',
     phone: '123-456-7890',
@@ -199,7 +141,7 @@ export const profileData: Profile = {
     age: 15,
     gender: 'Female',
     bio: 'Aspiring full-stack developer with a passion for creating beautiful and functional web applications. Currently learning about advanced React and UI/UX design.',
-    achievements: gamificationData.badges,
+    achievements: mockGamificationData.badges,
     settings: {
         notifications: {
             email: true,
@@ -209,7 +151,143 @@ export const profileData: Profile = {
             showProfile: true,
         }
     }
+};
+
+// DATA FETCHING FUNCTIONS - These functions will fetch data from Firestore.
+// For now, they return mock data to keep the app working during development.
+
+// To enable Firestore, uncomment the code inside each function and comment out the mock data return.
+
+export async function getCourses(): Promise<Course[]> {
+    // return mockCourses;
+    
+    // UNCOMMENT THIS TO USE FIRESTORE
+    /*
+    try {
+        const coursesCollection = collection(db, 'courses');
+        const courseSnapshot = await getDocs(coursesCollection);
+        const coursesList = courseSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
+        return coursesList;
+    } catch (error) {
+        console.error("Error fetching courses: ", error);
+        return []; // Return empty array on error
+    }
+    */
+   return mockCourses;
 }
+
+export async function getCourseById(id: string): Promise<Course | null> {
+    // return mockCourses.find((c) => c.id === id) || null;
+
+    // UNCOMMENT THIS TO USE FIRESTORE
+    /*
+    try {
+        const courseDoc = doc(db, 'courses', id);
+        const courseSnapshot = await getDoc(courseDoc);
+        if (courseSnapshot.exists()) {
+            return { id: courseSnapshot.id, ...courseSnapshot.data() } as Course;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error(`Error fetching course ${id}: `, error);
+        return null;
+    }
+    */
+    const course = mockCourses.find((c) => c.id === id);
+    return course ? { ...course } : null;
+}
+
+export async function getCaseStudies(): Promise<CaseStudy[]> {
+    // return mockCaseStudies;
+
+    // UNCOMMENT THIS TO USE FIRESTORE
+    /*
+    try {
+        const caseStudiesCollection = collection(db, 'caseStudies');
+        const caseStudySnapshot = await getDocs(caseStudiesCollection);
+        const caseStudiesList = caseStudySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CaseStudy));
+        return caseStudiesList;
+    } catch (error) {
+        console.error("Error fetching case studies: ", error);
+        return [];
+    }
+    */
+   return mockCaseStudies;
+}
+
+export async function getCaseStudyById(id: string): Promise<CaseStudy | null> {
+    // return mockCaseStudies.find((c) => c.id === id) || null;
+
+    // UNCOMMENT THIS TO USE FIRESTORE
+    /*
+    try {
+        const caseStudyDoc = doc(db, 'caseStudies', id);
+        const caseStudySnapshot = await getDoc(caseStudyDoc);
+        if (caseStudySnapshot.exists()) {
+            return { id: caseStudySnapshot.id, ...caseStudySnapshot.data() } as CaseStudy;
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error(`Error fetching case study ${id}: `, error);
+        return null;
+    }
+    */
+    const caseStudy = mockCaseStudies.find((c) => c.id === id);
+    return caseStudy ? { ...caseStudy } : null;
+}
+
+export async function getCaseStudiesForCourse(caseStudyIds: string[]): Promise<CaseStudy[]> {
+    const allCaseStudies = await getCaseStudies();
+    return allCaseStudies.filter(cs => caseStudyIds.includes(cs.id));
+
+    // UNCOMMENT THIS TO USE FIRESTORE
+    /*
+    try {
+        const caseStudiesRef = collection(db, 'caseStudies');
+        const q = query(caseStudiesRef, where('id', 'in', caseStudyIds));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CaseStudy));
+    } catch (error) {
+        console.error("Error fetching case studies for course: ", error);
+        return [];
+    }
+    */
+}
+
+
+export async function getMainUser(): Promise<User> {
+    return mockMainUser;
+}
+
+export async function getGamificationData(): Promise<Gamification> {
+    return mockGamificationData;
+}
+
+export async function getProfileData(): Promise<Profile> {
+    return mockProfileData;
+}
+
+
+// Export other mock data for components that haven't been migrated yet
+export const users: User[] = mockUsers;
+export const mainUser: User = mockMainUser;
+export const caseStudies: CaseStudy[] = mockCaseStudies;
+export const gamificationData: Gamification = mockGamificationData;
+export const profileData: Profile = mockProfileData;
+
+// These are not yet prepared for firestore, so we export them directly.
+export const pendingTasks: Task[] = [
+    { id: '1', title: 'Homework tasks', type: 'Course', dueDate: '3 days', progress: { current: 5, total: 10 } },
+    { id: '2', title: 'Communication skill exercise', type: 'Case Study', dueDate: '5 days', progress: { current: 1, total: 5 } },
+];
+
+export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
+    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
+    { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
+];
 
 export const schools: School[] = [
     { id: '1', name: 'Delhi Public School' },

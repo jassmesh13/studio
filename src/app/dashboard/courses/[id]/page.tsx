@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { notFound, useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, CheckCircle, ChevronRight } from 'lucide-react';
-import { courses, caseStudies } from '@/lib/data';
+import { getCourseById, getCaseStudiesForCourse } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,18 +11,43 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import type { Course, CaseStudy } from '@/lib/types';
 
 export default function CourseDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const course = courses.find((c) => c.id === id);
   const router = useRouter();
+
+  const [course, setCourse] = useState<Course | null>(null);
+  const [relatedCaseStudies, setRelatedCaseStudies] = useState<CaseStudy[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourseData = async () => {
+      const courseData = await getCourseById(id);
+      if (!courseData) {
+        notFound();
+      } else {
+        setCourse(courseData);
+        if (courseData.caseStudyIds) {
+          const studies = await getCaseStudiesForCourse(courseData.caseStudyIds);
+          setRelatedCaseStudies(studies);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchCourseData();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!course) {
     notFound();
   }
-
-  const relatedCaseStudies = course.caseStudyIds?.map(id => caseStudies.find(cs => cs.id === id)).filter(Boolean) || [];
 
   return (
     <div className="flex flex-col h-screen bg-background">

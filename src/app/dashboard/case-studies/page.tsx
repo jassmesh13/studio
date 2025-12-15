@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { caseStudies } from '@/lib/data';
+import { getCaseStudies } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Settings, BookOpen, LogOut, Clock } from 'lucide-react';
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useEffect, useState } from 'react';
+import type { CaseStudy } from '@/lib/types';
 
 const getTimeLeft = (dueDate: string) => {
     const now = new Date();
@@ -37,9 +38,27 @@ const getTimeLeft = (dueDate: string) => {
 
 
 export default function CaseStudiesPage() {
+    const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
     const [timeLeft, setTimeLeft] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchCaseStudies = async () => {
+            const studies = await getCaseStudies();
+            setCaseStudies(studies);
+
+            const initialTimeLeft: Record<string, string> = {};
+            studies.forEach(study => {
+                initialTimeLeft[study.id] = getTimeLeft(study.dueDate);
+            });
+            setTimeLeft(initialTimeLeft);
+            setLoading(false);
+        };
+        fetchCaseStudies();
+    }, []);
+
+    useEffect(() => {
+        if (caseStudies.length === 0) return;
         const interval = setInterval(() => {
             const newTimeLeft: Record<string, string> = {};
             caseStudies.forEach(study => {
@@ -48,15 +67,8 @@ export default function CaseStudiesPage() {
             setTimeLeft(newTimeLeft);
         }, 60000); // Update every minute
 
-        // Initial calculation
-        const initialTimeLeft: Record<string, string> = {};
-        caseStudies.forEach(study => {
-            initialTimeLeft[study.id] = getTimeLeft(study.dueDate);
-        });
-        setTimeLeft(initialTimeLeft);
-
         return () => clearInterval(interval);
-    }, []);
+    }, [caseStudies]);
 
 
     const stats = [
@@ -64,6 +76,10 @@ export default function CaseStudiesPage() {
         { label: 'Solved', value: 10 },
         { label: 'On-time', value: 5 },
     ];
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
 
   return (
     <div className="flex flex-col gap-6 pb-24">
