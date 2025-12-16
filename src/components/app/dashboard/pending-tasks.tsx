@@ -1,9 +1,23 @@
+
+'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { pendingTasks } from "@/lib/data";
+import { getPendingTasks } from "@/lib/data";
 import { AlarmClock, Target, Clock } from "lucide-react";
+import type { Task } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 export function PendingTasks() {
+    const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
+    
+    useEffect(() => {
+        const fetchTasks = async () => {
+            const tasks = await getPendingTasks();
+            setPendingTasks(tasks);
+        };
+        fetchTasks();
+    }, []);
+
     const iconMap = {
         'Homework tasks': <AlarmClock className="w-8 h-8 text-blue-500" />,
         'Communication skill exercise': <Target className="w-8 h-8 text-green-500" />

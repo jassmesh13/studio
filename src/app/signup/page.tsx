@@ -1,4 +1,6 @@
 
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -6,11 +8,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { schools } from '@/lib/data';
+import { getSchools } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import type { School } from '@/lib/types';
+import { useEffect, useState } from 'react';
 
 export default function SignupPage() {
   const loginBg = PlaceHolderImages.find(p => p.id === 'login-background');
+  const [schools, setSchools] = useState<School[]>([]);
+
+  useEffect(() => {
+      const fetchSchools = async () => {
+          const schoolData = await getSchools();
+          setSchools(schoolData);
+      };
+      fetchSchools();
+  }, []);
 
   return (
     <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">

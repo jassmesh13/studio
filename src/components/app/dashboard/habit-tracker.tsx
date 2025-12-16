@@ -1,10 +1,23 @@
 
+'use client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { habits } from "@/lib/data";
+import { getHabits } from "@/lib/data";
+import type { Habit } from "@/lib/types";
+import { useEffect, useState } from "react";
 
 export function HabitTracker() {
+    const [habits, setHabits] = useState<Habit[]>([]);
+    
+    useEffect(() => {
+        const fetchHabits = async () => {
+            const habitsData = await getHabits();
+            setHabits(habitsData);
+        };
+        fetchHabits();
+    }, []);
+
     return (
         <Card className="bg-accent">
             <CardHeader>

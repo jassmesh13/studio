@@ -153,6 +153,61 @@ const mockProfileData: Profile = {
     }
 };
 
+const mockPendingTasks: Task[] = [
+    { id: '1', title: 'Homework tasks', type: 'Course', dueDate: '3 days', progress: { current: 5, total: 10 } },
+    { id: '2', title: 'Communication skill exercise', type: 'Case Study', dueDate: '5 days', progress: { current: 1, total: 5 } },
+];
+
+const mockWhatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
+    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
+    { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
+];
+
+const mockSchools: School[] = [
+    { id: '1', name: 'Delhi Public School' },
+    { id: '2', name: 'Kendriya Vidyalaya' },
+    { id: '3', name: 'The Doon School' },
+    { id: '4', name: 'St. Xavier\'s Collegiate School' },
+    { id: '5', name: 'La Martiniere for Boys' }
+];
+
+const mockHabits: Habit[] = [
+    {
+        id: 'habit-1',
+        question: "Hey, Did you wake up early today ?",
+        emoji: "🌅",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    },
+    {
+        id: 'habit-2',
+        question: "Did you also meditate today ?",
+        emoji: "🧘",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    },
+    {
+        id: 'habit-3',
+        question: "Did you completed your homework ?",
+        emoji: "📚",
+        points: 5,
+        options: [
+            { label: "Absoulety Yes !", value: "yes" },
+            { label: "Not yet", value: "not-yet" },
+            { label: "No i missed.", value: "no" }
+        ]
+    }
+];
+
 // DATA FETCHING FUNCTIONS - These functions will fetch data from Firestore.
 // For now, they return mock data to keep the app working during development.
 
@@ -270,65 +325,23 @@ export async function getProfileData(): Promise<Profile> {
 }
 
 
-// Export other mock data for components that haven't been migrated yet
-export const users: User[] = mockUsers;
-export const mainUser: User = mockMainUser;
-export const caseStudies: CaseStudy[] = mockCaseStudies;
-export const gamificationData: Gamification = mockGamificationData;
-export const profileData: Profile = mockProfileData;
+// Functions to get mock data that was previously exported directly
+export async function getPendingTasks(): Promise<Task[]> {
+    return mockPendingTasks;
+}
 
-// These are not yet prepared for firestore, so we export them directly.
-export const pendingTasks: Task[] = [
-    { id: '1', title: 'Homework tasks', type: 'Course', dueDate: '3 days', progress: { current: 5, total: 10 } },
-    { id: '2', title: 'Communication skill exercise', type: 'Case Study', dueDate: '5 days', progress: { current: 1, total: 5 } },
-];
+export async function getWhatsNew(): Promise<{ id: string; title: string; description: string; date: string; imageUrl: string; }[]> {
+    return mockWhatsNew;
+}
 
-export const whatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
-    { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
-    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
-    { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
-];
+export async function getSchools(): Promise<School[]> {
+    return mockSchools;
+}
 
-export const schools: School[] = [
-    { id: '1', name: 'Delhi Public School' },
-    { id: '2', name: 'Kendriya Vidyalaya' },
-    { id: '3', name: 'The Doon School' },
-    { id: '4', name: 'St. Xavier\'s Collegiate School' },
-    { id: '5', name: 'La Martiniere for Boys' }
-];
+export async function getHabits(): Promise<Habit[]> {
+    return mockHabits;
+}
 
-export const habits: Habit[] = [
-    {
-        id: 'habit-1',
-        question: "Hey, Did you wake up early today ?",
-        emoji: "🌅",
-        points: 5,
-        options: [
-            { label: "Absoulety Yes !", value: "yes" },
-            { label: "Not yet", value: "not-yet" },
-            { label: "No i missed.", value: "no" }
-        ]
-    },
-    {
-        id: 'habit-2',
-        question: "Did you also meditate today ?",
-        emoji: "🧘",
-        points: 5,
-        options: [
-            { label: "Absoulety Yes !", value: "yes" },
-            { label: "Not yet", value: "not-yet" },
-            { label: "No i missed.", value: "no" }
-        ]
-    },
-    {
-        id: 'habit-3',
-        question: "Did you completed your homework ?",
-        emoji: "📚",
-        points: 5,
-        options: [
-            { label: "Absoulety Yes !", value: "yes" },
-            { label: "Not yet", value: "not-yet" },
-            { label: "No i missed.", value: "no" }
-        ]
-    }
-];
+export async function getUsers(): Promise<User[]> {
+    return mockUsers;
+}

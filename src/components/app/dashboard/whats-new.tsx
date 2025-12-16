@@ -1,20 +1,33 @@
+
+'use client';
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { whatsNew } from "@/lib/data";
+import { getWhatsNew } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
 
 export function WhatsNew() {
-    // Sort events by date, earliest first
-    const sortedWhatsNew = [...whatsNew].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const [whatsNew, setWhatsNew] = useState<{ id: string; title: string; description: string; date: string; imageUrl: string; }[]>([]);
+    
+    useEffect(() => {
+        const fetchWhatsNew = async () => {
+            const data = await getWhatsNew();
+            // Sort events by date, earliest first
+            const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            setWhatsNew(sortedData);
+        };
+        fetchWhatsNew();
+    }, []);
+
 
     return (
         <div>
             <h2 className="text-xl font-bold text-primary mb-2">What's New</h2>
             <Carousel opts={{ align: "start", loop: false }} className="w-full">
                 <CarouselContent className="-ml-2">
-                    {sortedWhatsNew.map(item => {
+                    {whatsNew.map(item => {
                         const image = PlaceHolderImages.find(p => p.id === item.imageUrl);
                         return (
                         <CarouselItem key={item.id} className="pl-4 basis-3/4 sm:basis-1/2 md:basis-1/3">
