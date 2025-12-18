@@ -1,3 +1,4 @@
+
 'use server';
 
 import type { User, Course, CaseStudy, Task, Gamification, Profile, School, Habit } from '@/lib/types';
@@ -116,7 +117,56 @@ const mockCaseStudies: CaseStudy[] = [
         },
         tags: ['Emotional Intelligence']
     },
-    // ... more mock case studies
+    {
+        id: '3',
+        title: 'The Found Wallet',
+        description: 'A multiple choice quiz about honesty.',
+        imageUrl: '15',
+        status: 'Not Started',
+        dueDate: getFutureDate(5),
+        category: 'Cognitive Ability',
+        caseNumber: 41,
+        points: 15,
+        type: 'mcq',
+        mcqs: [
+            {
+                id: 'mcq-1',
+                question: 'You find a wallet on the playground with 500 rupees in it. What do you do?',
+                options: [
+                    { id: 'q1-opt1', text: 'Keep the money. Finders keepers!' },
+                    { id: 'q1-opt2', text: 'Look for an ID and return it to the owner.' },
+                    { id: 'q1-opt3', text: 'Give it to a teacher or the principal.' },
+                    { id: 'q1-opt4', text: 'Ask your friends what you should do.' }
+                ]
+            }
+        ],
+        content: {
+            scenario: "You are playing during recess and see a wallet lying on the ground.",
+            quote: "",
+            prompt: "Choose the best course of action.",
+            explanation: "Think about what is the most responsible and honest thing to do."
+        },
+        tags: ['Honesty', 'Responsibility']
+    },
+    {
+        id: '4',
+        title: 'Team Project Troubles',
+        description: 'A scenario about collaboration and fairness.',
+        imageUrl: '13',
+        status: 'In Progress',
+        dueDate: getFutureDate(3),
+        category: 'Emotional Intelligence',
+        caseNumber: 42,
+        points: 10,
+        type: 'video',
+        content: {
+            scenario: "You are in a group project and one member is not doing any work. The deadline is tomorrow.",
+            quote: "I've been too busy, can you just do my part? I'll cover for you next time.",
+            prompt: "How do you respond to your teammate?",
+            explanation: "Explain how you would ensure the work gets done fairly."
+        },
+        tags: ['Teamwork', 'Fairness']
+    }
 ];
 
 const mockGamificationData: Gamification = {
@@ -125,7 +175,7 @@ const mockGamificationData: Gamification = {
         { id: '1', name: 'Course Completer', icon: 'BadgeCheck', description: 'Finish your first course', imageUrl: '20' },
         { id: '2', name: 'Streak Starter', icon: 'Flame', description: 'Maintain a 3-day streak', imageUrl: '21' },
         { id: '3', name: 'Top Learner', icon: 'Crown', description: 'Reach the top 10 on the leaderboard', imageUrl: '22' },
-        { id: '4', name: 'Case Study Pro', icon: 'Briefcase', description: 'Complete 3 case studies', imageUrl: '23' },
+        { id: '4-pro', name: 'Case Study Pro', icon: 'Briefcase', description: 'Complete 3 case studies', imageUrl: '23' },
     ],
     leaderboard: mockUsers.sort((a, b) => b.points - a.points).map((user, index) => ({...user, rank: index + 1})),
     streak: 5,
