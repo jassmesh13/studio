@@ -88,6 +88,27 @@ body {
   }
 }
 
+@layer utilities {
+  .animate-woosh-out {
+    animation: woosh-out 0.5s ease-in-out forwards;
+  }
+
+  @keyframes woosh-out {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.5) translateY(-100%);
+      height: 0;
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+  }
+}
+
 @layer components {
   .flex-1-0-auto {
     flex: 1 0 auto;
