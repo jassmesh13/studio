@@ -1,21 +1,21 @@
 {
-    "name": "Nirmaan Edu PWA",
-    "short_name": "NirmaanEdu",
-    "description": "A modern, engaging learning platform.",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#FFFDFC",
-    "theme_color": "#F97316",
-    "icons": [
-        {
-            "src": "/icon.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/icon.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "Nirmaan Edu PWA",
+  "short_name": "NirmaanEdu",
+  "description": "A modern, engaging learning platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#F97316",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
