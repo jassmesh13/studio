@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 export const metadata: Metadata = {
   title: 'Nirmaan Edu PWA',
   description: 'A modern, engaging learning platform.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
