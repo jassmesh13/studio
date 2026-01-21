@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Heart, Sparkles } from "lucide-react";
+import { Brain, Heart, Star } from "lucide-react";
 
 interface PostSubmissionScreenProps {
     userName: string;
@@ -14,8 +15,8 @@ export function PostSubmissionScreen({ userName, onDone }: PostSubmissionScreenP
         <div className="w-full max-w-md mx-auto text-center animate-in fade-in-50 duration-500">
             <div className="mb-6">
                 <div className="relative inline-block">
-                    <Sparkles className="absolute -top-4 -left-4 w-8 h-8 text-yellow-400 animate-pulse" />
-                    <Sparkles className="absolute -bottom-4 -right-4 w-8 h-8 text-yellow-400 animate-pulse delay-200" />
+                    <Star className="absolute -top-4 -left-4 w-8 h-8 text-yellow-400 animate-pulse fill-yellow-400" />
+                    <Star className="absolute -bottom-4 -right-4 w-8 h-8 text-yellow-400 animate-pulse delay-200 fill-yellow-400" />
                     <h2 className="text-3xl font-bold text-primary">Well done, {userName}!</h2>
                 </div>
                 <p className="text-muted-foreground mt-2">
@@ -43,7 +44,7 @@ export function PostSubmissionScreen({ userName, onDone }: PostSubmissionScreenP
                         <Heart className="w-6 h-6 text-red-500" />
                         Growth Insight
                     </CardTitle>
-                </Header>
+                </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                     <p>Real life is full of moments like this. Each one helps you become more thoughtful, more kind, and more wise.</p>
                     <div className="bg-accent p-3 rounded-lg">
