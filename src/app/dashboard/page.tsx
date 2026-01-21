@@ -15,6 +15,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import Link from "next/link";
 import { HabitTracker } from "@/components/app/dashboard/habit-tracker";
 import { Suspense } from "react";
+import { ChatAICard } from "@/components/app/dashboard/chat-ai-card";
 
 async function MainUserSection() {
     const mainUser = await getMainUser();
@@ -88,6 +89,8 @@ export default function DashboardPage() {
             <PendingTasks />
             <HabitTracker />
             
+            <ChatAICard />
+
             <Suspense fallback={<div>Loading user data...</div>}>
                 <MainUserSection />
             </Suspense>
