@@ -162,7 +162,7 @@ export default function CaseStudyDetailPage() {
 
     // This handles video and audio types
     if (recordingStatus === 'submitted') {
-        return <PostSubmissionScreen userName="Nyra" onDone={() => router.push('/dashboard/case-studies')} />;
+        return <PostSubmissionScreen userName="Nyra" onDone={() => router.push('/dashboard/case-studies')} caseStudyId={caseStudy.id} />;
     }
     
     // Other recording states
