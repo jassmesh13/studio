@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -194,6 +193,18 @@ export function PostSubmissionScreen({ userName, onDone, caseStudyId }: PostSubm
         }
     };
 
+    const getSkillBoost = () => {
+        switch (caseStudyId) {
+            case '1': return 'Honesty';
+            case '2': return 'Empathy';
+            case '3': return 'Decision-Making';
+            case '4': return 'Teamwork';
+            default: return null;
+        }
+    };
+
+    const skillBoost = getSkillBoost();
+
     return (
         <div className="w-full max-w-md mx-auto text-center animate-pop-in">
             <div className="mb-6">
@@ -209,23 +220,17 @@ export function PostSubmissionScreen({ userName, onDone, caseStudyId }: PostSubm
 
             {renderFeedback()}
             
-            <div className="bg-primary/10 border-2 border-dashed border-primary/20 p-4 rounded-xl mb-8">
-                <h3 className="font-bold text-primary mb-2">Skill Boost!</h3>
-                <div className="flex justify-around text-center">
-                    <div className="font-semibold">
-                        <p>Emotional Intelligence</p>
-                        <p className="text-green-500">+1</p>
-                    </div>
-                    <div className="font-semibold">
-                        <p>Decision-Making</p>
-                        <p className="text-green-500">+1</p>
-                    </div>
-                    <div className="font-semibold">
-                        <p>Confidence</p>
-                        <p className="text-green-500">+1</p>
+            {skillBoost && (
+                <div className="bg-primary/10 border-2 border-dashed border-primary/20 p-4 rounded-xl mb-8">
+                    <h3 className="font-bold text-primary mb-2">Skill Boost!</h3>
+                    <div className="flex justify-around text-center">
+                        <div className="font-semibold">
+                            <p>{skillBoost}</p>
+                            <p className="text-green-500">+1</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             <Button size="lg" onClick={onDone} className="w-full h-14 rounded-full text-lg">
                 Done
