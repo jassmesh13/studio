@@ -137,6 +137,10 @@ export default function CaseStudyDetailPage() {
   const renderResponseUI = () => {
     if (!caseStudy) return null;
 
+    if (recordingStatus === 'submitted') {
+        return <PostSubmissionScreen userName="Nyra" onDone={() => router.push('/dashboard/case-studies')} caseStudyId={caseStudy.id} />;
+    }
+
     if (caseStudy.type === 'mcq') {
       return (
         <div className="w-full space-y-6">
@@ -161,11 +165,6 @@ export default function CaseStudyDetailPage() {
     }
 
     // This handles video and audio types
-    if (recordingStatus === 'submitted') {
-        return <PostSubmissionScreen userName="Nyra" onDone={() => router.push('/dashboard/case-studies')} caseStudyId={caseStudy.id} />;
-    }
-    
-    // Other recording states
     switch (recordingStatus) {
       case 'idle':
         return (
