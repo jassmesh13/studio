@@ -12,7 +12,7 @@ interface PostSubmissionScreenProps {
 
 export function PostSubmissionScreen({ userName, onDone }: PostSubmissionScreenProps) {
     return (
-        <div className="w-full max-w-md mx-auto text-center animate-in fade-in-50 duration-500">
+        <div className="w-full max-w-md mx-auto text-center animate-pop-in">
             <div className="mb-6">
                 <div className="relative inline-block">
                     <Star className="absolute -top-4 -left-4 w-8 h-8 text-yellow-400 animate-pulse fill-yellow-400" />
