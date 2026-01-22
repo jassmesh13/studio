@@ -41,6 +41,7 @@ export type CaseStudyContent = {
     scenario: string;
     quote: string;
     prompt: string;
+    dilemma?: string;
     explanation: string;
 }
 

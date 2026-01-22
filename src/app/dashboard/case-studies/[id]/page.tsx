@@ -2,7 +2,7 @@
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getCaseStudyById } from '@/lib/data';
-import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, SpeakerLoud } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import type { CaseStudy } from '@/lib/types';
 import { PostSubmissionScreen } from '@/components/app/case-studies/post-submission-screen';
+import { textToSpeech } from '@/ai/flows/tts-flow';
 
 type RecordingStatus = 'idle' | 'permission' | 'recording' | 'recorded' | 'submitted';
 
@@ -29,6 +30,10 @@ export default function CaseStudyDetailPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
+
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
 
   const fetchCaseStudy = useCallback(async () => {
       const study = await getCaseStudyById(id);
@@ -51,6 +56,7 @@ export default function CaseStudyDetailPage() {
       if (recordedMediaURL) {
         URL.revokeObjectURL(recordedMediaURL);
       }
+      audioRef.current?.pause();
     };
   }, [stream, recordedMediaURL]);
 
@@ -133,6 +139,35 @@ export default function CaseStudyDetailPage() {
     // In a real app, you would upload the blob here.
     setRecordingStatus('submitted');
   };
+
+  const handleSpeak = async () => {
+    if (!caseStudy?.content || isSpeaking) return;
+
+    setIsSpeaking(true);
+    toast({ title: 'Generating audio...', description: 'Please wait a moment.' });
+
+    try {
+        const textToRead = `${caseStudy.content.scenario}. ${caseStudy.content.prompt}`;
+        const audioDataUri = await textToSpeech(textToRead);
+        
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
+        const newAudio = new Audio(audioDataUri);
+        audioRef.current = newAudio;
+        newAudio.play();
+        
+        newAudio.onended = () => {
+            setIsSpeaking(false);
+        };
+
+    } catch (error) {
+        console.error("Error generating speech:", error);
+        toast({ variant: 'destructive', title: 'Audio Error', description: 'Could not generate audio for the case study.' });
+        setIsSpeaking(false);
+    }
+  };
+
 
   const renderResponseUI = () => {
     if (!caseStudy) return null;
@@ -262,14 +297,24 @@ export default function CaseStudyDetailPage() {
               </div>
               <h2 className="text-xl font-bold mb-4">Hi Nyra !</h2>
               <p className="font-semibold mb-4">Imagine this situation:</p>
-              <p className="mb-4">{caseStudy.content?.scenario}</p>
+              <div className="flex items-start gap-4">
+                <p className="mb-4 flex-1">{caseStudy.content?.scenario}</p>
+                {caseStudy.id === '5' && (
+                  <Button variant="ghost" size="icon" onClick={handleSpeak} disabled={isSpeaking}>
+                    <SpeakerLoud className={`w-6 h-6 ${isSpeaking ? 'text-primary animate-pulse' : 'text-muted-foreground'}`} />
+                     <span className="sr-only">Read aloud</span>
+                  </Button>
+                )}
+              </div>
               <p className="font-semibold">Now She comes to you and says:</p>
               <p className="italic">'{caseStudy.content?.quote}'</p>
             </div>
 
             <div className="text-left w-full space-y-4 mb-8">
               <p className="font-semibold">{caseStudy.content?.prompt}</p>
-              <p className="text-lg font-bold">Would you tell the teacher the truth, <br />OR <br />keep your friend's secret?</p>
+              {caseStudy.content?.dilemma && (
+                <p className="text-lg font-bold" dangerouslySetInnerHTML={{ __html: caseStudy.content.dilemma }} />
+              )}
               <p>{caseStudy.content?.explanation}</p>
             </div>
           </>
