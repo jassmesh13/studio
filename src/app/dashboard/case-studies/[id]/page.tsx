@@ -2,7 +2,7 @@
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getCaseStudyById } from '@/lib/data';
-import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, SpeakerLoud } from 'lucide-react';
+import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, Speaker } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -301,7 +301,7 @@ export default function CaseStudyDetailPage() {
                 <p className="mb-4 flex-1">{caseStudy.content?.scenario}</p>
                 {caseStudy.id === '5' && (
                   <Button variant="ghost" size="icon" onClick={handleSpeak} disabled={isSpeaking}>
-                    <SpeakerLoud className={`w-6 h-6 ${isSpeaking ? 'text-primary animate-pulse' : 'text-muted-foreground'}`} />
+                    <Speaker className={`w-6 h-6 ${isSpeaking ? 'text-primary animate-pulse' : 'text-muted-foreground'}`} />
                      <span className="sr-only">Read aloud</span>
                   </Button>
                 )}
