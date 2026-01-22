@@ -35,7 +35,7 @@ const mockCourses: Course[] = [
       { id: 'c1-4', title: 'Being a Good Friend', completed: true, imageUrl: 'l2', description: 'Find out what it means to be a supportive and kind friend.', content: { type: 'video', duration: '45 min' } },
       { id: 'c1-5', title: 'Solving Problems', completed: false, imageUrl: 'l1', description: 'Get tools to solve puzzles and challenges in your daily life.', content: { type: 'video', duration: '45 min' } },
     ],
-    caseStudyIds: ['1', '2', '3', '4']
+    caseStudyIds: ['1', '2', '3', '4', '5']
   },
   {
     id: '2',
@@ -90,6 +90,7 @@ const mockCaseStudies: CaseStudy[] = [
         caseNumber: 32,
         points: 5,
         type: 'video',
+        grade: 'Grade 4-6',
         content: {
             scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
             quote: "Please don't tell the teacher about my assignment, I was sick all night.",
@@ -109,6 +110,7 @@ const mockCaseStudies: CaseStudy[] = [
         caseNumber: 38,
         points: 10,
         type: 'audio',
+        grade: 'Grade 4-6',
         content: {
             scenario: "Ibrahim's friend is telling mean jokes about another student. Ibrahim feels uncomfortable but doesn't want to lose his friend.",
             quote: "Hey, that's not funny. You should stop.",
@@ -128,6 +130,7 @@ const mockCaseStudies: CaseStudy[] = [
         caseNumber: 41,
         points: 15,
         type: 'mcq',
+        grade: 'Grade 4-6',
         mcqs: [
             {
                 id: 'mcq-1',
@@ -159,6 +162,7 @@ const mockCaseStudies: CaseStudy[] = [
         caseNumber: 42,
         points: 10,
         type: 'video',
+        grade: 'Grade 7-9',
         content: {
             scenario: "You are in a group project and one member is not doing any work. The deadline is tomorrow.",
             quote: "I've been too busy, can you just do my part? I'll cover for you next time.",
@@ -166,6 +170,38 @@ const mockCaseStudies: CaseStudy[] = [
             explanation: "Explain how you would ensure the work gets done fairly."
         },
         tags: ['Teamwork', 'Fairness']
+    },
+    {
+        id: '5',
+        title: 'I Need Help',
+        description: 'A case study about asking for help in class.',
+        imageUrl: '31',
+        status: 'Not Started',
+        dueDate: getFutureDate(4),
+        category: 'Communication',
+        caseNumber: 43,
+        points: 5,
+        type: 'mcq',
+        grade: 'Grade 1-3',
+        mcqs: [
+            {
+                id: 'mcq-2',
+                question: 'What should Anaya say to her teacher?',
+                options: [
+                    { id: 'q2-opt1', text: "This is too hard." },
+                    { id: 'q2-opt2', text: "Ma’am, I don’t understand this question. Can you please help me?" },
+                    { id: 'q2-opt3', text: "I don't want to do this." },
+                    { id: 'q2-opt4', text: 'Stay quiet and say nothing.' }
+                ]
+            }
+        ],
+        content: {
+            scenario: "Anaya is sitting in class. She does not understand the math question on the board. She feels confused but stays quiet.",
+            quote: "",
+            prompt: "What should Anaya say to her teacher?",
+            explanation: "Choose the best way for Anaya to ask for help."
+        },
+        tags: ['Communication', 'Classroom']
     }
 ];
 

@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Heart, Star } from "lucide-react";
+import { Brain, Heart, Star, MessageSquare } from "lucide-react";
 
 interface PostSubmissionScreenProps {
     userName: string;
@@ -175,6 +176,39 @@ const CaseStudy4Feedback = () => (
    </>
 );
 
+const CaseStudy5Feedback = () => (
+    <>
+       <Card className="mb-6 text-left bg-card shadow-lg">
+           <CardHeader>
+               <CardTitle className="flex items-center gap-2">
+                   <MessageSquare className="w-6 h-6 text-primary" />
+                   Speaking Up is Smart
+               </CardTitle>
+           </CardHeader>
+           <CardContent className="space-y-4 text-sm">
+               <p>That's a great choice, Nyra! It can feel scary to say you don't understand something in front of everyone.</p>
+               <p className="font-semibold">But staying quiet means you don't get the help you need to learn. Asking a question is one of the bravest and smartest things a student can do.</p>
+           </CardContent>
+       </Card>
+
+       <Card className="mb-6 text-left bg-card shadow-lg">
+           <CardHeader>
+               <CardTitle className="flex items-center gap-2">
+                   <Heart className="w-6 h-6 text-red-500" />
+                   A Path to Learning
+               </CardTitle>
+           </CardHeader>
+           <CardContent className="space-y-4 text-sm">
+                <p>By telling your teacher you need help, you are taking control of your own learning. It shows you want to understand, and teachers are always happy to help students who ask.</p>
+               <div className="bg-accent p-3 rounded-lg">
+                    <p className="font-semibold">Remember, your questions help other students who might be confused too!</p>
+               </div>
+                <p className="italic font-bold text-center mt-4">This is how you become a confident and successful learner.</p>
+           </CardContent>
+       </Card>
+   </>
+);
+
 
 export function PostSubmissionScreen({ userName, onDone, caseStudyId }: PostSubmissionScreenProps) {
     
@@ -188,6 +222,8 @@ export function PostSubmissionScreen({ userName, onDone, caseStudyId }: PostSubm
                 return <CaseStudy3Feedback />;
             case '4':
                 return <CaseStudy4Feedback />;
+            case '5':
+                return <CaseStudy5Feedback />;
             default:
                 return <DefaultFeedback />;
         }
@@ -199,6 +235,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudyId }: PostSubm
             case '2': return 'Empathy';
             case '3': return 'Decision-Making';
             case '4': return 'Teamwork';
+            case '5': return 'Communication';
             default: return null;
         }
     };

@@ -64,6 +64,7 @@ export type CaseStudy = {
     points?: number;
     type: 'video' | 'audio' | 'mcq';
     mcqs?: MCQ[];
+    grade?: string;
 };
 
 export type Task = {

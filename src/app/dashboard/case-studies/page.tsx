@@ -139,6 +139,7 @@ export default function CaseStudiesPage() {
                                 <p className="text-sm text-muted-foreground">{study.description}</p>
                                 <div className="flex items-center gap-2 mt-2">
                                     <Badge className={cn("border-none", badgeColor)}>{study.category}</Badge>
+                                    {study.grade && <Badge variant="outline">{study.grade}</Badge>}
                                 </div>
                             </div>
                             <div className="text-right self-end space-y-1">
