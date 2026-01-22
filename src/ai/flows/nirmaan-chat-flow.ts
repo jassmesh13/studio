@@ -1,4 +1,3 @@
-
 'use server';
 
 import { ai } from '@/ai/genkit';
@@ -56,7 +55,7 @@ const nirmaanChatFlow = ai.defineFlow(
   },
   async ({ history }) => {
     const response = await ai.generate({
-      model: 'gemini-pro',
+      model: 'models/gemini-2.5-flash',
       system: systemPrompt,
       history,
       prompt: '', // The last message in history acts as the prompt
