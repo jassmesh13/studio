@@ -55,7 +55,7 @@ const nirmaanChatFlow = ai.defineFlow(
   },
   async ({ history }) => {
     const response = await ai.generate({
-      model: 'models/gemini-2.5-flash',
+      model: 'gemini-2.5-flash',
       system: systemPrompt,
       history,
       prompt: '', // The last message in history acts as the prompt
