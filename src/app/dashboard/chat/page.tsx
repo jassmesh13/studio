@@ -44,17 +44,25 @@ export default function ChatPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [mainUser, setMainUser] = useState<User | null>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     
     useEffect(() => {
+        if (!isClient) return;
         const fetchUser = async () => {
             const user = await getMainUser();
             setMainUser(user);
         };
         fetchUser();
-    }, []);
+    }, [isClient]);
 
     // Fetch initial message
     useEffect(() => {
+        if (!isClient) return;
         async function getInitialMessage() {
             try {
                 const response = await chatWithNirmaan({ history: [] });
@@ -67,15 +75,16 @@ export default function ChatPage() {
             }
         }
         getInitialMessage();
-    }, []);
+    }, [isClient]);
 
     // Auto-scroll
     useEffect(() => {
+        if (!isClient) return;
         const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
         if (viewport) {
             viewport.scrollTop = viewport.scrollHeight;
         }
-    }, [messages, isLoading]);
+    }, [messages, isLoading, isClient]);
 
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
@@ -88,7 +97,7 @@ export default function ChatPage() {
         setInput('');
         setIsLoading(true);
 
-        // Build history WITHOUT the new user message (it goes in the 'message' field)
+        // Build history from the messages state *before* adding the new one.
         const chatHistory = messages.map(msg => ({
             role: msg.role,
             content: [{ text: msg.text }],
@@ -110,6 +119,10 @@ export default function ChatPage() {
     };
     
     const userAvatar = mainUser ? PlaceHolderImages.find(p => p.id === mainUser.avatarUrl) : null;
+
+    if (!isClient) {
+        return null;
+    }
 
     return (
         <div className="flex flex-col h-screen bg-background">
