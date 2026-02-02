@@ -58,13 +58,10 @@ const nirmaanChatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ history, message }) => {
-    // Clean up history
-    const safeHistory = (history ?? [])
-      .filter(Boolean)
-      .map((m) => ({
-        role: m.role,
-        content: m.content ?? [],
-      }));
+    // Clean up history to prevent errors with malformed message objects.
+    const safeHistory = (history || []).filter(
+      (m) => m && m.role && m.content
+    );
 
     // The system prompt will guide the model on how to start the conversation
     // if the history is empty.
