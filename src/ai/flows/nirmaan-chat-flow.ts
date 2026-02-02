@@ -60,15 +60,24 @@ const nirmaanChatFlow = ai.defineFlow(
   async ({ history, message }) => {
     // Defensively clean the history to ensure it's in the correct format.
     const safeHistory = (history || [])
-      .filter(m => {
-        // Ensure the message object and its core properties exist.
-        return m && m.role && Array.isArray(m.content);
-      })
       .map(m => {
-        // Ensure the content array only contains valid parts.
-        const validContent = m.content.filter(c => c && typeof c.text === 'string');
+        // Ensure we have a valid message object to start with.
+        if (!m || !m.role || !Array.isArray(m.content)) {
+          return null;
+        }
+        
+        // Ensure the content array only contains valid parts with text.
+        const validContent = m.content.filter(c => c && typeof c.text === 'string' && c.text.trim() !== '');
+
+        // If there's no valid content, the message is useless for the model.
+        if (validContent.length === 0) {
+            return null;
+        }
+
         return { role: m.role, content: validContent };
-      });
+      })
+      // Remove any nulls that resulted from the cleaning process.
+      .filter((m): m is { role: 'user' | 'model'; content: { text: string }[] } => m !== null);
 
     // The system prompt will guide the model on how to start the conversation
     // if the history is empty.
