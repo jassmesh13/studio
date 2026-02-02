@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -157,21 +158,23 @@ export default function ChatPage() {
             </ScrollArea>
             
             <footer className="p-4 border-t bg-background">
-                <div className="flex items-center gap-2">
-                    <Input 
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="Type your message..." 
-                        className="flex-1"
-                        disabled={isLoading}
-                    />
-                    <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
-                        <Send />
+                <div className="flex flex-col items-center gap-4">
+                     <Button variant="outline" size="icon" className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/30 text-primary hover:bg-primary/20" disabled={true}>
+                        <Mic className="w-10 h-10" />
                     </Button>
-                    <Button variant="outline" size="icon" disabled={true}>
-                        <Mic />
-                    </Button>
+                    <div className="flex items-center gap-2 w-full">
+                        <Input 
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                            placeholder="Type your message..." 
+                            className="flex-1"
+                            disabled={isLoading}
+                        />
+                        <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
+                            <Send />
+                        </Button>
+                    </div>
                 </div>
             </footer>
         </div>
