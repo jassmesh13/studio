@@ -69,7 +69,7 @@ const nirmaanChatFlow = ai.defineFlow(
     // The system prompt will guide the model on how to start the conversation
     // if the history is empty.
     const response = await ai.generate({
-      model: 'gemini-1.5-flash',
+      model: 'googleai/gemini-1.5-flash',
       system: systemPrompt,
       history: safeHistory,
       prompt: message || '', // Send the current user message or an empty string to start
