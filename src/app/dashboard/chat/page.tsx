@@ -80,22 +80,29 @@ export default function ChatPage() {
         if (!input.trim() || isLoading) return;
 
         const userMessage: Message = { role: 'user', text: input };
-        const newMessages = [...messages, userMessage];
-        setMessages(newMessages);
+        const userMessageText = input; // Save the message before clearing
+        
+        // Add user message to UI immediately
+        setMessages(prev => [...prev, userMessage]);
         setInput('');
         setIsLoading(true);
 
-        const chatHistory = newMessages.map(msg => ({
+        // Build history WITHOUT the new user message (it goes in the 'message' field)
+        const chatHistory = messages.map(msg => ({
             role: msg.role,
             content: [{ text: msg.text }],
         }));
 
         try {
-            const response = await chatWithNirmaan({ history: chatHistory });
+            // Pass history + new message separately
+            const response = await chatWithNirmaan({ 
+                history: chatHistory,
+                message: userMessageText 
+            });
             setMessages(prev => [...prev, { role: 'model', text: response }]);
         } catch (error) {
             console.error("Error sending message:", error);
-             setMessages(prev => [...prev, { role: 'model', text: "Oops! Something went wrong. Let's try that again." }]);
+            setMessages(prev => [...prev, { role: 'model', text: "Oops! Something went wrong. Let's try that again." }]);
         } finally {
             setIsLoading(false);
         }

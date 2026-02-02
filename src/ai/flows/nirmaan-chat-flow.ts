@@ -3,14 +3,22 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const NirmaanChatInputSchema = z.object({
-  history: z.array(
-    z.object({
-      role: z.enum(['user', 'model']),
-      content: z.array(z.object({ text: z.string() })),
-    })
-  ),
+const MessageSchema = z.object({
+  role: z.enum(['user', 'model']),
+  content: z
+    .array(
+      z.object({
+        text: z.string().default(''),
+      })
+    )
+    .default([]),
 });
+
+const NirmaanChatInputSchema = z.object({
+  history: z.array(MessageSchema).default([]),
+  message: z.string().optional(), // Add the current message
+});
+
 export type NirmaanChatInput = z.infer<typeof NirmaanChatInputSchema>;
 export type NirmaanChatOutput = string;
 
@@ -26,7 +34,7 @@ Your behavior rules:
    - Start with a short, enthusiastic appreciation.
    - Add a one-line reflection that validates their thought.
    - End with a short, powerful motivation.
-   - FINALLY, ask the next random, open-ended question.
+   - FINALLY, ask the next folowing question, open-ended question.
 
 Here is a list of questions you can ask. Choose one randomly when it is your turn to ask a question.
 - Tell me about a time you were very kind to someone.
@@ -48,12 +56,31 @@ const nirmaanChatFlow = ai.defineFlow(
     inputSchema: NirmaanChatInputSchema,
     outputSchema: z.string(),
   },
-  async ({ history }) => {
+  async ({ history, message }) => {
+    // Clean up history
+    const safeHistory = (history ?? [])
+      .filter(Boolean)
+      .map((m) => ({
+        role: m.role,
+        content: m.content ?? [],
+      }));
+
+    // If this is the first message (empty history), start the conversation
+    if (safeHistory.length === 0) {
+      const response = await ai.generate({
+        model: 'googleai/gemini-2.5-flash',
+        system: systemPrompt,
+        prompt: 'Start the conversation by asking your first question.',
+      });
+      return response.text;
+    }
+
+    // Otherwise, add the user's message and get a response
     const response = await ai.generate({
-      model: 'googleai/gemini-1.5-flash',
+      model: 'googleai/gemini-2.5-flash',
       system: systemPrompt,
-      history,
-      prompt: '',
+      history: safeHistory,
+      prompt: message || '', // Send the current user message
     });
 
     return response.text;
