@@ -75,9 +75,11 @@ const nirmaanChatFlow = ai.defineFlow(
 
     const response = await ai.generate({
       model: 'googleai/gemini-2.5-flash',
-      system: systemPrompt,
-      history: safeHistory,
-      prompt: promptText,
+      messages: [
+        { role: 'system', content: [{ text: systemPrompt }] },
+        ...safeHistory,
+        { role: 'user', content: [{ text: promptText }] },
+      ],
       config: {
         temperature: 0.7,
         maxOutputTokens: 250,
