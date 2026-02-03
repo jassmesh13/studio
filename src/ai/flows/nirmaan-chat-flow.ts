@@ -2,6 +2,10 @@
 
 /**
  * @fileOverview Nirmaan Bot - A friendly AI companion using Gemini 2.5 Flash.
+ *
+ * - chatWithNirmaan - Main function for chat interaction.
+ * - NirmaanChatInput - Input schema for chat.
+ * - NirmaanChatOutput - Output type (string).
  */
 
 import { ai } from '@/ai/genkit';

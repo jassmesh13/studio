@@ -84,7 +84,6 @@ export default function ChatPage() {
                 try {
                     const response = await chatWithNirmaan({ history: [] });
                     setMessages([{ role: 'model', text: response }]);
-                    // Note: Audio auto-play might be blocked by browser until user interaction
                 } catch (err) {
                     console.error("Initial chat error:", err);
                 } finally {
@@ -103,6 +102,9 @@ export default function ChatPage() {
                 recognition.interimResults = false;
                 recognition.lang = 'en-US';
 
+                recognition.onstart = () => setIsListening(true);
+                recognition.onend = () => setIsListening(false);
+
                 recognition.onresult = (event: any) => {
                     const transcript = event.results[0][0].transcript;
                     if (transcript) {
@@ -117,10 +119,6 @@ export default function ChatPage() {
                     if (event.error === 'not-allowed') {
                         setPermissionError(true);
                     }
-                };
-
-                recognition.onend = () => {
-                    setIsListening(false);
                 };
 
                 recognitionRef.current = recognition;
@@ -167,13 +165,11 @@ export default function ChatPage() {
 
         if (isListening) {
             recognitionRef.current.stop();
-            setIsListening(false);
         } else {
             setInput('');
             setPermissionError(false);
             try {
                 recognitionRef.current.start();
-                setIsListening(true);
             } catch (err) {
                 console.error("Recognition start error:", err);
                 setIsListening(false);

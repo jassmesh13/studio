@@ -1,19 +1,19 @@
 {
   "name": "Nirmaan Edu PWA",
   "short_name": "Nirmaan",
-  "description": "A modern, engaging learning platform.",
-  "start_url": "/dashboard",
+  "description": "Shaping a Generation that Thinks, Feels, and Leads.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#FF6B00",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF4D01",
   "icons": [
     {
-      "src": "https://picsum.photos/seed/nirmaan-icon/192/192",
+      "src": "/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://picsum.photos/seed/nirmaan-icon/512/512",
+      "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
