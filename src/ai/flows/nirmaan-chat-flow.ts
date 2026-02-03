@@ -2,8 +2,7 @@
 
 /**
  * @fileOverview Nirmaan Bot - A friendly AI companion.
- * This flow is optimized for speed by returning only TEXT.
- * Audio is handled by a separate background process to ensure low latency.
+ * Returns only TEXT for low-latency visual feedback.
  */
 
 import { ai } from '@/ai/genkit';
@@ -23,12 +22,8 @@ const NirmaanChatInputSchema = z.object({
   message: z.string().optional(),
 });
 
-const NirmaanChatOutputSchema = z.object({
-  text: z.string(),
-});
-
 export type NirmaanChatInput = z.infer<typeof NirmaanChatInputSchema>;
-export type NirmaanChatOutput = z.infer<typeof NirmaanChatOutputSchema>;
+export type NirmaanChatOutput = string;
 
 const systemPrompt = `You are Nirmaan Bot, a very friendly, playful, and curious AI friend for a child in Grade 2 or 3.
 
@@ -47,7 +42,7 @@ const nirmaanChatFlow = ai.defineFlow(
   {
     name: 'nirmaanChatFlow',
     inputSchema: NirmaanChatInputSchema,
-    outputSchema: NirmaanChatOutputSchema,
+    outputSchema: z.string(),
   },
   async ({ history, message }) => {
     // Clean + validate history
@@ -61,9 +56,8 @@ const nirmaanChatFlow = ai.defineFlow(
     const promptText = message?.trim() || "Hi! I'm ready to chat.";
 
     console.log('--- Nirmaan Chat Request ---');
-    console.log('User Input (Voice/Text):', promptText);
+    console.log('User Input:', promptText);
     
-    console.time('TextGeneration');
     try {
       const response = await ai.generate({
         model: 'googleai/gemini-2.5-flash',
@@ -78,11 +72,10 @@ const nirmaanChatFlow = ai.defineFlow(
         },
       });
 
-      console.timeEnd('TextGeneration');
       console.log('Nirmaan Response:', response.text);
       console.log('---------------------------');
       
-      return { text: response.text };
+      return response.text;
     } catch (error) {
       console.error('--- Nirmaan Chat ERROR ---');
       console.error(error);
