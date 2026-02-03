@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle, Volume2 } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle, Volume2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
 import { generateSpeech } from '@/ai/flows/tts-flow';
@@ -21,7 +21,6 @@ type Message = {
     role: 'user' | 'model';
     text: string;
     audioUri?: string;
-    isGeneratingAudio?: boolean;
 };
 
 const BotIcon = ({ isSpeaking, isThinking }: { isSpeaking?: boolean; isThinking?: boolean }) => (
@@ -61,7 +60,6 @@ export default function ChatPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
-    const [isGeneratingAnyAudio, setIsGeneratingAnyAudio] = useState(false);
     const [permissionError, setPermissionError] = useState(false);
     const [mainUser, setMainUser] = useState<User | null>(null);
     const [isMounted, setIsMounted] = useState(false);
@@ -72,8 +70,8 @@ export default function ChatPage() {
     const hasInitializedGreeting = useRef(false);
     const lastAudioIdRef = useRef<string | null>(null);
 
-    // Derived State: Bot Ownership
-    const isBotBusy = isLoading || isSpeaking || isGeneratingAnyAudio;
+    // Turn Locking: Bot is busy if thinking or speaking
+    const isBotBusy = isLoading || isSpeaking;
 
     useEffect(() => {
         setIsMounted(true);
@@ -97,7 +95,6 @@ export default function ChatPage() {
                 recognition.lang = 'en-US';
 
                 recognition.onstart = () => {
-                    // Double check busy status on start
                     if (isBotBusy) {
                         recognition.stop();
                         return;
@@ -106,14 +103,11 @@ export default function ChatPage() {
                 };
                 recognition.onend = () => setIsListening(false);
                 recognition.onresult = (event: any) => {
-                    // Turn locking: Ignore results if the bot started talking while we were listening
                     if (isBotBusy) return;
-                    
                     const transcript = event.results[0][0].transcript;
                     if (transcript) handleSend(transcript);
                 };
                 recognition.onerror = (event: any) => {
-                    console.error('Speech recognition error', event.error);
                     setIsListening(false);
                     if (event.error === 'not-allowed') setPermissionError(true);
                 };
@@ -134,47 +128,27 @@ export default function ChatPage() {
     const initializeChat = async () => {
         setIsLoading(true);
         try {
-            const response = await chatWithNirmaan({ history: [] });
+            const responseText = await chatWithNirmaan({ history: [] });
+            const { audioUri } = await generateSpeech({ text: responseText });
+            
             const msgId = 'init-' + Math.random().toString(36).substring(7);
             const newMessage: Message = { 
                 id: msgId, 
                 role: 'model', 
-                text: response, 
-                isGeneratingAudio: true 
+                text: responseText, 
+                audioUri 
             };
             setMessages([newMessage]);
-            setIsGeneratingAnyAudio(true);
-            triggerTTS(response, msgId);
+            setIsLoading(false);
+            playAudio(audioUri, msgId);
         } catch (err) {
             console.error("Initial chat error:", err);
-        } finally {
             setIsLoading(false);
-        }
-    };
-
-    const triggerTTS = async (text: string, messageId: string) => {
-        try {
-            const { audioUri } = await generateSpeech({ text });
-            setMessages(prev => prev.map(m => 
-                m.id === messageId 
-                ? { ...m, audioUri, isGeneratingAudio: false } 
-                : m
-            ));
-            setIsGeneratingAnyAudio(false);
-            playAudio(audioUri, messageId);
-        } catch (error) {
-            console.error("TTS generation failed:", error);
-            setMessages(prev => prev.map(m => 
-                m.id === messageId ? { ...m, isGeneratingAudio: false } : m
-            ));
-            setIsGeneratingAnyAudio(false);
         }
     };
 
     const playAudio = (uri: string, id: string) => {
         if (!audioRef.current) return;
-        if (lastAudioIdRef.current === id) return;
-        
         lastAudioIdRef.current = id;
         setIsSpeaking(true);
         audioRef.current.src = uri;
@@ -199,7 +173,6 @@ export default function ChatPage() {
             return;
         }
 
-        // TURN LOCKING: Prevent user from toggling if bot is active
         if (isBotBusy) return;
 
         if (isListening) {
@@ -218,50 +191,47 @@ export default function ChatPage() {
     const handleSend = async (textToSend?: string) => {
         const messageText = textToSend || input;
         
-        // TURN LOCKING: Strictly prevent overlapping requests
         if (!messageText.trim() || isBotBusy) return;
 
-        // Immediately stop listening to prevent secondary triggers
         if (isListening && recognitionRef.current) {
             recognitionRef.current.stop();
         }
 
         const userMsgId = 'user-' + Math.random().toString(36).substring(7);
-        setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: messageText }]);
+        const currentMessages = [...messages, { id: userMsgId, role: 'user', text: messageText } as Message];
+        setMessages(currentMessages);
         setInput('');
         setIsLoading(true);
-        setIsListening(false);
 
-        const chatHistory = messages.map(msg => ({
+        const chatHistory = currentMessages.map(msg => ({
             role: msg.role,
             content: [{ text: msg.text }],
         }));
 
         try {
-            // STEP 1: Fast Path (Text Generation)
+            // Synchronized Path: Wait for BOTH text and audio
             const responseText = await chatWithNirmaan({ 
-                history: chatHistory,
+                history: chatHistory.slice(0, -1), // previous history
                 message: messageText 
             });
             
+            const { audioUri } = await generateSpeech({ text: responseText });
+
             const botMsgId = 'bot-' + Math.random().toString(36).substring(7);
-            setMessages(prev => [...prev, { 
+            const finalMessage: Message = { 
                 id: botMsgId, 
                 role: 'model', 
                 text: responseText, 
-                isGeneratingAudio: true 
-            }]);
+                audioUri 
+            };
             
-            setIsGeneratingAnyAudio(true);
-            setIsLoading(false); // Text is now visible, release model loading state
-
-            // STEP 2: Slow Path (Audio synthesis)
-            triggerTTS(responseText, botMsgId);
+            setMessages(prev => [...prev, finalMessage]);
+            setIsLoading(false);
+            playAudio(audioUri, botMsgId);
 
         } catch (error) {
             console.error("Error sending message:", error);
             setIsLoading(false);
-            setIsGeneratingAnyAudio(false);
             setMessages(prev => [...prev, { 
                 id: 'err-' + Date.now(), 
                 role: 'model', 
@@ -278,7 +248,7 @@ export default function ChatPage() {
         <div className="flex flex-col h-screen bg-background overflow-hidden">
             <audio ref={audioRef} className="hidden" />
             
-            <header className="flex items-center p-4 border-b bg-card z-20">
+            <header className="flex items-center p-4 border-b bg-card z-20 shadow-sm">
                 <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
                     <ArrowLeft className="w-6 h-6" />
                 </Button>
@@ -286,7 +256,7 @@ export default function ChatPage() {
                     <BotIcon isSpeaking={isSpeaking} isThinking={isLoading} />
                     <div>
                         <h1 className="text-lg font-bold text-primary">Nirmaan Bot ✨</h1>
-                        <p className="text-xs text-muted-foreground">English Buddy</p>
+                        <p className="text-xs text-muted-foreground">Your English Buddy</p>
                     </div>
                 </div>
             </header>
@@ -294,7 +264,7 @@ export default function ChatPage() {
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                  <div className="flex flex-col gap-6 max-w-2xl mx-auto py-4">
                     {permissionError && (
-                      <Alert variant="destructive">
+                      <Alert variant="destructive" className="animate-in slide-in-from-top duration-300">
                         <AlertCircle className="h-4 w-4" />
                         <AlertTitle>Microphone Access Required</AlertTitle>
                         <AlertDescription>
@@ -303,7 +273,7 @@ export default function ChatPage() {
                       </Alert>
                     )}
                     {messages.map((message) => (
-                        <div key={message.id} className={cn("flex items-start gap-3", message.role === 'user' ? 'flex-row-reverse' : '')}>
+                        <div key={message.id} className={cn("flex items-start gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300", message.role === 'user' ? 'flex-row-reverse' : '')}>
                              {message.role === 'model' && (
                                 <BotIcon isSpeaking={isSpeaking && message.id === lastAudioIdRef.current} />
                              )}
@@ -314,12 +284,6 @@ export default function ChatPage() {
                                     : 'bg-card border rounded-bl-none'
                             )}>
                                 <p className="whitespace-pre-wrap text-base leading-relaxed">{message.text}</p>
-                                {message.isGeneratingAudio && (
-                                    <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
-                                        <Volume2 className="w-3 h-3" />
-                                        Preparing voice...
-                                    </div>
-                                )}
                             </div>
                              {message.role === 'user' && mainUser && (
                                 <Avatar className="w-10 h-10 ring-2 ring-primary/20">
@@ -330,17 +294,22 @@ export default function ChatPage() {
                         </div>
                     ))}
                     {isLoading && (
-                         <div className="flex items-start gap-3">
+                         <div className="flex items-start gap-3 animate-in fade-in duration-300">
                             <BotIcon isThinking />
-                            <div className="rounded-2xl p-4 bg-muted rounded-bl-none">
-                                <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                            <div className="rounded-2xl p-4 bg-primary/5 border border-primary/20 rounded-bl-none flex items-center gap-3">
+                                <div className="flex gap-1">
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                    <span className="w-2 h-2 bg-primary rounded-full animate-bounce"></span>
+                                </div>
+                                <p className="text-sm font-medium text-primary/80 italic">Nirmaan is preparing a special message...</p>
                             </div>
                          </div>
                     )}
                  </div>
             </ScrollArea>
             
-            <footer className="p-6 border-t bg-card relative z-20">
+            <footer className="p-6 border-t bg-card relative z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                 <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
                     <div className="flex flex-col items-center gap-2">
                         <div className="relative">
@@ -375,14 +344,14 @@ export default function ChatPage() {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder={isBotBusy ? "Wait for Nirmaan..." : "Type a message..."} 
-                            className="flex-1 h-12 rounded-full px-6 bg-muted border-none focus-visible:ring-primary"
+                            className="flex-1 h-12 rounded-full px-6 bg-muted border-none focus-visible:ring-primary shadow-inner"
                             disabled={isBotBusy}
                         />
                         <Button 
                             onClick={() => handleSend()} 
                             disabled={isBotBusy || !input.trim()}
                             size="icon"
-                            className="h-12 w-12 rounded-full shadow-md"
+                            className="h-12 w-12 rounded-full shadow-md hover:shadow-lg transition-all"
                         >
                             <Send className="w-5 h-5" />
                         </Button>
