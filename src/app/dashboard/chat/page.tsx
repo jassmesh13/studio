@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
-import { generateSpeech } from '@/ai/flows/tts-flow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getMainUser } from '@/lib/data';
@@ -19,6 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 type Message = {
     role: 'user' | 'model';
     text: string;
+    audioUri?: string;
 };
 
 const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
@@ -62,6 +62,7 @@ export default function ChatPage() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const recognitionRef = useRef<any>(null);
     const hasInitializedGreeting = useRef(false);
+    const lastPlayedAudioIndex = useRef<number>(-1);
 
     useEffect(() => {
         setIsMounted(true);
@@ -76,7 +77,6 @@ export default function ChatPage() {
         };
         fetchUser();
 
-        // Speech Recognition Setup
         if (typeof window !== 'undefined') {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (SpeechRecognition) {
@@ -87,36 +87,27 @@ export default function ChatPage() {
 
                 recognition.onstart = () => setIsListening(true);
                 recognition.onend = () => setIsListening(false);
-
                 recognition.onresult = (event: any) => {
                     const transcript = event.results[0][0].transcript;
-                    if (transcript) {
-                        handleSend(transcript);
-                    }
+                    if (transcript) handleSend(transcript);
                 };
-
                 recognition.onerror = (event: any) => {
                     console.error('Speech recognition error', event.error);
                     setIsListening(false);
-                    if (event.error === 'not-allowed') {
-                        setPermissionError(true);
-                    }
+                    if (event.error === 'not-allowed') setPermissionError(true);
                 };
-
                 recognitionRef.current = recognition;
             }
         }
 
-        // Initial greeting
         if (!hasInitializedGreeting.current) {
             hasInitializedGreeting.current = true;
             const startChat = async () => {
                 setIsLoading(true);
                 try {
                     const response = await chatWithNirmaan({ history: [] });
-                    setMessages([{ role: 'model', text: response }]);
-                    // Bot speaks the greeting
-                    speakText(response);
+                    const newMessage: Message = { role: 'model', text: response.text, audioUri: response.audioUri };
+                    setMessages([newMessage]);
                 } catch (err) {
                     console.error("Initial chat error:", err);
                 } finally {
@@ -131,6 +122,17 @@ export default function ChatPage() {
         };
     }, []);
 
+    // Automatically play the last model audio if available
+    useEffect(() => {
+        if (messages.length > 0) {
+            const lastIndex = messages.length - 1;
+            const lastMsg = messages[lastIndex];
+            if (lastMsg.role === 'model' && lastMsg.audioUri && lastPlayedAudioIndex.current < lastIndex) {
+                playAudio(lastMsg.audioUri, lastIndex);
+            }
+        }
+    }, [messages]);
+
     useEffect(() => {
         if (!isMounted) return;
         const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
@@ -139,31 +141,23 @@ export default function ChatPage() {
         }
     }, [messages, isLoading, isMounted]);
 
-    const speakText = async (text: string) => {
+    const playAudio = (uri: string, index: number) => {
+        if (!audioRef.current) return;
+        lastPlayedAudioIndex.current = index;
         setIsSpeaking(true);
-        try {
-            const { audioUri } = await generateSpeech({ text });
-            if (audioRef.current) {
-                audioRef.current.src = audioUri;
-                audioRef.current.play().catch(e => console.warn("Audio play blocked:", e));
-                audioRef.current.onended = () => setIsSpeaking(false);
-            }
-        } catch (error) {
-            console.error("TTS Error:", error);
+        audioRef.current.src = uri;
+        audioRef.current.play().catch(e => {
+            console.warn("Audio play blocked or failed:", e);
             setIsSpeaking(false);
-        }
+        });
+        audioRef.current.onended = () => setIsSpeaking(false);
     };
 
     const toggleListening = () => {
         if (!recognitionRef.current) {
-            toast({
-                variant: 'destructive',
-                title: 'Not Supported',
-                description: 'Speech recognition is not supported in this browser.',
-            });
+            toast({ variant: 'destructive', title: 'Not Supported', description: 'Speech recognition is not supported here.' });
             return;
         }
-
         if (isListening) {
             recognitionRef.current.stop();
         } else {
@@ -172,7 +166,6 @@ export default function ChatPage() {
             try {
                 recognitionRef.current.start();
             } catch (err) {
-                console.error("Recognition start error:", err);
                 setIsListening(false);
             }
         }
@@ -182,8 +175,7 @@ export default function ChatPage() {
         const messageText = textToSend || input;
         if (!messageText.trim() || isLoading) return;
 
-        const userMessage: Message = { role: 'user', text: messageText };
-        setMessages(prev => [...prev, userMessage]);
+        setMessages(prev => [...prev, { role: 'user', text: messageText }]);
         setInput('');
         setIsLoading(true);
         setIsListening(false);
@@ -198,8 +190,7 @@ export default function ChatPage() {
                 history: chatHistory,
                 message: messageText 
             });
-            setMessages(prev => [...prev, { role: 'model', text: response }]);
-            speakText(response);
+            setMessages(prev => [...prev, { role: 'model', text: response.text, audioUri: response.audioUri }]);
         } catch (error) {
             console.error("Error sending message:", error);
             setMessages(prev => [...prev, { role: 'model', text: "Oops! My internet is a bit sleepy. Can we try again?" }]);
@@ -236,7 +227,7 @@ export default function ChatPage() {
                         <AlertCircle className="h-4 w-4" />
                         <AlertTitle>Microphone Access Required</AlertTitle>
                         <AlertDescription>
-                          Please click the <b>lock icon</b> next to the address bar and set Microphone to <b>Allow</b> to talk to Nirmaan.
+                          Please allow microphone access to talk to Nirmaan.
                         </AlertDescription>
                       </Alert>
                     )}

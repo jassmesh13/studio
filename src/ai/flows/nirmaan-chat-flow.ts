@@ -1,16 +1,14 @@
-
 'use server';
 
 /**
- * @fileOverview Nirmaan Bot - A friendly AI companion for kids
- * 
- * - chatWithNirmaan - Main entry point for the chat flow.
- * - NirmaanChatInput - Input schema for chat history and new message.
- * - NirmaanChatOutput - String response from the bot.
+ * @fileOverview Nirmaan Bot - A friendly AI companion for kids.
+ * This flow is optimized for real-time conversation by generating both TEXT and AUDIO
+ * in a single multimodal pass using Gemini 2.5 Flash.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import wav from 'wav';
 
 /* ----------------------------- Schemas ----------------------------- */
 
@@ -28,8 +26,13 @@ const NirmaanChatInputSchema = z.object({
   message: z.string().optional(),
 });
 
+const NirmaanChatOutputSchema = z.object({
+  text: z.string(),
+  audioUri: z.string().optional(),
+});
+
 export type NirmaanChatInput = z.infer<typeof NirmaanChatInputSchema>;
-export type NirmaanChatOutput = string;
+export type NirmaanChatOutput = z.infer<typeof NirmaanChatOutputSchema>;
 
 /* --------------------------- System Prompt -------------------------- */
 
@@ -46,38 +49,53 @@ Rules:
    "Hi there! I'm Nirmaan. I love making new friends! What's your name?"
 `;
 
+/* --------------------------- WAV Helper ---------------------------- */
+
+async function toWav(
+  pcmData: Buffer,
+  channels = 1,
+  rate = 24000,
+  sampleWidth = 2
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const writer = new wav.Writer({
+      channels,
+      sampleRate: rate,
+      bitDepth: sampleWidth * 8,
+    });
+
+    let bufs: any[] = [];
+    writer.on('error', reject);
+    writer.on('data', (d) => bufs.push(d));
+    writer.on('end', () => {
+      resolve(Buffer.concat(bufs).toString('base64'));
+    });
+
+    writer.write(pcmData);
+    writer.end();
+  });
+}
+
 /* ------------------------------ Flow -------------------------------- */
 
 const nirmaanChatFlow = ai.defineFlow(
   {
     name: 'nirmaanChatFlow',
     inputSchema: NirmaanChatInputSchema,
-    outputSchema: z.string(),
+    outputSchema: NirmaanChatOutputSchema,
   },
   async ({ history, message }) => {
-    // Clean + validate history for Gemini 2.5 Flash
+    // Clean + validate history
     const safeHistory = (history ?? [])
-      .filter(
-        (m) =>
-          m &&
-          (m.role === 'user' || m.role === 'model') &&
-          Array.isArray(m.content)
-      )
+      .filter((m) => m && (m.role === 'user' || m.role === 'model'))
       .map((m) => ({
         role: m.role,
-        content: m.content
-          .map((p) => ({ text: p.text ?? '' }))
-          .filter((p) => p.text.length > 0),
-      }))
-      .filter((m) => m.content.length > 0);
+        content: m.content.map((p) => ({ text: p.text })),
+      }));
 
-    const promptText =
-      message?.trim() || "Hi! I'm ready to chat.";
+    const promptText = message?.trim() || "Hi! I'm ready to chat.";
 
-    console.log('--- Nirmaan Chat Request ---');
-    console.log('User Message:', promptText);
-    console.log('History Context Length:', safeHistory.length);
-
+    console.time('MultimodalGeneration');
     try {
       const response = await ai.generate({
         model: 'googleai/gemini-2.5-flash',
@@ -89,22 +107,36 @@ const nirmaanChatFlow = ai.defineFlow(
         config: {
           temperature: 0.7,
           maxOutputTokens: 250,
+          responseModalities: ['TEXT', 'AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Algenib' },
+            },
+          },
         },
       });
 
-      console.log('--- Nirmaan Chat Response Success ---');
-      console.log('Model Response:', response.text);
+      const text = response.text;
+      const audioPart = response.media;
+      
+      let audioUri = undefined;
+      if (audioPart && audioPart.url) {
+        const audioBuffer = Buffer.from(
+          audioPart.url.substring(audioPart.url.indexOf(',') + 1),
+          'base64'
+        );
+        const wavBase64 = await toWav(audioBuffer);
+        audioUri = 'data:audio/wav;base64,' + wavBase64;
+      }
 
-      return response.text;
+      console.timeEnd('MultimodalGeneration');
+      return { text, audioUri };
     } catch (error) {
-      console.error('--- Nirmaan Chat ERROR ---');
-      console.error(error);
+      console.error('--- Nirmaan Chat ERROR ---', error);
       throw error;
     }
   }
 );
-
-/* ---------------------------- Export -------------------------------- */
 
 export async function chatWithNirmaan(
   input: NirmaanChatInput
