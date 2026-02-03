@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Heart, Star, Loader2 } from "lucide-react";
+import { Brain, Heart, Star, Loader2, PartyPopper, Sparkles } from "lucide-react";
 import { generateCaseStudyFeedback, type CaseStudyFeedbackOutput } from "@/ai/flows/case-study-feedback-flow";
 import type { CaseStudy } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface PostSubmissionScreenProps {
     userName: string;
@@ -18,6 +19,7 @@ interface PostSubmissionScreenProps {
 export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL }: PostSubmissionScreenProps) {
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showCelebration, setShowCelebration] = useState(false);
 
     useEffect(() => {
         async function fetchFeedback() {
@@ -25,13 +27,11 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             try {
                 let mediaDataUri = undefined;
                 
-                // Convert blob URL to base64 Data URI for the AI model to "hear/see" the media
                 if (recordedMediaURL) {
                     try {
                         const response = await fetch(recordedMediaURL);
                         const blob = await response.blob();
                         
-                        // Gemini 2.5 Flash can handle reasonably sized files
                         if (blob.size < 10 * 1024 * 1024) { 
                             mediaDataUri = await new Promise<string>((resolve, reject) => {
                                 const reader = new FileReader();
@@ -39,8 +39,6 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                                 reader.onerror = reject;
                                 reader.readAsDataURL(blob);
                             });
-                        } else {
-                            console.warn("Media file too large, sending transcript only.");
                         }
                     } catch (err) {
                         console.error("Failed to convert media to data URI:", err);
@@ -56,6 +54,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     hasMedia: !!mediaDataUri
                 });
                 setFeedback(result);
+                setShowCelebration(true);
             } catch (error) {
                 console.error("Failed to generate AI feedback:", error);
                 setFeedback({
@@ -63,6 +62,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     growthInsight: "Keep thinking about how your actions affect others and yourself.",
                     skillBoosted: "Decision-Making"
                 });
+                setShowCelebration(true);
             } finally {
                 setLoading(false);
             }
@@ -73,8 +73,11 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[400px] text-center gap-4">
-                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center gap-4 animate-in fade-in duration-500">
+                <div className="relative">
+                    <Loader2 className="w-16 h-16 animate-spin text-primary" />
+                    <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-yellow-400 animate-pulse" />
+                </div>
                 <h2 className="text-2xl font-bold text-primary">Nirmaan is thinking...</h2>
                 <p className="text-muted-foreground">Wait a moment while I listen to your wonderful answer! ✨</p>
             </div>
@@ -82,58 +85,82 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
     }
 
     return (
-        <div className="w-full max-w-md mx-auto text-center animate-pop-in">
-            <div className="mb-6">
-                <div className="relative inline-block">
-                    <Star className="absolute -top-4 -left-4 w-8 h-8 text-yellow-400 animate-pulse fill-yellow-400" />
-                    <Star className="absolute -bottom-4 -right-4 w-8 h-8 text-yellow-400 animate-pulse delay-200 fill-yellow-400" />
-                    <h2 className="text-3xl font-bold text-primary">Well done, {userName}!</h2>
+        <div className="w-full max-w-lg mx-auto text-center px-4">
+            {/* Celebratory Header */}
+            <div className={cn(
+                "mb-8 transform transition-all duration-700",
+                showCelebration ? "scale-100 opacity-100" : "scale-75 opacity-0"
+            )}>
+                <div className="relative inline-block mb-4">
+                    <PartyPopper className="absolute -left-12 top-0 w-10 h-10 text-primary animate-bounce" />
+                    <PartyPopper className="absolute -right-12 top-0 w-10 h-10 text-primary animate-bounce [animation-delay:0.2s] scale-x-[-1]" />
+                    <Sparkles className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-400 animate-pulse" />
+                    
+                    <h2 className="text-4xl md:text-5xl font-extrabold text-primary drop-shadow-sm tracking-tight">
+                        Well done, {userName}!
+                    </h2>
                 </div>
-                <p className="text-muted-foreground mt-2">
-                    You took time to think and express your thoughts. That shows great maturity!
+                <p className="text-lg text-muted-foreground font-medium max-w-sm mx-auto">
+                    You shared your thoughts beautifully. Every answer makes you a better leader! 🌟
                 </p>
             </div>
 
-            <Card className="mb-6 text-left bg-card shadow-lg border-primary/20">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Brain className="w-6 h-6 text-primary" />
-                        Nirmaan's Thoughts
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm leading-relaxed">
-                    <p>{feedback?.analysis}</p>
-                </CardContent>
-            </Card>
+            {/* Feedback Content */}
+            <div className={cn(
+                "space-y-6 transition-all duration-1000 delay-300",
+                showCelebration ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+            )}>
+                <Card className="text-left bg-white shadow-xl border-primary/10 overflow-hidden">
+                    <CardHeader className="bg-primary/5 pb-4">
+                        <CardTitle className="flex items-center gap-2 text-primary">
+                            <Brain className="w-6 h-6" />
+                            Nirmaan's Thoughts
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6 text-base leading-relaxed text-foreground/80">
+                        <p>{feedback?.analysis}</p>
+                    </CardContent>
+                </Card>
 
-            <Card className="mb-6 text-left bg-card shadow-lg border-red-100">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Heart className="w-6 h-6 text-red-500" />
-                        Growth Insight
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm leading-relaxed">
-                    <div className="bg-accent p-4 rounded-xl border border-dashed border-primary/30">
-                        <p className="font-semibold italic text-primary">"{feedback?.growthInsight}"</p>
-                    </div>
-                </CardContent>
-            </Card>
-            
-            {feedback?.skillBoosted && (
-                <div className="bg-primary/10 border-2 border-dashed border-primary/20 p-4 rounded-xl mb-8">
-                    <h3 className="font-bold text-primary mb-2">Skill Boost!</h3>
-                    <div className="flex justify-around items-center">
-                        <div className="font-bold text-lg text-primary-foreground bg-primary px-4 py-1 rounded-full shadow-sm">
-                            {feedback.skillBoosted} <span className="text-white">+1</span>
+                <Card className="text-left bg-white shadow-xl border-red-100">
+                    <CardHeader className="bg-red-50/50 pb-4">
+                        <CardTitle className="flex items-center gap-2 text-red-500">
+                            <Heart className="w-6 h-6 fill-red-500" />
+                            Growth Insight
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-6">
+                        <div className="bg-accent/50 p-5 rounded-2xl border-2 border-dashed border-primary/20">
+                            <p className="font-bold italic text-primary text-lg">"{feedback?.growthInsight}"</p>
+                        </div>
+                    </CardContent>
+                </Card>
+                
+                {feedback?.skillBoosted && (
+                    <div className="bg-primary p-6 rounded-3xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-2">
+                                <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" />
+                                <h3 className="font-black text-white text-xl uppercase tracking-wider">Skill Boost!</h3>
+                                <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" />
+                            </div>
+                            <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full border border-white/30">
+                                <span className="font-bold text-2xl text-white">
+                                    {feedback.skillBoosted} <span className="ml-1 text-yellow-300">+10</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            <Button size="lg" onClick={onDone} className="w-full h-14 rounded-full text-lg shadow-lg hover:scale-105 transition-transform">
-                Done
-            </Button>
+                <Button 
+                    size="lg" 
+                    onClick={onDone} 
+                    className="w-full h-16 rounded-full text-xl font-bold shadow-xl hover:shadow-primary/30 active:scale-95 transition-all mt-4"
+                >
+                    Back to Dashboard
+                </Button>
+            </div>
         </div>
     );
 }
