@@ -1,4 +1,3 @@
-
 'use client';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -180,7 +179,6 @@ export default function CaseStudyDetailPage() {
   const handleSubmit = () => {
     if (!caseStudy) return;
     
-    // Freeze the current state of the answer so late transcripts don't interrupt
     const studentAnswer = caseStudy.type === 'mcq' 
         ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
         : transcript || "Media Response";
@@ -282,18 +280,33 @@ export default function CaseStudyDetailPage() {
         );
       case 'recorded':
         return (
-          <div className="w-full flex flex-col items-center gap-4">
-            <p className="font-semibold text-lg">Review your response</p>
-            <div className="w-full bg-muted p-6 rounded-xl border-2 border-primary/20">
-               <p className="text-primary font-bold mb-2">Transcript (Preview):</p>
-               <p className="italic text-lg">"{transcript || "Ready to submit."}"</p>
+          <div className="w-full flex flex-col items-center gap-6">
+            <p className="font-bold text-xl text-primary">Review your response</p>
+            
+            <div className="w-full aspect-video rounded-2xl overflow-hidden bg-muted border-4 border-primary/20 shadow-xl">
+               {caseStudy.type === 'video' ? (
+                 <video 
+                    src={recordedMediaURL || ''} 
+                    className="w-full h-full object-cover" 
+                    controls 
+                    playsInline
+                 />
+               ) : (
+                 <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-8">
+                    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Volume2 className="w-10 h-10 text-primary" />
+                    </div>
+                    <audio src={recordedMediaURL || ''} controls className="w-full" />
+                 </div>
+               )}
             </div>
-            <div className="flex w-full gap-4 mt-4">
-               <Button size="lg" variant="outline" onClick={handleRetry} className="w-full h-14 rounded-full text-lg">
-                    <RefreshCw className="w-6 h-6 mr-2" /> Retry
+
+            <div className="flex w-full gap-4">
+               <Button size="lg" variant="outline" onClick={handleRetry} className="w-full h-16 rounded-full text-lg font-bold border-2">
+                    <RefreshCw className="w-6 h-6 mr-2" /> Redo
                 </Button>
-                <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg">
-                    <Send className="w-6 h-6 mr-2" /> Submit
+                <Button size="lg" onClick={handleSubmit} className="w-full h-16 rounded-full text-lg font-bold shadow-lg">
+                    <Send className="w-6 h-6 mr-2" /> Submit to Nirmaan
                 </Button>
             </div>
           </div>
