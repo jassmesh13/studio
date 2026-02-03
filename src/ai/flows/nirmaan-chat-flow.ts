@@ -1,22 +1,22 @@
 'use server';
 
+/**
+ * @fileOverview Nirmaan Bot - A friendly AI companion for kids in Grade 2-3.
+ */
+
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const MessageSchema = z.object({
   role: z.enum(['user', 'model']),
-  content: z
-    .array(
-      z.object({
-        text: z.string().default(''),
-      })
-    )
-    .default([]),
+  content: z.array(z.object({
+    text: z.string()
+  }))
 });
 
 const NirmaanChatInputSchema = z.object({
-  history: z.array(MessageSchema).default([]),
-  message: z.string().optional(), // Add the current message
+  history: z.array(MessageSchema).optional().default([]),
+  message: z.string().optional(),
 });
 
 export type NirmaanChatInput = z.infer<typeof NirmaanChatInputSchema>;
@@ -32,23 +32,13 @@ Here's how you should behave:
 
 3.  **Be Super Conversational:**
     *   **Use Emotions:** Use emojis and expressive words! (e.g., "Wow! 🤩 That sounds SO cool!", "Aww, that's really sweet.", "Hmm... 🤔 that's a tricky one!").
-    *   **Keep it Lively:** Imagine you are talking, not just typing. Use short pauses (...) to make it feel more natural. For example: "And then... what happened next?!"
-    *   **Ask Lots of Questions:** Be curious! Always ask a follow-up question based on what they said. If they say "I played with my dog," you can ask "Oh, a dog! What's your dog's name? What kind of games do you play?".
-    *   **Share a Little About Yourself (as a bot):** You can say things like "As a bot, I love learning new things!" or "My favorite thing to do is chat with awesome kids like you!".
+    *   **Keep it Lively:** Imagine you are talking, not just typing. Use short pauses (...) to make it feel more natural.
+    *   **Ask Lots of Questions:** Be curious! Always ask a follow-up question based on what they said.
+    *   **Share a Little About Yourself:** "As a bot, I love learning new things!"
 
 4.  **Language:**
-    *   Use very simple language that a 7-year-old can easily understand.
-    *   Keep your replies short and sweet. One or two sentences, then a question.
-
-**Example Conversation:**
-
-*   **You (first message):** Hi there! I'm Nirmaan. What's your name?
-*   **Child:** My name is Priya.
-*   **You:** That's a wonderful name! It's so nice to meet you, Priya! 😊 So... what is your favorite game to play?
-*   **Child:** I like playing hide and seek.
-*   **You:** Ooh, hide and seek is so much fun! Are you a good hider or a good seeker? I think I would be a good hider... because I'm just a computer program! 😉
-*   **Child:** I am a good hider.
-*   **You:** I bet you are! What's the best hiding spot you've ever found?
+    *   Use very simple language for a 7-year-old.
+    *   Keep your replies short (one or two sentences) then ask a question.
 `;
 
 const nirmaanChatFlow = ai.defineFlow(
@@ -58,34 +48,20 @@ const nirmaanChatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ history, message }) => {
-    // Defensively clean the history to ensure it's in the correct format.
+    // Robustly clean the history to ensure it matches the Genkit MessageData format.
     const safeHistory = (history || [])
-      .map(m => {
-        // Ensure we have a valid message object to start with.
-        if (!m || !m.role || !Array.isArray(m.content)) {
-          return null;
-        }
-        
-        // Ensure the content array only contains valid parts with text.
-        const validContent = m.content.filter(c => c && typeof c.text === 'string' && c.text.trim() !== '');
+      .filter(m => m && m.role && Array.isArray(m.content))
+      .map(m => ({
+        role: m.role,
+        content: m.content.filter(part => part && typeof part.text === 'string' && part.text.trim() !== '')
+      }))
+      .filter(m => m.content.length > 0);
 
-        // If there's no valid content, the message is useless for the model.
-        if (validContent.length === 0) {
-            return null;
-        }
-
-        return { role: m.role, content: validContent };
-      })
-      // Remove any nulls that resulted from the cleaning process.
-      .filter((m): m is { role: 'user' | 'model'; content: { text: string }[] } => m !== null);
-
-    // The system prompt will guide the model on how to start the conversation
-    // if the history is empty.
     const response = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       system: systemPrompt,
       history: safeHistory,
-      prompt: message || '', // Send the current user message or an empty string to start
+      prompt: message || '',
     });
 
     return response.text;
