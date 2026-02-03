@@ -58,12 +58,21 @@ export default function ChatPage() {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const recognitionRef = useRef<any>(null);
+    const hasInitialized = useRef(false);
 
     useEffect(() => {
         setIsMounted(true);
+        
+        if (hasInitialized.current) return;
+        hasInitialized.current = true;
+
         const fetchUser = async () => {
-            const user = await getMainUser();
-            setMainUser(user);
+            try {
+                const user = await getMainUser();
+                setMainUser(user);
+            } catch (err) {
+                console.error("Failed to fetch user:", err);
+            }
         };
         fetchUser();
 
