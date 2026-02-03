@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -5,7 +6,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const CaseStudyFeedbackInputSchema = z.object({
   scenario: z.string(),
@@ -13,7 +14,7 @@ const CaseStudyFeedbackInputSchema = z.object({
   userAnswer: z.string().optional().describe('The student\'s answer text or transcript.'),
   answerType: z.enum(['text', 'audio', 'video', 'mcq']),
   mediaDataUri: z.string().optional().describe('The recorded audio or video as a data URI.'),
-  hasMedia: z.boolean().optional().describe('Flag indicating if media is provided.'),
+  hasMedia: z.boolean().optional().default(false).describe('Flag indicating if media is provided.'),
 });
 
 export type CaseStudyFeedbackInput = z.infer<typeof CaseStudyFeedbackInputSchema>;
@@ -64,13 +65,15 @@ const caseStudyFeedbackFlow = ai.defineFlow(
   },
   async (input) => {
     console.log('--- Case Study Feedback Request ---');
-    console.log('Type:', input.answerType);
+    console.log('Scenario Snippet:', input.scenario.substring(0, 50) + '...');
+    console.log('Answer Type:', input.answerType);
     console.log('Has Media:', input.hasMedia);
-    
+    console.log('User Transcript:', input.userAnswer);
+
     try {
         const { output } = await feedbackPrompt(input);
         console.log('--- Case Study Feedback Success ---');
-        console.log('Skill:', output?.skillBoosted);
+        console.log('Boosted Skill:', output?.skillBoosted);
         return output!;
     } catch (error) {
         console.error('--- Case Study Feedback ERROR ---');

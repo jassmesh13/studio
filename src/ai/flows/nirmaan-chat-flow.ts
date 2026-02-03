@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -9,7 +10,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 /* ----------------------------- Schemas ----------------------------- */
 
@@ -74,27 +75,32 @@ const nirmaanChatFlow = ai.defineFlow(
       message?.trim() || "Hi! I'm ready to chat.";
 
     console.log('--- Nirmaan Chat Request ---');
-    console.log('Message:', promptText);
-    console.log('History items:', safeHistory.length);
+    console.log('User Message:', promptText);
+    console.log('History Context Length:', safeHistory.length);
 
-    const response = await ai.generate({
-      model: 'googleai/gemini-2.5-flash',
-      messages: [
-        { role: 'system', content: [{ text: systemPrompt }] },
-        ...safeHistory,
-        { role: 'user', content: [{ text: promptText }] },
-      ],
-      config: {
-        temperature: 0.7,
-        maxOutputTokens: 250,
-      },
-    });
+    try {
+      const response = await ai.generate({
+        model: 'googleai/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: [{ text: systemPrompt }] },
+          ...safeHistory,
+          { role: 'user', content: [{ text: promptText }] },
+        ],
+        config: {
+          temperature: 0.7,
+          maxOutputTokens: 250,
+        },
+      });
 
-    console.log('--- Nirmaan Chat Response ---');
-    console.log(response.text);
+      console.log('--- Nirmaan Chat Response Success ---');
+      console.log('Model Response:', response.text);
 
-    // In Genkit 1.x, .text is a property, not a function
-    return response.text;
+      return response.text;
+    } catch (error) {
+      console.error('--- Nirmaan Chat ERROR ---');
+      console.error(error);
+      throw error;
+    }
   }
 );
 
