@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Mic, MicOff, Loader2 } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
 import { generateSpeech } from '@/ai/flows/tts-flow';
@@ -14,6 +14,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { User } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type Message = {
     role: 'user' | 'model';
@@ -53,6 +54,7 @@ export default function ChatPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const [permissionError, setPermissionError] = useState(false);
     const [mainUser, setMainUser] = useState<User | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -111,6 +113,7 @@ export default function ChatPage() {
                     console.error('Speech recognition error', event.error);
                     setIsListening(false);
                     if (event.error === 'not-allowed') {
+                        setPermissionError(true);
                         toast({
                             variant: 'destructive',
                             title: 'Mic Permission Required',
@@ -166,6 +169,7 @@ export default function ChatPage() {
             setIsListening(false);
         } else {
             setInput('');
+            setPermissionError(false);
             try {
                 recognitionRef.current.start();
                 setIsListening(true);
@@ -227,6 +231,15 @@ export default function ChatPage() {
 
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                  <div className="flex flex-col gap-6 max-w-2xl mx-auto py-4">
+                    {permissionError && (
+                      <Alert variant="destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Microphone Access Required</AlertTitle>
+                        <AlertDescription>
+                          Please click the <b>lock icon</b> next to the address bar and set Microphone to <b>Allow</b> to talk to Nirmaan.
+                        </AlertDescription>
+                      </Alert>
+                    )}
                     {messages.map((message, index) => (
                         <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? 'flex-row-reverse' : '')}>
                              {message.role === 'model' && <BotIcon isSpeaking={index === messages.length - 1 && isSpeaking} />}

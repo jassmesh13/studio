@@ -2,7 +2,7 @@
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getCaseStudyById } from '@/lib/data';
-import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, AlertCircle } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import type { CaseStudy } from '@/lib/types';
 import { PostSubmissionScreen } from '@/components/app/case-studies/post-submission-screen';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type RecordingStatus = 'idle' | 'permission' | 'recording' | 'recorded' | 'submitted';
 
@@ -22,6 +23,7 @@ export default function CaseStudyDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const [recordingStatus, setRecordingStatus] = useState<RecordingStatus>('idle');
+  const [permissionError, setPermissionError] = useState<boolean>(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
@@ -59,6 +61,7 @@ export default function CaseStudyDetailPage() {
     if (!caseStudy) return;
 
     setRecordingStatus('permission');
+    setPermissionError(false);
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       toast({ variant: 'destructive', title: 'Not Supported', description: 'Your browser does not support media recording.' });
@@ -73,8 +76,13 @@ export default function CaseStudyDetailPage() {
       setRecordingStatus('recording');
     } catch (error) {
       console.error('Error accessing media devices:', error);
-      toast({ variant: 'destructive', title: 'Permission Denied', description: `Please enable camera and microphone permissions.` });
+      setPermissionError(true);
       setRecordingStatus('idle');
+      toast({ 
+        variant: 'destructive', 
+        title: 'Permission Denied', 
+        description: 'Please enable camera and microphone permissions in your browser settings.' 
+      });
     }
   };
   
@@ -193,6 +201,15 @@ export default function CaseStudyDetailPage() {
       case 'idle':
         return (
           <>
+            {permissionError && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Access Denied</AlertTitle>
+                <AlertDescription>
+                  Please click the <b>lock icon</b> next to the URL in your browser address bar and set Camera/Microphone to <b>Allow</b>.
+                </AlertDescription>
+              </Alert>
+            )}
             <Button size="lg" onClick={handlePermissions} className="w-full h-14 rounded-full text-lg">
               {caseStudy.type === 'video' ? <Video className="w-6 h-6 mr-2" /> : <Mic className="w-6 h-6 mr-2" />}
               Start Recording
