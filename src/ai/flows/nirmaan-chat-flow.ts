@@ -56,11 +56,14 @@ const nirmaanChatFlow = ai.defineFlow(
       }))
       .filter(m => m.content.length > 0);
 
+    // If both message and history are empty, we need a prompt to start the conversation properly
+    const promptText = message?.trim() || (safeHistory.length === 0 ? "Hi! Please introduce yourself to me!" : "");
+
     const response = await ai.generate({
       model: 'googleai/gemini-1.5-flash',
       system: systemPrompt,
       history: safeHistory,
-      prompt: message || '',
+      prompt: promptText,
     });
 
     return response.text;
