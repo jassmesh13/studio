@@ -2,7 +2,7 @@
 
 /**
  * @fileOverview Nirmaan Bot - A friendly AI companion.
- * Returns only TEXT for low-latency visual feedback.
+ * Provides synchronized text responses for the voice-first experience.
  */
 
 import { ai } from '@/ai/genkit';
@@ -75,6 +75,7 @@ const nirmaanChatFlow = ai.defineFlow(
       console.log('Nirmaan Response:', response.text);
       console.log('---------------------------');
       
+      // Genkit 1.x uses .text property
       return response.text;
     } catch (error) {
       console.error('--- Nirmaan Chat ERROR ---');
