@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Mic, MicOff, Volume2 } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
 import { generateSpeech } from '@/ai/flows/tts-flow';
@@ -105,7 +105,6 @@ export default function ChatPage() {
                 const transcript = event.results[0][0].transcript;
                 setInput(transcript);
                 setIsListening(false);
-                // Automatically send if speech is captured
                 handleSend(transcript);
             };
 
@@ -126,6 +125,7 @@ export default function ChatPage() {
         const startChat = async () => {
             setIsLoading(true);
             try {
+                // Ensure history is sent as an empty array to match Genkit expectation
                 const response = await chatWithNirmaan({ history: [] });
                 setMessages([{ role: 'model', text: response }]);
                 speakText(response);
@@ -216,8 +216,8 @@ export default function ChatPage() {
                 <div className="flex items-center gap-3">
                     <BotIcon isSpeaking={isSpeaking} />
                     <div>
-                        <h1 className="text-lg font-bold">Nirmaan AI</h1>
-                        <p className="text-xs text-muted-foreground">English Practice Buddy ✨</p>
+                        <h1 className="text-lg font-bold text-primary">Nirmaan Bot ✨</h1>
+                        <p className="text-xs text-muted-foreground">English Practice Buddy</p>
                     </div>
                 </div>
             </header>
