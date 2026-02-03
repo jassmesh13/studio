@@ -4,23 +4,47 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Mic } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff, Volume2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
+import { generateSpeech } from '@/ai/flows/tts-flow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getMainUser } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { User } from '@/lib/types';
-
+import { cn } from '@/lib/utils';
 
 type Message = {
     role: 'user' | 'model';
     text: string;
 };
 
-const BotIcon = () => (
-    <div className="relative flex-shrink-0">
+// Types for Web Speech API
+interface SpeechRecognitionEvent extends Event {
+    results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    start: () => void;
+    stop: () => void;
+    onresult: (event: SpeechRecognitionEvent) => void;
+    onerror: (event: any) => void;
+    onend: () => void;
+}
+
+declare global {
+    interface Window {
+        SpeechRecognition: any;
+        webkitSpeechRecognition: any;
+    }
+}
+
+const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
+    <div className={cn("relative flex-shrink-0 transition-all", isSpeaking && "scale-110 shadow-primary/50 shadow-2xl")}>
         <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="32" r="32" fill="#FFC107"/>
             <path d="M16 32C16 22.0589 24.0589 14 34 14C43.9411 14 52 22.0589 52 32" stroke="white" strokeWidth="6"/>
@@ -33,24 +57,34 @@ const BotIcon = () => (
             <rect x="23" y="49" width="18" height="10" rx="3" fill="#F44336"/>
             <text fill="white" xmlSpace="preserve" style={{whiteSpace: 'pre'}} fontFamily="sans-serif" fontSize="8" fontWeight="bold" letterSpacing="0em"><tspan x="26" y="56.5">BOT</tspan></text>
         </svg>
+        {isSpeaking && (
+            <div className="absolute -top-1 -right-1">
+                <span className="flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                </span>
+            </div>
+        )}
     </div>
 );
-
 
 export default function ChatPage() {
     const router = useRouter();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isListening, setIsListening] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
     const [mainUser, setMainUser] = useState<User | null>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const recognitionRef = useRef<SpeechRecognition | null>(null);
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
-    
     useEffect(() => {
         if (!isClient) return;
         const fetchUser = async () => {
@@ -58,23 +92,50 @@ export default function ChatPage() {
             setMainUser(user);
         };
         fetchUser();
+
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false;
+            recognitionRef.current.interimResults = false;
+            recognitionRef.current.lang = 'en-US';
+
+            recognitionRef.current.onresult = (event: SpeechRecognitionEvent) => {
+                const transcript = event.results[0][0].transcript;
+                setInput(transcript);
+                setIsListening(false);
+                // Automatically send if speech is captured
+                handleSend(transcript);
+            };
+
+            recognitionRef.current.onerror = (event: any) => {
+                console.error('Speech recognition error', event.error);
+                setIsListening(false);
+            };
+
+            recognitionRef.current.onend = () => {
+                setIsListening(false);
+            };
+        }
     }, [isClient]);
 
-    // Fetch initial message
+    // Initial greeting
     useEffect(() => {
         if (!isClient) return;
-        async function getInitialMessage() {
+        const startChat = async () => {
+            setIsLoading(true);
             try {
                 const response = await chatWithNirmaan({ history: [] });
                 setMessages([{ role: 'model', text: response }]);
-            } catch (error) {
-                console.error("Error getting initial message:", error);
-                setMessages([{ role: 'model', text: "Hello! I'm having a little trouble starting our chat right now. Please try again in a moment." }]);
+                speakText(response);
+            } catch (err) {
+                console.error(err);
             } finally {
                 setIsLoading(false);
             }
-        }
-        getInitialMessage();
+        };
+        startChat();
     }, [isClient]);
 
     // Auto-scroll
@@ -86,33 +147,56 @@ export default function ChatPage() {
         }
     }, [messages, isLoading, isClient]);
 
-    const handleSend = async () => {
-        if (!input.trim() || isLoading) return;
+    const speakText = async (text: string) => {
+        setIsSpeaking(true);
+        try {
+            const { audioUri } = await generateSpeech({ text });
+            if (audioRef.current) {
+                audioRef.current.src = audioUri;
+                audioRef.current.play();
+                audioRef.current.onended = () => setIsSpeaking(false);
+            }
+        } catch (error) {
+            console.error("TTS Error:", error);
+            setIsSpeaking(false);
+        }
+    };
 
-        const userMessage: Message = { role: 'user', text: input };
-        const userMessageText = input; // Save the message before clearing
-        
-        // Add user message to UI immediately
+    const toggleListening = () => {
+        if (isListening) {
+            recognitionRef.current?.stop();
+            setIsListening(false);
+        } else {
+            setInput('');
+            recognitionRef.current?.start();
+            setIsListening(true);
+        }
+    };
+
+    const handleSend = async (textToSend?: string) => {
+        const messageText = textToSend || input;
+        if (!messageText.trim() || isLoading) return;
+
+        const userMessage: Message = { role: 'user', text: messageText };
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setIsLoading(true);
 
-        // Build history from the messages state *before* adding the new one.
         const chatHistory = messages.map(msg => ({
             role: msg.role,
             content: [{ text: msg.text }],
         }));
 
         try {
-            // Pass history + new message separately
             const response = await chatWithNirmaan({ 
                 history: chatHistory,
-                message: userMessageText 
+                message: messageText 
             });
             setMessages(prev => [...prev, { role: 'model', text: response }]);
+            speakText(response);
         } catch (error) {
             console.error("Error sending message:", error);
-            setMessages(prev => [...prev, { role: 'model', text: "Oops! Something went wrong. Let's try that again." }]);
+            setMessages(prev => [...prev, { role: 'model', text: "Oops! My internet is a bit sleepy. Can we try again?" }]);
         } finally {
             setIsLoading(false);
         }
@@ -120,49 +204,53 @@ export default function ChatPage() {
     
     const userAvatar = mainUser ? PlaceHolderImages.find(p => p.id === mainUser.avatarUrl) : null;
 
-    if (!isClient) {
-        return null;
-    }
+    if (!isClient) return null;
 
     return (
-        <div className="flex flex-col h-screen bg-background">
-            <header className="flex items-center p-4 border-b">
+        <div className="flex flex-col h-screen bg-background overflow-hidden">
+            <audio ref={audioRef} className="hidden" />
+            <header className="flex items-center p-4 border-b bg-card">
                 <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
                     <ArrowLeft />
                 </Button>
                 <div className="flex items-center gap-3">
-                    <BotIcon />
+                    <BotIcon isSpeaking={isSpeaking} />
                     <div>
                         <h1 className="text-lg font-bold">Nirmaan AI</h1>
-                        <p className="text-xs text-muted-foreground">Your friendly mentor</p>
+                        <p className="text-xs text-muted-foreground">English Practice Buddy ✨</p>
                     </div>
                 </div>
             </header>
 
             <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                 <div className="flex flex-col gap-4">
+                 <div className="flex flex-col gap-6 max-w-2xl mx-auto py-4">
                     {messages.map((message, index) => (
-                        <div key={index} className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''}`}>
-                             {message.role === 'model' && <BotIcon />}
-                            <div className={`rounded-2xl p-3 max-w-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-muted rounded-bl-none'}`}>
-                                <p className="whitespace-pre-wrap">{message.text}</p>
+                        <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? 'justify-end' : '')}>
+                             {message.role === 'model' && <BotIcon isSpeaking={index === messages.length - 1 && isSpeaking} />}
+                            <div className={cn(
+                                "rounded-2xl p-4 shadow-sm transition-all",
+                                message.role === 'user' 
+                                    ? 'bg-primary text-primary-foreground rounded-br-none' 
+                                    : 'bg-card border rounded-bl-none'
+                            )}>
+                                <p className="whitespace-pre-wrap text-base leading-relaxed">{message.text}</p>
                             </div>
                              {message.role === 'user' && mainUser && (
-                                <Avatar className="w-10 h-10">
+                                <Avatar className="w-10 h-10 ring-2 ring-primary/20">
                                     {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt={mainUser.name} data-ai-hint={userAvatar.imageHint} />}
                                     <AvatarFallback>{mainUser.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                              )}
                         </div>
                     ))}
-                    {isLoading && messages.length > 0 && (
+                    {isLoading && (
                          <div className="flex items-start gap-3">
                             <BotIcon />
-                            <div className="rounded-2xl p-3 max-w-sm bg-muted rounded-bl-none">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-pulse delay-0"></span>
-                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-pulse delay-150"></span>
-                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-pulse delay-300"></span>
+                            <div className="rounded-2xl p-4 bg-muted rounded-bl-none">
+                                <div className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce delay-0"></span>
+                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce delay-150"></span>
+                                    <span className="h-2 w-2 rounded-full bg-slate-400 animate-bounce delay-300"></span>
                                 </div>
                             </div>
                          </div>
@@ -170,22 +258,45 @@ export default function ChatPage() {
                  </div>
             </ScrollArea>
             
-            <footer className="p-4 border-t bg-background">
-                <div className="flex flex-col items-center gap-4">
-                     <Button variant="outline" size="icon" className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/30 text-primary hover:bg-primary/20" disabled={true}>
-                        <Mic className="w-10 h-10" />
-                    </Button>
-                    <div className="flex items-center gap-2 w-full">
+            <footer className="p-6 border-t bg-card">
+                <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
+                    <div className="relative group">
+                        {isListening && (
+                            <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+                        )}
+                        <Button 
+                            variant={isListening ? "destructive" : "default"}
+                            size="icon" 
+                            className={cn(
+                                "w-24 h-24 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95",
+                                isListening && "bg-red-500 hover:bg-red-600"
+                            )}
+                            onClick={toggleListening}
+                            disabled={isLoading}
+                        >
+                            {isListening ? <MicOff className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
+                        </Button>
+                        <p className="text-center mt-3 font-bold text-primary animate-pulse">
+                            {isListening ? "Listening..." : "Tap to Speak"}
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 w-full">
                         <Input 
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder="Type your message..." 
-                            className="flex-1"
+                            placeholder="Type here if you prefer..." 
+                            className="flex-1 h-12 rounded-full px-6 bg-muted/50 border-none"
                             disabled={isLoading}
                         />
-                        <Button onClick={handleSend} disabled={isLoading || !input.trim()}>
-                            <Send />
+                        <Button 
+                            onClick={() => handleSend()} 
+                            disabled={isLoading || !input.trim()}
+                            size="icon"
+                            className="h-12 w-12 rounded-full shadow-lg"
+                        >
+                            <Send className="w-5 h-5" />
                         </Button>
                     </div>
                 </div>
