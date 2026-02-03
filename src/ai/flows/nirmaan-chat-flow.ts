@@ -49,13 +49,18 @@ const nirmaanChatFlow = ai.defineFlow(
   async ({ history, message }) => {
     // Robustly clean the history to ensure it matches the Genkit MessageData format.
     const safeHistory = (history || [])
-      .filter(m => m && m.role && Array.isArray(m.content))
-      .map(m => ({
-        role: m.role,
-        content: m.content.filter(part => part && typeof part.text === 'string' && part.text.trim() !== '')
-      }))
-      .filter(m => m.content.length > 0);
+      .filter(m => m && (m.role === 'user' || m.role === 'model') && Array.isArray(m.content))
+      .map(m => {
+        const validParts = m.content.filter(part => part && typeof part.text === 'string' && part.text.trim() !== '');
+        if (validParts.length === 0) return null;
+        return {
+          role: m.role as 'user' | 'model',
+          content: validParts.map(p => ({ text: p.text }))
+        };
+      })
+      .filter((m): m is { role: 'user' | 'model'; content: { text: string }[] } => m !== null);
 
+    // Ensure we always have a prompt for the model
     // If both message and history are empty, we need a prompt to start the conversation properly
     const promptText = message?.trim() || (safeHistory.length === 0 ? "Hi! Please introduce yourself to me!" : "");
 
