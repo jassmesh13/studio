@@ -3,9 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff, Loader2, AlertCircle, Volume2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { chatWithNirmaan } from '@/ai/flows/nirmaan-chat-flow';
+import { generateSpeech } from '@/ai/flows/tts-flow';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getMainUser } from '@/lib/data';
@@ -16,13 +17,19 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type Message = {
+    id: string;
     role: 'user' | 'model';
     text: string;
     audioUri?: string;
+    isGeneratingAudio?: boolean;
 };
 
-const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
-    <div className={cn("relative flex-shrink-0 transition-all duration-300", isSpeaking && "scale-110")}>
+const BotIcon = ({ isSpeaking, isThinking }: { isSpeaking?: boolean; isThinking?: boolean }) => (
+    <div className={cn(
+        "relative flex-shrink-0 transition-all duration-300", 
+        isSpeaking && "scale-110",
+        isThinking && "animate-pulse"
+    )}>
         <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="32" r="32" fill="#FFC107"/>
             <path d="M16 32C16 22.0589 24.0589 14 34 14C43.9411 14 52 22.0589 52 32" stroke="white" strokeWidth="6"/>
@@ -62,7 +69,7 @@ export default function ChatPage() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const recognitionRef = useRef<any>(null);
     const hasInitializedGreeting = useRef(false);
-    const lastPlayedAudioIndex = useRef<number>(-1);
+    const lastAudioIdRef = useRef<string | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -102,19 +109,7 @@ export default function ChatPage() {
 
         if (!hasInitializedGreeting.current) {
             hasInitializedGreeting.current = true;
-            const startChat = async () => {
-                setIsLoading(true);
-                try {
-                    const response = await chatWithNirmaan({ history: [] });
-                    const newMessage: Message = { role: 'model', text: response.text, audioUri: response.audioUri };
-                    setMessages([newMessage]);
-                } catch (err) {
-                    console.error("Initial chat error:", err);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            startChat();
+            initializeChat();
         }
 
         return () => {
@@ -122,28 +117,51 @@ export default function ChatPage() {
         };
     }, []);
 
-    // Automatically play the last model audio if available
-    useEffect(() => {
-        if (messages.length > 0) {
-            const lastIndex = messages.length - 1;
-            const lastMsg = messages[lastIndex];
-            if (lastMsg.role === 'model' && lastMsg.audioUri && lastPlayedAudioIndex.current < lastIndex) {
-                playAudio(lastMsg.audioUri, lastIndex);
-            }
+    const initializeChat = async () => {
+        setIsLoading(true);
+        try {
+            const response = await chatWithNirmaan({ history: [] });
+            const msgId = Math.random().toString(36).substring(7);
+            const newMessage: Message = { 
+                id: msgId, 
+                role: 'model', 
+                text: response.text, 
+                isGeneratingAudio: true 
+            };
+            setMessages([newMessage]);
+            // Background TTS
+            triggerTTS(response.text, msgId);
+        } catch (err) {
+            console.error("Initial chat error:", err);
+        } finally {
+            setIsLoading(false);
         }
-    }, [messages]);
+    };
 
-    useEffect(() => {
-        if (!isMounted) return;
-        const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
-        if (viewport) {
-            viewport.scrollTop = viewport.scrollHeight;
+    const triggerTTS = async (text: string, messageId: string) => {
+        try {
+            const { audioUri } = await generateSpeech({ text });
+            setMessages(prev => prev.map(m => 
+                m.id === messageId 
+                ? { ...m, audioUri, isGeneratingAudio: false } 
+                : m
+            ));
+            // Auto-play the audio if it's the latest model message
+            playAudio(audioUri, messageId);
+        } catch (error) {
+            console.error("TTS generation failed:", error);
+            setMessages(prev => prev.map(m => 
+                m.id === messageId ? { ...m, isGeneratingAudio: false } : m
+            ));
         }
-    }, [messages, isLoading, isMounted]);
+    };
 
-    const playAudio = (uri: string, index: number) => {
+    const playAudio = (uri: string, id: string) => {
         if (!audioRef.current) return;
-        lastPlayedAudioIndex.current = index;
+        // Don't play if we already played this specific message's audio
+        if (lastAudioIdRef.current === id) return;
+        
+        lastAudioIdRef.current = id;
         setIsSpeaking(true);
         audioRef.current.src = uri;
         audioRef.current.play().catch(e => {
@@ -152,6 +170,14 @@ export default function ChatPage() {
         });
         audioRef.current.onended = () => setIsSpeaking(false);
     };
+
+    useEffect(() => {
+        if (!isMounted) return;
+        const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
+        if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+        }
+    }, [messages, isLoading, isMounted]);
 
     const toggleListening = () => {
         if (!recognitionRef.current) {
@@ -175,7 +201,8 @@ export default function ChatPage() {
         const messageText = textToSend || input;
         if (!messageText.trim() || isLoading) return;
 
-        setMessages(prev => [...prev, { role: 'user', text: messageText }]);
+        const userMsgId = Math.random().toString(36).substring(7);
+        setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: messageText }]);
         setInput('');
         setIsLoading(true);
         setIsListening(false);
@@ -186,15 +213,33 @@ export default function ChatPage() {
         }));
 
         try {
+            // STEP 1: Get Text Response (Fast Path)
             const response = await chatWithNirmaan({ 
                 history: chatHistory,
                 message: messageText 
             });
-            setMessages(prev => [...prev, { role: 'model', text: response.text, audioUri: response.audioUri }]);
+            
+            const botMsgId = Math.random().toString(36).substring(7);
+            setMessages(prev => [...prev, { 
+                id: botMsgId, 
+                role: 'model', 
+                text: response.text, 
+                isGeneratingAudio: true 
+            }]);
+            
+            // Text is now visible, stop main loading
+            setIsLoading(false);
+
+            // STEP 2: Trigger TTS (Slow Path / Background)
+            triggerTTS(response.text, botMsgId);
+
         } catch (error) {
             console.error("Error sending message:", error);
-            setMessages(prev => [...prev, { role: 'model', text: "Oops! My internet is a bit sleepy. Can we try again?" }]);
-        } finally {
+            setMessages(prev => [...prev, { 
+                id: 'err-' + Date.now(), 
+                role: 'model', 
+                text: "Oops! My internet is a bit sleepy. Can we try again?" 
+            }]);
             setIsLoading(false);
         }
     };
@@ -212,7 +257,7 @@ export default function ChatPage() {
                     <ArrowLeft className="w-6 h-6" />
                 </Button>
                 <div className="flex items-center gap-3">
-                    <BotIcon isSpeaking={isSpeaking} />
+                    <BotIcon isSpeaking={isSpeaking} isThinking={isLoading} />
                     <div>
                         <h1 className="text-lg font-bold text-primary">Nirmaan Bot ✨</h1>
                         <p className="text-xs text-muted-foreground">English Buddy</p>
@@ -232,15 +277,23 @@ export default function ChatPage() {
                       </Alert>
                     )}
                     {messages.map((message, index) => (
-                        <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? 'flex-row-reverse' : '')}>
-                             {message.role === 'model' && <BotIcon isSpeaking={index === messages.length - 1 && isSpeaking} />}
+                        <div key={message.id} className={cn("flex items-start gap-3", message.role === 'user' ? 'flex-row-reverse' : '')}>
+                             {message.role === 'model' && (
+                                <BotIcon isSpeaking={isSpeaking && message.id === lastAudioIdRef.current} />
+                             )}
                             <div className={cn(
-                                "rounded-2xl p-4 shadow-sm transition-all max-w-[80%]",
+                                "relative rounded-2xl p-4 shadow-sm transition-all max-w-[80%]",
                                 message.role === 'user' 
                                     ? 'bg-primary text-primary-foreground rounded-br-none' 
                                     : 'bg-card border rounded-bl-none'
                             )}>
                                 <p className="whitespace-pre-wrap text-base leading-relaxed">{message.text}</p>
+                                {message.isGeneratingAudio && (
+                                    <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground animate-pulse">
+                                        <Volume2 className="w-3 h-3" />
+                                        Preparing voice...
+                                    </div>
+                                )}
                             </div>
                              {message.role === 'user' && mainUser && (
                                 <Avatar className="w-10 h-10 ring-2 ring-primary/20">
@@ -252,7 +305,7 @@ export default function ChatPage() {
                     ))}
                     {isLoading && (
                          <div className="flex items-start gap-3">
-                            <BotIcon />
+                            <BotIcon isThinking />
                             <div className="rounded-2xl p-4 bg-muted rounded-bl-none">
                                 <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                             </div>
