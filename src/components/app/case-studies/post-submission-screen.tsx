@@ -127,7 +127,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                                 Nirmaan's Thoughts
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-6 text-lg leading-relaxed text-foreground/80 font-medium">
+                        <CardContent className="pt-6 text-lg leading-relaxed text-foreground/90 font-bold">
                             <p>{feedback?.analysis}</p>
                         </CardContent>
                     </Card>
@@ -141,7 +141,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                         </CardHeader>
                         <CardContent className="pt-6">
                             <div className="bg-accent/50 p-5 rounded-2xl border-2 border-dashed border-primary/20">
-                                <p className="font-bold italic text-primary text-lg">"{feedback?.growthInsight}"</p>
+                                <p className="font-black italic text-primary text-lg">"{feedback?.growthInsight}"</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -155,8 +155,8 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                                     <Star className="w-5 h-5 text-yellow-300 fill-yellow-300" />
                                 </div>
                                 <div className="bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full border border-white/30">
-                                    <span className="font-bold text-2xl text-white">
-                                        {feedback.skillBoosted} <span className="ml-1 text-yellow-300">+10</span>
+                                    <span className="font-black text-2xl text-white">
+                                        {feedback.skillBoosted} <span className="ml-1 text-yellow-300 font-bold">+10</span>
                                     </span>
                                 </div>
                             </div>
