@@ -11,11 +11,16 @@ export function DashboardLayoutClient({ children }: { children: React.ReactNode 
     }
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-b from-accent to-orange-200 relative">
-            <main className="p-4 md:p-6">
-              {children}
-            </main>
+        <div className="min-h-screen w-full bg-gradient-to-b from-accent to-orange-100 relative flex overflow-x-hidden">
+            {/* Navigation (Responsive) */}
             <AppSidebar />
+            
+            {/* Main Content Area */}
+            <main className="flex-1 min-h-screen w-full md:ml-72 transition-all">
+                <div className="p-4 md:p-10 lg:p-12 max-w-6xl mx-auto w-full pb-24 md:pb-12">
+                    {children}
+                </div>
+            </main>
         </div>
-      );
+    );
 }
