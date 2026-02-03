@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState, useRef } from "react";
@@ -123,26 +122,26 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 )}>
                     <Card className="text-left bg-white shadow-xl border-primary/10 overflow-hidden">
                         <CardHeader className="bg-primary/5 pb-4">
-                            <CardTitle className="flex items-center gap-2 text-primary text-lg">
-                                <Brain className="w-5 h-5" />
+                            <CardTitle className="flex items-center gap-2 text-primary text-2xl font-black">
+                                <Brain className="w-7 h-7" />
                                 Nirmaan's Thoughts
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-6 text-base leading-relaxed text-foreground/80">
+                        <CardContent className="pt-6 text-lg leading-relaxed text-foreground/80 font-medium">
                             <p>{feedback?.analysis}</p>
                         </CardContent>
                     </Card>
 
                     <Card className="text-left bg-white shadow-xl border-red-100">
                         <CardHeader className="bg-red-50/50 pb-4">
-                            <CardTitle className="flex items-center gap-2 text-red-500 text-lg">
-                                <Heart className="w-5 h-5 fill-red-500" />
+                            <CardTitle className="flex items-center gap-2 text-red-500 text-2xl font-black">
+                                <Heart className="w-7 h-7 fill-red-500" />
                                 Growth Insight
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-6">
                             <div className="bg-accent/50 p-5 rounded-2xl border-2 border-dashed border-primary/20">
-                                <p className="font-bold italic text-primary text-base">"{feedback?.growthInsight}"</p>
+                                <p className="font-bold italic text-primary text-lg">"{feedback?.growthInsight}"</p>
                             </div>
                         </CardContent>
                     </Card>
