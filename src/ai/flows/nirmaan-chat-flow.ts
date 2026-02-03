@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -61,9 +60,8 @@ const nirmaanChatFlow = ai.defineFlow(
       })
       .filter((m): m is { role: 'user' | 'model'; content: { text: string }[] } => m !== null);
 
-    // Ensure we always have a prompt for the model
-    // If both message and history are empty, we need a prompt to start the conversation properly
-    const promptText = message?.trim() || (safeHistory.length === 0 ? "Hi! Please introduce yourself to me!" : "");
+    // Use a prompt even if message is empty to trigger the greeting
+    const promptText = message?.trim() || "Hi!";
 
     const response = await ai.generate({
       model: 'googleai/gemini-1.5-flash',

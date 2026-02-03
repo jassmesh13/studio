@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -14,6 +13,7 @@ import { getMainUser } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { User } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 type Message = {
     role: 'user' | 'model';
@@ -44,8 +44,8 @@ declare global {
 }
 
 const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
-    <div className={cn("relative flex-shrink-0 transition-all", isSpeaking && "scale-110 shadow-primary/50 shadow-2xl")}>
-        <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div className={cn("relative flex-shrink-0 transition-all duration-300", isSpeaking && "scale-110")}>
+        <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="32" r="32" fill="#FFC107"/>
             <path d="M16 32C16 22.0589 24.0589 14 34 14C43.9411 14 52 22.0589 52 32" stroke="white" strokeWidth="6"/>
             <rect x="12" y="29" width="8" height="16" rx="4" fill="white"/>
@@ -59,9 +59,9 @@ const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
         </svg>
         {isSpeaking && (
             <div className="absolute -top-1 -right-1">
-                <span className="flex h-3 w-3">
+                <span className="flex h-4 w-4">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                    <span className="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
                 </span>
             </div>
         )}
@@ -70,6 +70,7 @@ const BotIcon = ({ isSpeaking }: { isSpeaking?: boolean }) => (
 
 export default function ChatPage() {
     const router = useRouter();
+    const { toast } = useToast();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -111,13 +112,20 @@ export default function ChatPage() {
             recognitionRef.current.onerror = (event: any) => {
                 console.error('Speech recognition error', event.error);
                 setIsListening(false);
+                if (event.error === 'not-allowed') {
+                    toast({
+                        variant: 'destructive',
+                        title: 'Mic Permission Required',
+                        description: 'Please allow microphone access in your browser settings to speak to Nirmaan.',
+                    });
+                }
             };
 
             recognitionRef.current.onend = () => {
                 setIsListening(false);
             };
         }
-    }, [isClient]);
+    }, [isClient, toast]);
 
     // Initial greeting
     useEffect(() => {
@@ -125,12 +133,11 @@ export default function ChatPage() {
         const startChat = async () => {
             setIsLoading(true);
             try {
-                // Ensure history is sent as an empty array to match Genkit expectation
                 const response = await chatWithNirmaan({ history: [] });
                 setMessages([{ role: 'model', text: response }]);
                 speakText(response);
             } catch (err) {
-                console.error(err);
+                console.error("Initial chat error:", err);
             } finally {
                 setIsLoading(false);
             }
@@ -168,8 +175,12 @@ export default function ChatPage() {
             setIsListening(false);
         } else {
             setInput('');
-            recognitionRef.current?.start();
-            setIsListening(true);
+            try {
+                recognitionRef.current?.start();
+                setIsListening(true);
+            } catch (err) {
+                console.error("Recognition start error:", err);
+            }
         }
     };
 
@@ -209,8 +220,8 @@ export default function ChatPage() {
     return (
         <div className="flex flex-col h-screen bg-background overflow-hidden">
             <audio ref={audioRef} className="hidden" />
-            <header className="flex items-center p-4 border-b bg-card">
-                <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-4">
+            <header className="flex items-center p-4 border-b bg-card z-20">
+                <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
                     <ArrowLeft />
                 </Button>
                 <div className="flex items-center gap-3">
@@ -258,9 +269,10 @@ export default function ChatPage() {
                  </div>
             </ScrollArea>
             
-            <footer className="p-6 border-t bg-card">
-                <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
-                    <div className="relative group">
+            <footer className="p-4 border-t bg-card relative z-20">
+                <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto">
+                    {/* Big Voice Button in center */}
+                    <div className="relative">
                         {isListening && (
                             <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
                         )}
@@ -268,7 +280,7 @@ export default function ChatPage() {
                             variant={isListening ? "destructive" : "default"}
                             size="icon" 
                             className={cn(
-                                "w-24 h-24 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95",
+                                "w-20 h-20 rounded-full shadow-xl transition-transform hover:scale-105 active:scale-95",
                                 isListening && "bg-red-500 hover:bg-red-600"
                             )}
                             onClick={toggleListening}
@@ -276,25 +288,26 @@ export default function ChatPage() {
                         >
                             {isListening ? <MicOff className="w-10 h-10" /> : <Mic className="w-10 h-10" />}
                         </Button>
-                        <p className="text-center mt-3 font-bold text-primary animate-pulse">
-                            {isListening ? "Listening..." : "Tap to Speak"}
-                        </p>
                     </div>
+                    
+                    <p className="text-sm font-bold text-primary animate-pulse">
+                        {isListening ? "I'm listening..." : "Tap to Speak"}
+                    </p>
 
-                    <div className="flex items-center gap-3 w-full">
+                    <div className="flex items-center gap-2 w-full mt-2">
                         <Input 
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder="Type here if you prefer..." 
-                            className="flex-1 h-12 rounded-full px-6 bg-muted/50 border-none"
+                            placeholder="Type your message..." 
+                            className="flex-1 h-12 rounded-full px-6 bg-muted border-none"
                             disabled={isLoading}
                         />
                         <Button 
                             onClick={() => handleSend()} 
                             disabled={isLoading || !input.trim()}
                             size="icon"
-                            className="h-12 w-12 rounded-full shadow-lg"
+                            className="h-12 w-12 rounded-full"
                         >
                             <Send className="w-5 h-5" />
                         </Button>
