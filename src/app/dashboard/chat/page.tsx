@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -85,7 +84,7 @@ export default function ChatPage() {
                 try {
                     const response = await chatWithNirmaan({ history: [] });
                     setMessages([{ role: 'model', text: response }]);
-                    speakText(response);
+                    // Note: Audio auto-play might be blocked by browser until user interaction
                 } catch (err) {
                     console.error("Initial chat error:", err);
                 } finally {
@@ -106,9 +105,10 @@ export default function ChatPage() {
 
                 recognition.onresult = (event: any) => {
                     const transcript = event.results[0][0].transcript;
-                    setInput(transcript);
-                    setIsListening(false);
-                    handleSend(transcript);
+                    if (transcript) {
+                        setInput(transcript);
+                        handleSend(transcript);
+                    }
                 };
 
                 recognition.onerror = (event: any) => {
@@ -130,7 +130,7 @@ export default function ChatPage() {
         return () => {
             if (recognitionRef.current) recognitionRef.current.stop();
         };
-    }, []); // Only once on mount
+    }, []);
 
     useEffect(() => {
         if (!isMounted) return;
@@ -146,7 +146,7 @@ export default function ChatPage() {
             const { audioUri } = await generateSpeech({ text });
             if (audioRef.current) {
                 audioRef.current.src = audioUri;
-                audioRef.current.play();
+                audioRef.current.play().catch(e => console.warn("Audio play blocked by browser:", e));
                 audioRef.current.onended = () => setIsSpeaking(false);
             }
         } catch (error) {
@@ -167,6 +167,7 @@ export default function ChatPage() {
 
         if (isListening) {
             recognitionRef.current.stop();
+            setIsListening(false);
         } else {
             setInput('');
             setPermissionError(false);
@@ -188,6 +189,7 @@ export default function ChatPage() {
         setMessages(prev => [...prev, userMessage]);
         setInput('');
         setIsLoading(true);
+        setIsListening(false);
 
         const chatHistory = messages.map(msg => ({
             role: msg.role,

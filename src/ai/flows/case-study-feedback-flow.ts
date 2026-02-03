@@ -1,8 +1,7 @@
-
 'use server';
 
 /**
- * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses.
+ * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses using Gemini 2.5 Flash.
  */
 
 import { ai } from '@/ai/genkit';
@@ -41,11 +40,11 @@ const feedbackPrompt = ai.definePrompt({
     Answer Type: {{{answerType}}}
 
     {{#if hasMedia}}
-    I have provided the student's recorded response below. Please listen carefully to what they said to understand their reasoning.
+    The student has provided a recorded response. Please listen carefully to the audio (or watch the video) to understand their reasoning and emotions.
     Student Response Media: {{media url=mediaDataUri}}
-    {{else}}
-    Student's Answer Text: {{{userAnswer}}}
     {{/if}}
+
+    Student's Transcript/Answer: {{{userAnswer}}}
 
     Please provide feedback that is:
     1. Encouraging and positive.
@@ -64,6 +63,8 @@ const caseStudyFeedbackFlow = ai.defineFlow(
     outputSchema: CaseStudyFeedbackOutputSchema,
   },
   async (input) => {
+    // We send both the transcript and media (if small enough) to the model.
+    // Gemini 2.5 Flash handles multimodal input natively.
     const { output } = await feedbackPrompt(input);
     return output!;
   }

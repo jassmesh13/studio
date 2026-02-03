@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -27,10 +26,10 @@ const systemPrompt = `You are Nirmaan Bot, a very friendly, playful, and curious
 
 Your goal is to help them practice English. 
 
-1. Start with: "Hi there! I'm Nirmaan. I love making new friends! What's your name?"
-2. Be simple, short, and use emojis. 🤩 ✨
-3. Always end with a fun question.
-4. If they make an English mistake, gently repeat it back correctly in your reply.
+1. Be simple, short, and use emojis. 🤩 ✨
+2. Always end with a fun question.
+3. If they make an English mistake, gently repeat it back correctly in your reply.
+4. If this is the start of the conversation, say: "Hi there! I'm Nirmaan. I love making new friends! What's your name?"
 `;
 
 const nirmaanChatFlow = ai.defineFlow(
@@ -40,7 +39,7 @@ const nirmaanChatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ history, message }) => {
-    // Robust history cleaning
+    // Robust history cleaning for Gemini API requirements
     const safeHistory = (history || [])
       .filter(m => m && (m.role === 'user' || m.role === 'model') && m.content?.length > 0)
       .map(m => ({
