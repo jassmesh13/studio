@@ -26,10 +26,11 @@ export default function CaseStudyDetailPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const [recordedMediaURL, setRecordedMediaURL] = useState<string | null>(null);
+  const [recordedDataBase64, setRecordedDataBase64] = useState<string | null>(null);
+  const [selectedMCQOption, setSelectedMCQOption] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
-
 
   const fetchCaseStudy = useCallback(async () => {
       const study = await getCaseStudyById(id);
@@ -45,7 +46,6 @@ export default function CaseStudyDetailPage() {
     fetchCaseStudy();
   }, [fetchCaseStudy]);
 
-  // Clean up stream and URL on unmount
   useEffect(() => {
     return () => {
       stream?.getTracks().forEach(track => track.stop());
@@ -105,6 +105,14 @@ export default function CaseStudyDetailPage() {
         const blob = new Blob(recordedChunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setRecordedMediaURL(url);
+
+        // Convert blob to base64 for LLM
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+            setRecordedDataBase64(reader.result as string);
+        };
+
         setRecordingStatus('recorded');
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
@@ -126,21 +134,31 @@ export default function CaseStudyDetailPage() {
       URL.revokeObjectURL(recordedMediaURL);
     }
     setRecordedMediaURL(null);
+    setRecordedDataBase64(null);
     recordedChunksRef.current = [];
     mediaRecorderRef.current = null;
   };
 
   const handleSubmit = () => {
-    // In a real app, you would upload the blob here.
     setRecordingStatus('submitted');
   };
-
 
   const renderResponseUI = () => {
     if (!caseStudy) return null;
 
     if (recordingStatus === 'submitted') {
-        return <PostSubmissionScreen userName="Nyra" onDone={() => router.push('/dashboard/case-studies')} caseStudyId={caseStudy.id} />;
+        const studentAnswer = caseStudy.type === 'mcq' 
+            ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
+            : recordedDataBase64 || "";
+
+        return (
+            <PostSubmissionScreen 
+                userName="Nyra" 
+                onDone={() => router.push('/dashboard/case-studies')} 
+                caseStudy={caseStudy}
+                userAnswer={studentAnswer}
+            />
+        );
     }
 
     if (caseStudy.type === 'mcq') {
@@ -149,7 +167,7 @@ export default function CaseStudyDetailPage() {
           {caseStudy.mcqs?.map((mcq) => (
             <div key={mcq.id} className="bg-card p-4 rounded-xl">
               <p className="font-semibold mb-4">{mcq.question}</p>
-              <RadioGroup>
+              <RadioGroup onValueChange={setSelectedMCQOption} value={selectedMCQOption || ""}>
                 {mcq.options.map((option) => (
                   <div key={option.id} className="flex items-center space-x-2 bg-muted p-3 rounded-lg">
                     <RadioGroupItem value={option.id} id={option.id} />
@@ -159,14 +177,18 @@ export default function CaseStudyDetailPage() {
               </RadioGroup>
             </div>
           ))}
-          <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg">
+          <Button 
+            size="lg" 
+            onClick={handleSubmit} 
+            disabled={!selectedMCQOption}
+            className="w-full h-14 rounded-full text-lg"
+          >
             Submit Answer
           </Button>
         </div>
       );
     }
 
-    // This handles video and audio types
     switch (recordingStatus) {
       case 'idle':
         return (
