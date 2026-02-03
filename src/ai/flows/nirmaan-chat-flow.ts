@@ -60,6 +60,9 @@ const nirmaanChatFlow = ai.defineFlow(
 
     const promptText = message?.trim() || "Hi! I'm ready to chat.";
 
+    console.log('--- Nirmaan Chat Request ---');
+    console.log('User Input (Voice/Text):', promptText);
+    
     console.time('TextGeneration');
     try {
       const response = await ai.generate({
@@ -76,9 +79,13 @@ const nirmaanChatFlow = ai.defineFlow(
       });
 
       console.timeEnd('TextGeneration');
+      console.log('Nirmaan Response:', response.text);
+      console.log('---------------------------');
+      
       return { text: response.text };
     } catch (error) {
-      console.error('--- Nirmaan Chat ERROR ---', error);
+      console.error('--- Nirmaan Chat ERROR ---');
+      console.error(error);
       throw error;
     }
   }

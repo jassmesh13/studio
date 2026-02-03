@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -65,15 +64,16 @@ const caseStudyFeedbackFlow = ai.defineFlow(
   },
   async (input) => {
     console.log('--- Case Study Feedback Request ---');
-    console.log('Scenario Snippet:', input.scenario.substring(0, 50) + '...');
     console.log('Answer Type:', input.answerType);
     console.log('Has Media:', input.hasMedia);
-    console.log('User Transcript:', input.userAnswer);
+    console.log('Student Answer/Transcript:', input.userAnswer);
 
     try {
         const { output } = await feedbackPrompt(input);
         console.log('--- Case Study Feedback Success ---');
+        console.log('Analysis Snippet:', output?.analysis.substring(0, 50) + '...');
         console.log('Boosted Skill:', output?.skillBoosted);
+        console.log('------------------------------------');
         return output!;
     } catch (error) {
         console.error('--- Case Study Feedback ERROR ---');
