@@ -40,7 +40,7 @@ const feedbackPrompt = ai.definePrompt({
     Answer Type: {{{answerType}}}
 
     {{#if hasMedia}}
-    The student has provided a recorded response. Please listen carefully to the audio (or watch the video) to understand their reasoning and emotions.
+    The student has provided a recorded response. Please listen carefully to the audio or watch the video to understand their reasoning and emotions.
     Student Response Media: {{media url=mediaDataUri}}
     {{/if}}
 

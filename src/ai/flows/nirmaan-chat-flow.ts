@@ -61,6 +61,7 @@ const nirmaanChatFlow = ai.defineFlow(
       prompt: promptText,
     });
 
+    // Genkit 1.x uses .text property, not .text() function
     return response.text;
   }
 );
