@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Heart, Star, Loader2, PartyPopper, Sparkles } from "lucide-react";
@@ -20,12 +21,17 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
     const [showCelebration, setShowCelebration] = useState(false);
+    const fetchInProgress = useRef(false);
+    const hasFetched = useRef(false);
 
     useEffect(() => {
         // Ensure user is at the top of the screen to see the celebration
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         async function fetchFeedback() {
+            if (fetchInProgress.current || hasFetched.current) return;
+            
+            fetchInProgress.current = true;
             setLoading(true);
             try {
                 let mediaDataUri = undefined;
@@ -58,6 +64,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 });
                 setFeedback(result);
                 setShowCelebration(true);
+                hasFetched.current = true;
             } catch (error) {
                 console.error("Failed to generate AI feedback:", error);
                 setFeedback({
@@ -68,15 +75,17 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 setShowCelebration(true);
             } finally {
                 setLoading(false);
+                fetchInProgress.current = false;
             }
         }
 
-        fetchFeedback();
+        if (userAnswer && !hasFetched.current) {
+            fetchFeedback();
+        }
     }, [caseStudy, userAnswer, recordedMediaURL]);
 
     return (
         <div className="w-full max-w-lg mx-auto text-center px-4 pt-8">
-            {/* Celebratory Header - Always at the top */}
             <div className={cn(
                 "mb-8 transform transition-all duration-700 ease-out",
                 !loading ? "scale-100 opacity-100" : "scale-90 opacity-100"

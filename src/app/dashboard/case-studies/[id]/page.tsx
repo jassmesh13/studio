@@ -31,6 +31,7 @@ export default function CaseStudyDetailPage() {
   const [recordedMediaURL, setRecordedMediaURL] = useState<string | null>(null);
   const [transcript, setTranscript] = useState<string>('');
   const [selectedMCQOption, setSelectedMCQOption] = useState<string | null>(null);
+  const [finalAnswer, setFinalAnswer] = useState<string>('');
 
   const recognitionRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -171,11 +172,20 @@ export default function CaseStudyDetailPage() {
     }
     setRecordedMediaURL(null);
     setTranscript('');
+    setFinalAnswer('');
     recordedChunksRef.current = [];
     mediaRecorderRef.current = null;
   };
 
   const handleSubmit = () => {
+    if (!caseStudy) return;
+    
+    // Freeze the current state of the answer so late transcripts don't interrupt
+    const studentAnswer = caseStudy.type === 'mcq' 
+        ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
+        : transcript || "Media Response";
+    
+    setFinalAnswer(studentAnswer);
     setRecordingStatus('submitted');
   };
 
@@ -183,16 +193,12 @@ export default function CaseStudyDetailPage() {
     if (!caseStudy) return null;
 
     if (recordingStatus === 'submitted') {
-        const studentAnswer = caseStudy.type === 'mcq' 
-            ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
-            : transcript || "Media Response";
-
         return (
             <PostSubmissionScreen 
                 userName="Nyra" 
                 onDone={() => router.push('/dashboard/case-studies')} 
                 caseStudy={caseStudy}
-                userAnswer={studentAnswer}
+                userAnswer={finalAnswer}
                 recordedMediaURL={recordedMediaURL}
             />
         );

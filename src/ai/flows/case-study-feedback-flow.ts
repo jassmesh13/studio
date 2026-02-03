@@ -49,8 +49,8 @@ const feedbackPrompt = ai.definePrompt({
     Please provide feedback that is:
     1. Encouraging and positive.
     2. Explains the values behind their choice (like kindness, honesty, etc.).
-    3. Provides a "Growth Insight" on how to handle similar situations in the future.
-    4. Identifies ONE primary skill boosted (e.g., Empathy, Decision-Making, Honesty, Responsibility).
+    3. Provides a "Growth Insight" on how to handle similar situations in the future in single line.
+    4. Identifies ONE primary skill boosted (e.g., Empathy, Decision-Making, Honesty, Responsibility, etc. based on response).
     5. VERY IMPORTANT: Keep the 'analysis' field summary short, exactly between 20-25 words.
     
     Keep the tone playful, supportive, and appropriate for a child.
