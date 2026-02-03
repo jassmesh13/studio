@@ -1,3 +1,4 @@
+
 'use client';
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -50,7 +51,6 @@ export default function CaseStudyDetailPage() {
   }, [fetchCaseStudy]);
 
   useEffect(() => {
-    // Setup Speech Recognition (for visual feedback on screen)
     if (typeof window !== 'undefined') {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -92,22 +92,19 @@ export default function CaseStudyDetailPage() {
     setRecordingStatus('permission');
     setPermissionError(false);
 
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      toast({ variant: 'destructive', title: 'Not Supported', description: 'Your browser does not support media recording.' });
-      setRecordingStatus('idle');
-      return;
-    }
-
     try {
       const isAudioOnly = caseStudy.type === 'audio';
       const mediaStream = await navigator.mediaDevices.getUserMedia({ video: !isAudioOnly, audio: true });
       setStream(mediaStream);
       setRecordingStatus('recording');
       
-      // Start STT for visual display only
       if (recognitionRef.current) {
         setTranscript('');
-        recognitionRef.current.start();
+        try {
+          recognitionRef.current.start();
+        } catch (e) {
+          console.warn("Recognition already started or error:", e);
+        }
       }
     } catch (error) {
       console.error('Error accessing media devices:', error);
@@ -129,13 +126,15 @@ export default function CaseStudyDetailPage() {
       }
       
       const mimeType = caseStudy.type === 'video' ? 'video/webm' : 'audio/webm';
-      if (!MediaRecorder.isTypeSupported(mimeType)) {
+      const finalMimeType = MediaRecorder.isTypeSupported(mimeType) ? mimeType : '';
+      
+      if (!finalMimeType) {
         toast({ variant: 'destructive', title: 'Unsupported Format', description: `Your browser does not support recording in ${mimeType} format.` });
         setRecordingStatus('idle');
         return;
       }
       
-      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType });
+      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: finalMimeType });
 
       recordedChunksRef.current = [];
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -145,7 +144,7 @@ export default function CaseStudyDetailPage() {
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(recordedChunksRef.current, { type: mimeType });
+        const blob = new Blob(recordedChunksRef.current, { type: finalMimeType });
         const url = URL.createObjectURL(blob);
         setRecordedMediaURL(url);
 
@@ -315,7 +314,7 @@ export default function CaseStudyDetailPage() {
           <ArrowLeft className="w-6 h-6" />
         </Button>
         <div className="bg-primary/20 text-primary p-2 rounded-lg">
-          <Image src="/icon.png" alt="Nirmaan Logo" width={24} height={24} className="h-auto" />
+          <Image src="https://picsum.photos/seed/nirmaan/48/48" alt="Nirmaan Logo" width={24} height={24} className="h-auto rounded-md" />
         </div>
         <div className="text-right flex-grow">
           <p className="text-sm font-semibold text-muted-foreground">Case Study #{caseStudy.caseNumber}</p>

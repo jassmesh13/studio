@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -39,14 +40,16 @@ const nirmaanChatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ history, message }) => {
+    // Robust history cleaning
     const safeHistory = (history || [])
-      .filter(m => m && (m.role === 'user' || m.role === 'model'))
+      .filter(m => m && (m.role === 'user' || m.role === 'model') && m.content?.length > 0)
       .map(m => ({
         role: m.role,
-        content: m.content.map(p => ({ text: p.text }))
-      }));
+        content: m.content.map(p => ({ text: p.text || "" })).filter(p => p.text.length > 0)
+      }))
+      .filter(m => m.content.length > 0);
 
-    const promptText = message?.trim() || "Hi! I just joined the chat.";
+    const promptText = message?.trim() || "Hi! I'm ready to chat.";
 
     const response = await ai.generate({
       model: 'googleai/gemini-2.5-flash',

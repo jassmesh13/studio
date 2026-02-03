@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -57,17 +58,15 @@ export default function ChatPage() {
     const [permissionError, setPermissionError] = useState(false);
     const [mainUser, setMainUser] = useState<User | null>(null);
     const [isMounted, setIsMounted] = useState(false);
+    
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const recognitionRef = useRef<any>(null);
-    const hasInitialized = useRef(false);
+    const hasInitializedGreeting = useRef(false);
 
     useEffect(() => {
         setIsMounted(true);
         
-        if (hasInitialized.current) return;
-        hasInitialized.current = true;
-
         const fetchUser = async () => {
             try {
                 const user = await getMainUser();
@@ -78,58 +77,60 @@ export default function ChatPage() {
         };
         fetchUser();
 
-        // Initial greeting
-        const startChat = async () => {
-            setIsLoading(true);
-            try {
-                const response = await chatWithNirmaan({ history: [] });
-                setMessages([{ role: 'model', text: response }]);
-                speakText(response);
-            } catch (err) {
-                console.error("Initial chat error:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        startChat();
+        // Initial greeting - using a ref to prevent double execution in strict mode
+        if (!hasInitializedGreeting.current) {
+            hasInitializedGreeting.current = true;
+            const startChat = async () => {
+                setIsLoading(true);
+                try {
+                    const response = await chatWithNirmaan({ history: [] });
+                    setMessages([{ role: 'model', text: response }]);
+                    speakText(response);
+                } catch (err) {
+                    console.error("Initial chat error:", err);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            startChat();
+        }
 
         // Speech Recognition Setup
         if (typeof window !== 'undefined') {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (SpeechRecognition) {
-                recognitionRef.current = new SpeechRecognition();
-                recognitionRef.current.continuous = false;
-                recognitionRef.current.interimResults = false;
-                recognitionRef.current.lang = 'en-US';
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
 
-                recognitionRef.current.onresult = (event: any) => {
+                recognition.onresult = (event: any) => {
                     const transcript = event.results[0][0].transcript;
                     setInput(transcript);
                     setIsListening(false);
                     handleSend(transcript);
                 };
 
-                recognitionRef.current.onerror = (event: any) => {
+                recognition.onerror = (event: any) => {
                     console.error('Speech recognition error', event.error);
                     setIsListening(false);
                     if (event.error === 'not-allowed') {
                         setPermissionError(true);
-                        toast({
-                            variant: 'destructive',
-                            title: 'Mic Permission Required',
-                            description: 'Please allow microphone access to speak to Nirmaan.',
-                        });
                     }
                 };
 
-                recognitionRef.current.onend = () => setIsListening(false);
+                recognition.onend = () => {
+                    setIsListening(false);
+                };
+
+                recognitionRef.current = recognition;
             }
         }
 
         return () => {
             if (recognitionRef.current) recognitionRef.current.stop();
         };
-    }, [toast]);
+    }, []); // Only once on mount
 
     useEffect(() => {
         if (!isMounted) return;
@@ -166,7 +167,6 @@ export default function ChatPage() {
 
         if (isListening) {
             recognitionRef.current.stop();
-            setIsListening(false);
         } else {
             setInput('');
             setPermissionError(false);
@@ -175,6 +175,7 @@ export default function ChatPage() {
                 setIsListening(true);
             } catch (err) {
                 console.error("Recognition start error:", err);
+                setIsListening(false);
             }
         }
     };
@@ -272,7 +273,6 @@ export default function ChatPage() {
             
             <footer className="p-6 border-t bg-card relative z-20">
                 <div className="flex flex-col items-center gap-6 max-w-2xl mx-auto">
-                    {/* Big Voice Button in center - Above text input */}
                     <div className="flex flex-col items-center gap-2">
                         <div className="relative">
                             {isListening && (
@@ -300,7 +300,7 @@ export default function ChatPage() {
                         <Input 
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder="Type a message..." 
                             className="flex-1 h-12 rounded-full px-6 bg-muted border-none focus-visible:ring-primary"
                             disabled={isLoading}
