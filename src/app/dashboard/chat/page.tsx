@@ -76,23 +76,6 @@ export default function ChatPage() {
         };
         fetchUser();
 
-        // Initial greeting - using a ref to prevent double execution in strict mode
-        if (!hasInitializedGreeting.current) {
-            hasInitializedGreeting.current = true;
-            const startChat = async () => {
-                setIsLoading(true);
-                try {
-                    const response = await chatWithNirmaan({ history: [] });
-                    setMessages([{ role: 'model', text: response }]);
-                } catch (err) {
-                    console.error("Initial chat error:", err);
-                } finally {
-                    setIsLoading(false);
-                }
-            };
-            startChat();
-        }
-
         // Speech Recognition Setup
         if (typeof window !== 'undefined') {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -108,7 +91,6 @@ export default function ChatPage() {
                 recognition.onresult = (event: any) => {
                     const transcript = event.results[0][0].transcript;
                     if (transcript) {
-                        setInput(transcript);
                         handleSend(transcript);
                     }
                 };
@@ -123,6 +105,25 @@ export default function ChatPage() {
 
                 recognitionRef.current = recognition;
             }
+        }
+
+        // Initial greeting
+        if (!hasInitializedGreeting.current) {
+            hasInitializedGreeting.current = true;
+            const startChat = async () => {
+                setIsLoading(true);
+                try {
+                    const response = await chatWithNirmaan({ history: [] });
+                    setMessages([{ role: 'model', text: response }]);
+                    // Bot speaks the greeting
+                    speakText(response);
+                } catch (err) {
+                    console.error("Initial chat error:", err);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            startChat();
         }
 
         return () => {
@@ -144,7 +145,7 @@ export default function ChatPage() {
             const { audioUri } = await generateSpeech({ text });
             if (audioRef.current) {
                 audioRef.current.src = audioUri;
-                audioRef.current.play().catch(e => console.warn("Audio play blocked by browser:", e));
+                audioRef.current.play().catch(e => console.warn("Audio play blocked:", e));
                 audioRef.current.onended = () => setIsSpeaking(false);
             }
         } catch (error) {
