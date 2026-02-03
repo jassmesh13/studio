@@ -12,9 +12,10 @@ interface PostSubmissionScreenProps {
     onDone: () => void;
     caseStudy: CaseStudy;
     userAnswer: string;
+    recordedMediaURL?: string | null;
 }
 
-export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer }: PostSubmissionScreenProps) {
+export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL }: PostSubmissionScreenProps) {
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -22,12 +23,31 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer }
         async function fetchFeedback() {
             setLoading(true);
             try {
-                const answerType = caseStudy.type;
+                let mediaDataUri = undefined;
+                
+                // Convert blob URL to base64 Data URI for the backend
+                if (recordedMediaURL) {
+                    try {
+                        const response = await fetch(recordedMediaURL);
+                        const blob = await response.blob();
+                        mediaDataUri = await new Promise<string>((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result as string);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        });
+                    } catch (err) {
+                        console.error("Failed to convert media to data URI:", err);
+                    }
+                }
+
                 const result = await generateCaseStudyFeedback({
                     scenario: caseStudy.content?.scenario || "",
                     question: caseStudy.content?.prompt || "",
                     userAnswer: userAnswer,
-                    answerType: answerType as 'text' | 'audio' | 'video' | 'mcq'
+                    answerType: caseStudy.type as 'text' | 'audio' | 'video' | 'mcq',
+                    mediaDataUri: mediaDataUri,
+                    hasMedia: !!mediaDataUri
                 });
                 setFeedback(result);
             } catch (error) {
@@ -43,14 +63,14 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer }
         }
 
         fetchFeedback();
-    }, [caseStudy, userAnswer]);
+    }, [caseStudy, userAnswer, recordedMediaURL]);
 
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] text-center gap-4">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
                 <h2 className="text-2xl font-bold text-primary">Nirmaan is thinking...</h2>
-                <p className="text-muted-foreground">Wait a moment while I look at your wonderful answer! ✨</p>
+                <p className="text-muted-foreground">Wait a moment while I listen to your wonderful answer! ✨</p>
             </div>
         );
     }

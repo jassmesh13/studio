@@ -50,7 +50,7 @@ export default function CaseStudyDetailPage() {
   }, [fetchCaseStudy]);
 
   useEffect(() => {
-    // Setup Speech Recognition
+    // Setup Speech Recognition (for visual feedback on screen)
     if (typeof window !== 'undefined') {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -104,7 +104,7 @@ export default function CaseStudyDetailPage() {
       setStream(mediaStream);
       setRecordingStatus('recording');
       
-      // Start STT
+      // Start STT for visual display only
       if (recognitionRef.current) {
         setTranscript('');
         recognitionRef.current.start();
@@ -186,7 +186,7 @@ export default function CaseStudyDetailPage() {
     if (recordingStatus === 'submitted') {
         const studentAnswer = caseStudy.type === 'mcq' 
             ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
-            : transcript || "No speech detected.";
+            : transcript || "Media Response";
 
         return (
             <PostSubmissionScreen 
@@ -194,6 +194,7 @@ export default function CaseStudyDetailPage() {
                 onDone={() => router.push('/dashboard/case-studies')} 
                 caseStudy={caseStudy}
                 userAnswer={studentAnswer}
+                recordedMediaURL={recordedMediaURL}
             />
         );
     }
@@ -279,14 +280,14 @@ export default function CaseStudyDetailPage() {
           <div className="w-full flex flex-col items-center gap-4">
             <p className="font-semibold text-lg">Review your response</p>
             <div className="w-full bg-muted p-6 rounded-xl border-2 border-primary/20">
-               <p className="text-primary font-bold mb-2">Transcript:</p>
-               <p className="italic text-lg">"{transcript || "No speech detected. Please try again."}"</p>
+               <p className="text-primary font-bold mb-2">Transcript (Preview):</p>
+               <p className="italic text-lg">"{transcript || "Ready to submit."}"</p>
             </div>
             <div className="flex w-full gap-4 mt-4">
                <Button size="lg" variant="outline" onClick={handleRetry} className="w-full h-14 rounded-full text-lg">
                     <RefreshCw className="w-6 h-6 mr-2" /> Retry
                 </Button>
-                <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg" disabled={!transcript}>
+                <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg">
                     <Send className="w-6 h-6 mr-2" /> Submit
                 </Button>
             </div>

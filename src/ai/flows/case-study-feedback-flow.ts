@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses using text transcripts.
+ * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses using multimodal inputs.
  */
 
 import { ai } from '@/ai/genkit';
@@ -10,8 +10,10 @@ import { z } from 'genkit';
 const CaseStudyFeedbackInputSchema = z.object({
   scenario: z.string(),
   question: z.string(),
-  userAnswer: z.string().describe('The student\'s answer text or transcript.'),
+  userAnswer: z.string().optional().describe('The student\'s answer text or transcript (fallback).'),
   answerType: z.enum(['text', 'audio', 'video', 'mcq']),
+  mediaDataUri: z.string().optional().describe('The recorded audio or video as a data URI.'),
+  hasMedia: z.boolean().optional().describe('Flag indicating if media is provided.'),
 });
 
 export type CaseStudyFeedbackInput = z.infer<typeof CaseStudyFeedbackInputSchema>;
@@ -36,7 +38,13 @@ const feedbackPrompt = ai.definePrompt({
     Scenario: {{{scenario}}}
     Question: {{{question}}}
     Answer Type: {{{answerType}}}
-    Student's Answer: {{{userAnswer}}}
+
+    {{#if hasMedia}}
+    I have provided the student's recorded response below. Please listen carefully to what they said to understand their reasoning.
+    Student Response Media: {{media url=mediaDataUri}}
+    {{else}}
+    Student's Answer Text: {{{userAnswer}}}
+    {{/if}}
 
     Please provide feedback that is:
     1. Encouraging and positive.
