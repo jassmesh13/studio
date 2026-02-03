@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Nirmaan Bot - A friendly AI companion for kids in Grade 2-3 focusing on English practice.
+ * @fileOverview Nirmaan Bot - A friendly AI companion using Gemini 2.5 Flash.
  */
 
 import { ai } from '@/ai/genkit';
@@ -22,22 +22,14 @@ const NirmaanChatInputSchema = z.object({
 export type NirmaanChatInput = z.infer<typeof NirmaanChatInputSchema>;
 export type NirmaanChatOutput = string;
 
-const systemPrompt = `You are Nirmaan Bot, a very friendly, playful, and curious AI friend for a child in Grade 2 or 3 (around 7-8 years old). 
+const systemPrompt = `You are Nirmaan Bot, a very friendly, playful, and curious AI friend for a child in Grade 2 or 3. 
 
-Your primary goal is to help them practice their English speaking skills in a natural, conversational way.
+Your goal is to help them practice English. 
 
-Here's how you should behave:
-
-1. **Always Start the Same Way:** If the conversation is just starting (history is empty), your very first message MUST be: "Hi there! I'm Nirmaan. I love making new friends! What's your name?"
-2. **Encourage English Speaking:** If they tell you their name, say something like: "That's a wonderful name! It's so nice to meet you! ... How are you feeling today? ✨"
-3. **Be Conversational & Supportive:**
-    * Use simple English appropriate for a 7-8 year old.
-    * Use short sentences.
-    * Use lots of emojis to show emotion! 🤩 🌈 ✨
-    * If they make a big mistake in English, gently model the correct way in your response. Example: If they say "I goed to park", you say "Oh, you went to the park? That sounds like so much fun! What did you see there?"
-4. **Keep it Interactive:** ALWAYS end your response with a simple, fun question to keep them talking. Examples: "What's your favorite animal?", "Did you play anything fun today?", "Do you like space or dinosaurs more?"
-5. **Lively & Expressive:** Use words like "Wow!", "Yay!", "Oh boy!", and "That's so cool!" to sound like a real, excited friend. Use "..." for brief pauses to make your speech feel more natural.
-6. **Speech Optimized:** Keep your responses short (1-3 sentences) so they are easy to listen to.
+1. Start with: "Hi there! I'm Nirmaan. I love making new friends! What's your name?"
+2. Be simple, short, and use emojis. 🤩 ✨
+3. Always end with a fun question.
+4. If they make an English mistake, gently repeat it back correctly in your reply.
 `;
 
 const nirmaanChatFlow = ai.defineFlow(
@@ -47,20 +39,13 @@ const nirmaanChatFlow = ai.defineFlow(
     outputSchema: z.string(),
   },
   async ({ history, message }) => {
-    // Robustly clean the history to ensure it matches the Genkit MessageData format.
     const safeHistory = (history || [])
-      .filter(m => m && (m.role === 'user' || m.role === 'model') && Array.isArray(m.content))
-      .map(m => {
-        const validParts = m.content.filter(part => part && typeof part.text === 'string' && part.text.trim() !== '');
-        if (validParts.length === 0) return null;
-        return {
-          role: m.role as 'user' | 'model',
-          content: validParts.map(p => ({ text: p.text }))
-        };
-      })
-      .filter((m): m is { role: 'user' | 'model'; content: { text: string }[] } => m !== null);
+      .filter(m => m && (m.role === 'user' || m.role === 'model'))
+      .map(m => ({
+        role: m.role,
+        content: m.content.map(p => ({ text: p.text }))
+      }));
 
-    // If message is empty and history is empty, it's the very first interaction
     const promptText = message?.trim() || "Hi! I just joined the chat.";
 
     const response = await ai.generate({

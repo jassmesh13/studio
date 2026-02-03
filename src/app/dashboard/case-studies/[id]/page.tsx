@@ -28,9 +28,10 @@ export default function CaseStudyDetailPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const [recordedMediaURL, setRecordedMediaURL] = useState<string | null>(null);
-  const [recordedDataBase64, setRecordedDataBase64] = useState<string | null>(null);
+  const [transcript, setTranscript] = useState<string>('');
   const [selectedMCQOption, setSelectedMCQOption] = useState<string | null>(null);
 
+  const recognitionRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
 
@@ -49,11 +50,39 @@ export default function CaseStudyDetailPage() {
   }, [fetchCaseStudy]);
 
   useEffect(() => {
+    // Setup Speech Recognition
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionRef.current = new SpeechRecognition();
+        recognitionRef.current.continuous = true;
+        recognitionRef.current.interimResults = true;
+        recognitionRef.current.lang = 'en-US';
+
+        recognitionRef.current.onresult = (event: any) => {
+          let finalTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
+          }
+          if (finalTranscript) {
+            setTranscript(prev => prev + ' ' + finalTranscript);
+          }
+        };
+
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('Speech recognition error', event.error);
+        };
+      }
+    }
+
     return () => {
       stream?.getTracks().forEach(track => track.stop());
       if (recordedMediaURL) {
         URL.revokeObjectURL(recordedMediaURL);
       }
+      if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, [stream, recordedMediaURL]);
 
@@ -74,6 +103,12 @@ export default function CaseStudyDetailPage() {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ video: !isAudioOnly, audio: true });
       setStream(mediaStream);
       setRecordingStatus('recording');
+      
+      // Start STT
+      if (recognitionRef.current) {
+        setTranscript('');
+        recognitionRef.current.start();
+      }
     } catch (error) {
       console.error('Error accessing media devices:', error);
       setPermissionError(true);
@@ -114,16 +149,10 @@ export default function CaseStudyDetailPage() {
         const url = URL.createObjectURL(blob);
         setRecordedMediaURL(url);
 
-        // Convert blob to base64 for LLM
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-            setRecordedDataBase64(reader.result as string);
-        };
-
         setRecordingStatus('recorded');
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
+        if (recognitionRef.current) recognitionRef.current.stop();
       };
 
       mediaRecorderRef.current.start();
@@ -142,7 +171,7 @@ export default function CaseStudyDetailPage() {
       URL.revokeObjectURL(recordedMediaURL);
     }
     setRecordedMediaURL(null);
-    setRecordedDataBase64(null);
+    setTranscript('');
     recordedChunksRef.current = [];
     mediaRecorderRef.current = null;
   };
@@ -157,7 +186,7 @@ export default function CaseStudyDetailPage() {
     if (recordingStatus === 'submitted') {
         const studentAnswer = caseStudy.type === 'mcq' 
             ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
-            : recordedDataBase64 || "";
+            : transcript || "No speech detected.";
 
         return (
             <PostSubmissionScreen 
@@ -214,7 +243,7 @@ export default function CaseStudyDetailPage() {
               {caseStudy.type === 'video' ? <Video className="w-6 h-6 mr-2" /> : <Mic className="w-6 h-6 mr-2" />}
               Start Recording
             </Button>
-            <p className="text-muted-foreground mt-4">You can record a {caseStudy.type} answer.</p>
+            <p className="text-muted-foreground mt-4">Nirmaan will listen to your {caseStudy.type} answer.</p>
           </>
         );
       case 'permission':
@@ -233,9 +262,12 @@ export default function CaseStudyDetailPage() {
             ) : (
                 <div className="w-full h-48 flex flex-col items-center justify-center bg-primary/10 rounded-lg">
                     <Volume2 className="w-24 h-24 text-primary/50 animate-pulse" />
-                    <p className="text-muted-foreground mt-2">Recording audio...</p>
+                    <p className="text-muted-foreground mt-2">Nirmaan is listening...</p>
                 </div>
             )}
+            <div className="bg-muted p-4 rounded-lg w-full min-h-[60px] text-sm italic">
+              {transcript || "Speak clearly..."}
+            </div>
             <Button size="lg" onClick={stopRecording} className="rounded-full w-20 h-20 bg-red-500 hover:bg-red-600 shadow-xl">
               <Square className="w-8 h-8 fill-white" />
             </Button>
@@ -246,20 +278,15 @@ export default function CaseStudyDetailPage() {
         return (
           <div className="w-full flex flex-col items-center gap-4">
             <p className="font-semibold text-lg">Review your response</p>
-            {recordedMediaURL && (
-              <div className="w-full aspect-video rounded-lg bg-muted overflow-hidden">
-                {caseStudy.type === 'video' ? (
-                  <video src={recordedMediaURL} controls className="w-full h-full" />
-                ) : (
-                  <audio src={recordedMediaURL} controls className="w-full p-2" />
-                )}
-              </div>
-            )}
+            <div className="w-full bg-muted p-6 rounded-xl border-2 border-primary/20">
+               <p className="text-primary font-bold mb-2">Transcript:</p>
+               <p className="italic text-lg">"{transcript || "No speech detected. Please try again."}"</p>
+            </div>
             <div className="flex w-full gap-4 mt-4">
                <Button size="lg" variant="outline" onClick={handleRetry} className="w-full h-14 rounded-full text-lg">
                     <RefreshCw className="w-6 h-6 mr-2" /> Retry
                 </Button>
-                <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg">
+                <Button size="lg" onClick={handleSubmit} className="w-full h-14 rounded-full text-lg" disabled={!transcript}>
                     <Send className="w-6 h-6 mr-2" /> Submit
                 </Button>
             </div>

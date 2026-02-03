@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses.
+ * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses using text transcripts.
  */
 
 import { ai } from '@/ai/genkit';
@@ -10,8 +10,8 @@ import { z } from 'genkit';
 const CaseStudyFeedbackInputSchema = z.object({
   scenario: z.string(),
   question: z.string(),
-  userAnswer: z.string().describe('The user answer. If it is audio/video, it will be a data URI.'),
-  answerType: z.enum(['text', 'audio', 'video']),
+  userAnswer: z.string().describe('The student\'s answer text or transcript.'),
+  answerType: z.enum(['text', 'audio', 'video', 'mcq']),
 });
 
 export type CaseStudyFeedbackInput = z.infer<typeof CaseStudyFeedbackInputSchema>;
@@ -24,15 +24,10 @@ const CaseStudyFeedbackOutputSchema = z.object({
 
 export type CaseStudyFeedbackOutput = z.infer<typeof CaseStudyFeedbackOutputSchema>;
 
-// Input schema for the prompt including the pre-calculated isMedia flag
-const CaseStudyPromptInputSchema = CaseStudyFeedbackInputSchema.extend({
-  isMedia: z.boolean(),
-});
-
 const feedbackPrompt = ai.definePrompt({
   name: 'caseStudyFeedbackPrompt',
   model: 'googleai/gemini-2.5-flash',
-  input: { schema: CaseStudyPromptInputSchema },
+  input: { schema: CaseStudyFeedbackInputSchema },
   output: { schema: CaseStudyFeedbackOutputSchema },
   prompt: `
     You are Nirmaan, a friendly and wise mentor for kids (Grade 2-6).
@@ -41,12 +36,7 @@ const feedbackPrompt = ai.definePrompt({
     Scenario: {{{scenario}}}
     Question: {{{question}}}
     Answer Type: {{{answerType}}}
-    
-    {{#if isMedia}}
-    The user provided a recorded response: {{media url=userAnswer}}
-    {{else}}
-    User's Answer: {{{userAnswer}}}
-    {{/if}}
+    Student's Answer: {{{userAnswer}}}
 
     Please provide feedback that is:
     1. Encouraging and positive.
@@ -65,8 +55,7 @@ const caseStudyFeedbackFlow = ai.defineFlow(
     outputSchema: CaseStudyFeedbackOutputSchema,
   },
   async (input) => {
-    const isMedia = input.answerType === 'audio' || input.answerType === 'video';
-    const { output } = await feedbackPrompt({ ...input, isMedia });
+    const { output } = await feedbackPrompt(input);
     return output!;
   }
 );

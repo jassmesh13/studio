@@ -22,17 +22,16 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer }
         async function fetchFeedback() {
             setLoading(true);
             try {
-                const answerType = caseStudy.type === 'mcq' ? 'text' : caseStudy.type;
+                const answerType = caseStudy.type;
                 const result = await generateCaseStudyFeedback({
                     scenario: caseStudy.content?.scenario || "",
                     question: caseStudy.content?.prompt || "",
                     userAnswer: userAnswer,
-                    answerType: answerType as 'text' | 'audio' | 'video'
+                    answerType: answerType as 'text' | 'audio' | 'video' | 'mcq'
                 });
                 setFeedback(result);
             } catch (error) {
                 console.error("Failed to generate AI feedback:", error);
-                // Fallback basic feedback if AI fails
                 setFeedback({
                     analysis: "Thank you for sharing your thoughts! Every decision helps you learn more about who you want to be.",
                     growthInsight: "Keep thinking about how your actions affect others and yourself.",
