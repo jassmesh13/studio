@@ -63,8 +63,6 @@ const caseStudyFeedbackFlow = ai.defineFlow(
     outputSchema: CaseStudyFeedbackOutputSchema,
   },
   async (input) => {
-    // We send both the transcript and media (if small enough) to the model.
-    // Gemini 2.5 Flash handles multimodal input natively.
     const { output } = await feedbackPrompt(input);
     return output!;
   }

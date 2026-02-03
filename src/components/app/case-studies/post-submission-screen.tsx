@@ -25,14 +25,14 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             try {
                 let mediaDataUri = undefined;
                 
-                // Convert blob URL to base64 Data URI for the AI model to "hear" the audio
+                // Convert blob URL to base64 Data URI for the AI model to "hear/see" the media
                 if (recordedMediaURL) {
                     try {
                         const response = await fetch(recordedMediaURL);
                         const blob = await response.blob();
                         
-                        // Limit size to avoid server action and quota limits
-                        if (blob.size < 5 * 1024 * 1024) { 
+                        // Gemini 2.5 Flash can handle reasonably sized files
+                        if (blob.size < 10 * 1024 * 1024) { 
                             mediaDataUri = await new Promise<string>((resolve, reject) => {
                                 const reader = new FileReader();
                                 reader.onloadend = () => resolve(reader.result as string);
