@@ -33,6 +33,7 @@ const caseStudyFeedbackFlow = ai.defineFlow(
   async (input) => {
     const prompt = ai.definePrompt({
       name: 'caseStudyFeedbackPrompt',
+      model: 'googleai/gemini-2.5-flash',
       input: { schema: CaseStudyFeedbackInputSchema },
       output: { schema: CaseStudyFeedbackOutputSchema },
       prompt: `
