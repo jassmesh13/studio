@@ -63,8 +63,20 @@ const caseStudyFeedbackFlow = ai.defineFlow(
     outputSchema: CaseStudyFeedbackOutputSchema,
   },
   async (input) => {
-    const { output } = await feedbackPrompt(input);
-    return output!;
+    console.log('--- Case Study Feedback Request ---');
+    console.log('Type:', input.answerType);
+    console.log('Has Media:', input.hasMedia);
+    
+    try {
+        const { output } = await feedbackPrompt(input);
+        console.log('--- Case Study Feedback Success ---');
+        console.log('Skill:', output?.skillBoosted);
+        return output!;
+    } catch (error) {
+        console.error('--- Case Study Feedback ERROR ---');
+        console.error(error);
+        throw error;
+    }
   }
 );
 

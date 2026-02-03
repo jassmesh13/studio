@@ -73,6 +73,10 @@ const nirmaanChatFlow = ai.defineFlow(
     const promptText =
       message?.trim() || "Hi! I'm ready to chat.";
 
+    console.log('--- Nirmaan Chat Request ---');
+    console.log('Message:', promptText);
+    console.log('History items:', safeHistory.length);
+
     const response = await ai.generate({
       model: 'googleai/gemini-2.5-flash',
       messages: [
@@ -85,6 +89,9 @@ const nirmaanChatFlow = ai.defineFlow(
         maxOutputTokens: 250,
       },
     });
+
+    console.log('--- Nirmaan Chat Response ---');
+    console.log(response.text);
 
     // In Genkit 1.x, .text is a property, not a function
     return response.text;
