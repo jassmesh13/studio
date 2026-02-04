@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -45,10 +44,20 @@ export default function CaseStudiesPage() {
     useEffect(() => {
         const fetchCaseStudies = async () => {
             const studies = await getCaseStudies();
-            setCaseStudies(studies);
+            
+            // Sort Grade 1-3 to the top
+            const sortedStudies = [...studies].sort((a, b) => {
+                const isAGrade13 = a.grade === 'Grade 1-3';
+                const isBGrade13 = b.grade === 'Grade 1-3';
+                if (isAGrade13 && !isBGrade13) return -1;
+                if (!isAGrade13 && isBGrade13) return 1;
+                return 0;
+            });
+
+            setCaseStudies(sortedStudies);
 
             const initialTimeLeft: Record<string, string> = {};
-            studies.forEach(study => {
+            sortedStudies.forEach(study => {
                 initialTimeLeft[study.id] = getTimeLeft(study.dueDate);
             });
             setTimeLeft(initialTimeLeft);

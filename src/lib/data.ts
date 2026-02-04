@@ -519,100 +519,6 @@ const getFutureDate = (days: number, hours: number = 0) => {
 
 const mockCaseStudies: CaseStudy[] = [
     {
-        id: '1',
-        title: 'What should Nyra do?',
-        description: 'This case study teaches about friendship and life lesson.',
-        imageUrl: '13',
-        status: 'In Progress',
-        dueDate: getFutureDate(2),
-        category: 'Financial literacy',
-        caseNumber: 32,
-        points: 5,
-        type: 'video',
-        grade: 'Grade 4-6',
-        content: {
-            scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
-            quote: "Please don't tell the teacher about my assignment, I was sick all night.",
-            prompt: "If you were in this situation, what would you do?",
-            dilemma: "Would you tell the teacher the truth, <br />OR <br />keep your friend's secret?",
-            explanation: "Also explain why you think your choice is the best one."
-        },
-        tags: ['Financial literacy', 'Friendship']
-    },
-    {
-        id: '2',
-        title: 'Is Ibrahim right?',
-        description: 'Help Ibrahim in solving her problem',
-        imageUrl: '14',
-        status: 'Not Started',
-        dueDate: getFutureDate(0, 6),
-        category: 'Emotional Intelligence',
-        caseNumber: 38,
-        points: 10,
-        type: 'audio',
-        grade: 'Grade 4-6',
-        content: {
-            scenario: "Ibrahim's friend is telling mean jokes about another student. Ibrahim feels uncomfortable but doesn't want to lose his friend.",
-            quote: "Hey, that's not funny. You should stop.",
-            prompt: "If you were Ibrahim, how would you handle this?",
-            explanation: "Explain your reasoning and what might happen after."
-        },
-        tags: ['Emotional Intelligence']
-    },
-    {
-        id: '3',
-        title: 'The Found Wallet',
-        description: 'A multiple choice quiz about honesty.',
-        imageUrl: '15',
-        status: 'Not Started',
-        dueDate: getFutureDate(5),
-        category: 'Cognitive Ability',
-        caseNumber: 41,
-        points: 15,
-        type: 'mcq',
-        grade: 'Grade 4-6',
-        mcqs: [
-            {
-                id: 'mcq-1',
-                question: 'You find a wallet on the playground with 500 rupees in it. What do you do?',
-                correctOptionId: 'q1-opt3',
-                options: [
-                    { id: 'q1-opt1', text: 'Keep the money. Finders keepers!' },
-                    { id: 'q1-opt2', text: 'Look for an ID and return it to the owner.' },
-                    { id: 'q1-opt3', text: 'Give it to a teacher or the principal.' },
-                    { id: 'q1-opt4', text: 'Ask your friends what you should do.' }
-                ]
-            }
-        ],
-        content: {
-            scenario: "You are playing during recess and see a wallet lying on the ground.",
-            quote: "",
-            prompt: "Choose the best course of action.",
-            explanation: "Think about what is the most responsible and honest thing to do."
-        },
-        tags: ['Honesty', 'Responsibility']
-    },
-    {
-        id: '4',
-        title: 'Team Project Troubles',
-        description: 'A scenario about collaboration and fairness.',
-        imageUrl: '13',
-        status: 'In Progress',
-        dueDate: getFutureDate(3),
-        category: 'Emotional Intelligence',
-        caseNumber: 42,
-        points: 10,
-        type: 'video',
-        grade: 'Grade 7-9',
-        content: {
-            scenario: "You are in a group project and one member is not doing any work. The deadline is tomorrow.",
-            quote: "I've been too busy, can you just do my part? I'll cover for you next time.",
-            prompt: "How do you respond to your teammate?",
-            explanation: "Explain how you would ensure the work gets done fairly."
-        },
-        tags: ['Teamwork', 'Fairness']
-    },
-    {
         id: '5',
         title: 'I Need Help',
         description: 'A case study about asking for help in class.',
@@ -757,6 +663,100 @@ const mockCaseStudies: CaseStudy[] = [
             explanation: "Think of something amazing you would love to be able to do to help others."
         },
         tags: ['Creativity', 'Self-Awareness']
+    },
+    {
+        id: '1',
+        title: 'What should Nyra do?',
+        description: 'This case study teaches about friendship and life lesson.',
+        imageUrl: '13',
+        status: 'In Progress',
+        dueDate: getFutureDate(2),
+        category: 'Financial literacy',
+        caseNumber: 32,
+        points: 5,
+        type: 'video',
+        grade: 'Grade 4-6',
+        content: {
+            scenario: "Your Science Ma'am has asked you to check all the assignments in the class. While checking, you find that one of your friends from your volleyball team has not completed the assignment because she was genuinely sick.",
+            quote: "Please don't tell the teacher about my assignment, I was sick all night.",
+            prompt: "If you were in this situation, what would you do?",
+            dilemma: "Would you tell the teacher the truth, <br />OR <br />keep your friend's secret?",
+            explanation: "Also explain why you think your choice is the best one."
+        },
+        tags: ['Financial literacy', 'Friendship']
+    },
+    {
+        id: '2',
+        title: 'Is Ibrahim right?',
+        description: 'Help Ibrahim in solving her problem',
+        imageUrl: '14',
+        status: 'Not Started',
+        dueDate: getFutureDate(0, 6),
+        category: 'Emotional Intelligence',
+        caseNumber: 38,
+        points: 10,
+        type: 'audio',
+        grade: 'Grade 4-6',
+        content: {
+            scenario: "Ibrahim's friend is telling mean jokes about another student. Ibrahim feels uncomfortable but doesn't want to lose his friend.",
+            quote: "Hey, that's not funny. You should stop.",
+            prompt: "If you were Ibrahim, how would you handle this?",
+            explanation: "Explain your reasoning and what might happen after."
+        },
+        tags: ['Emotional Intelligence']
+    },
+    {
+        id: '3',
+        title: 'The Found Wallet',
+        description: 'A multiple choice quiz about honesty.',
+        imageUrl: '15',
+        status: 'Not Started',
+        dueDate: getFutureDate(5),
+        category: 'Cognitive Ability',
+        caseNumber: 41,
+        points: 15,
+        type: 'mcq',
+        grade: 'Grade 4-6',
+        mcqs: [
+            {
+                id: 'mcq-1',
+                question: 'You find a wallet on the playground with 500 rupees in it. What do you do?',
+                correctOptionId: 'q1-opt3',
+                options: [
+                    { id: 'q1-opt1', text: 'Keep the money. Finders keepers!' },
+                    { id: 'q1-opt2', text: 'Look for an ID and return it to the owner.' },
+                    { id: 'q1-opt3', text: 'Give it to a teacher or the principal.' },
+                    { id: 'q1-opt4', text: 'Ask your friends what you should do.' }
+                ]
+            }
+        ],
+        content: {
+            scenario: "You are playing during recess and see a wallet lying on the ground.",
+            quote: "",
+            prompt: "Choose the best course of action.",
+            explanation: "Think about what is the most responsible and honest thing to do."
+        },
+        tags: ['Honesty', 'Responsibility']
+    },
+    {
+        id: '4',
+        title: 'Team Project Troubles',
+        description: 'A scenario about collaboration and fairness.',
+        imageUrl: '13',
+        status: 'In Progress',
+        dueDate: getFutureDate(3),
+        category: 'Emotional Intelligence',
+        caseNumber: 42,
+        points: 10,
+        type: 'video',
+        grade: 'Grade 7-9',
+        content: {
+            scenario: "You are in a group project and one member is not doing any work. The deadline is tomorrow.",
+            quote: "I've been too busy, can you just do my part? I'll cover for you next time.",
+            prompt: "How do you respond to your teammate?",
+            explanation: "Explain how you would ensure the work gets done fairly."
+        },
+        tags: ['Teamwork', 'Fairness']
     }
 ];
 
