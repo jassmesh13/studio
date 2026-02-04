@@ -47,10 +47,150 @@ const mockCourses: Course[] = [
             ]
         } 
       },
-      { id: 'c1-2', title: 'Making Smart Choices', completed: true, imageUrl: 'l2', description: 'Discover how to make good decisions in tricky situations.', content: { type: 'video', duration: '15 min' } },
-      { id: 'c1-3', title: 'Understanding Your Feelings', completed: true, imageUrl: 'l1', description: 'Explore different emotions and how to manage them.', content: { type: 'quiz', questions: 10 } },
-      { id: 'c1-4', title: 'Being a Good Friend', completed: true, imageUrl: 'l2', description: 'Find out what it means to be a supportive and kind friend.', content: { type: 'video', duration: '45 min' } },
-      { id: 'c1-5', title: 'Solving Problems', completed: false, imageUrl: 'l1', description: 'Get tools to solve puzzles and challenges in your daily life.', content: { type: 'video', duration: '45 min' } },
+      { 
+        id: 'c1-2', 
+        title: 'Managing Emotions', 
+        completed: true, 
+        imageUrl: 'l2', 
+        description: 'Understand and manage your feelings like happiness, sadness, or anger.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is managing emotions, Nyra?",
+                    answer: "Nyra, managing emotions means understanding feelings like happy, sad, or angry. It helps you stay calm and in control."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "When you control your feelings, you make better decisions. You can play and learn peacefully."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will practice breathing, counting, and talking about feelings. You will use games and stories to stay calm."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c1-3', 
+        title: 'Good Manners', 
+        completed: true, 
+        imageUrl: 'l1', 
+        description: 'Learn the importance of being polite and respectful to everyone.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What are good manners, Nyra?",
+                    answer: "Nyra, good manners mean saying please, thank you, and sorry. It means being polite to everyone."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Good manners make people feel respected and happy. They help you make good friends."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will practice kind words every day. You will use them at home and school."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c1-4', 
+        title: 'Sharing and Caring', 
+        completed: true, 
+        imageUrl: 'l2', 
+        description: 'Discover the joy of giving and thinking about others.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is sharing and caring, Nyra?",
+                    answer: "Nyra, sharing means giving and helping others. Caring means thinking about others’ feelings."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Sharing makes friends happy and builds trust. Caring helps you become kind and loved."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will share toys, help friends, and work together. You will practice kindness daily."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c1-5', 
+        title: 'Responsibility', 
+        completed: false, 
+        imageUrl: 'l1', 
+        description: 'Learn to take care of your things and finish your tasks.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is responsibility, Nyra?",
+                    answer: "Nyra, responsibility means taking care of your things and tasks. It means finishing what you start."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Being responsible makes others trust you. It helps you become independent."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will pack your bag and complete small tasks. You will follow routines every day."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c1-6', 
+        title: 'Healthy Habits', 
+        completed: false, 
+        imageUrl: 'l2', 
+        description: 'Understand the importance of eating well, sleeping, and staying clean.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What are healthy habits, Nyra?",
+                    answer: "Nyra, healthy habits mean eating well and sleeping on time. It also means keeping your body clean."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Healthy habits keep you strong and active. They help you focus in class."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will wash hands, eat healthy food, and exercise. You will follow a daily routine."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c1-7', 
+        title: 'Safety Rules', 
+        completed: false, 
+        imageUrl: 'l1', 
+        description: 'Learn how to stay safe at home and outdoors.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What are safety rules, Nyra?",
+                    answer: "Nyra, safety rules help you stay safe at home and outside. They teach you what to do in danger."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Safety rules protect you from harm. They help you feel secure."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will learn through stories and role-play. You will practice safe choices every day."
+                }
+            ]
+        } 
+      },
     ],
     caseStudyIds: ['1', '2', '3', '4', '5']
   },
