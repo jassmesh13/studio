@@ -18,6 +18,21 @@ interface PostSubmissionScreenProps {
     selectedOptionId?: string | null;
 }
 
+const funFacts = [
+    "Honeybees flap their wings 200 times every second! 🐝",
+    "Octopuses have three hearts! 🐙",
+    "A snail can sleep for three years! 🐌",
+    "Bananas are actually berries! 🍌",
+    "Dolphins sleep with one eye open! 🐬",
+    "Elephants are the only animals that can't jump! 🐘",
+    "A group of owls is called a parliament! 🦉",
+    "Polar bears have black skin under their white fur! 🐻‍❄️",
+    "Sea otters hold hands when they sleep! 🦦",
+    "Butterflies taste with their feet! 🦋",
+    "A cow has best friends and gets sad if they are away! 🐄",
+    "Woodpeckers can peck 20 times per second! 🪵"
+];
+
 async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const arrayBuffer = await videoBlob.arrayBuffer();
@@ -71,10 +86,21 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
     const [showCelebration, setShowCelebration] = useState(false);
     const [ttsAudioUri, setTtsAudioUri] = useState<string | null>(null);
     const [isSpeaking, setIsSpeaking] = useState(false);
+    const [factIndex, setFactIndex] = useState(0);
     
     const fetchInProgress = useRef(false);
     const hasFetched = useRef(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (loading) {
+            interval = setInterval(() => {
+                setFactIndex(prev => (prev + 1) % funFacts.length);
+            }, 5000);
+        }
+        return () => clearInterval(interval);
+    }, [loading]);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -199,8 +225,19 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     <div className="relative">
                         <Loader2 className="w-20 h-20 animate-spin text-primary" />
                     </div>
-                    <h2 className="text-2xl font-black text-primary">Nirmaan is thinking...</h2>
-                    <p className="text-base text-muted-foreground font-bold italic">Analyzing your wonderful answer! ✨</p>
+                    <div>
+                        <h2 className="text-2xl font-black text-primary">Nirmaan is thinking...</h2>
+                        <p className="text-base text-muted-foreground font-bold italic">Analyzing your wonderful answer! ✨</p>
+                    </div>
+
+                    <div className="mt-4 flex flex-col items-center gap-2">
+                        <div className="bg-primary/5 p-4 rounded-2xl border-2 border-dashed border-primary/20 max-w-xs transition-all">
+                             <p className="text-[10px] font-black uppercase tracking-widest text-primary/60 mb-1">Did you know?</p>
+                             <p key={factIndex} className="text-sm font-bold text-primary animate-in fade-in slide-in-from-bottom-1 duration-500">
+                                {funFacts[factIndex]}
+                             </p>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <div className={cn(
