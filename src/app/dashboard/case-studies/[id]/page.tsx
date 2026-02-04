@@ -354,8 +354,9 @@ export default function CaseStudyDetailPage() {
               <div className="flex items-start gap-4">
                 <p className="mb-4 flex-1">{caseStudy.content?.scenario}</p>
               </div>
-              <p className="font-semibold">Now She comes to you and says:</p>
-              <p className="italic">'{caseStudy.content?.quote}'</p>
+              {caseStudy.content?.quote && (
+                <p className="italic">'{caseStudy.content?.quote}'</p>
+              )}
             </div>
 
             <div className="text-left w-full space-y-4 mb-8">
