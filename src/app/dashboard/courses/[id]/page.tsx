@@ -1,7 +1,25 @@
 'use client';
 import Image from 'next/image';
 import { notFound, useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, CheckCircle, ChevronRight } from 'lucide-react';
+import { 
+  ArrowLeft, 
+  CheckCircle, 
+  ChevronRight, 
+  UserCircle, 
+  Smile, 
+  Handshake, 
+  Heart, 
+  CheckCircle2, 
+  Apple, 
+  Shield, 
+  Lightbulb, 
+  Users, 
+  Globe, 
+  Ear, 
+  MessageSquare, 
+  Eye, 
+  BookOpen 
+} from 'lucide-react';
 import { getCourseById, getCaseStudiesForCourse } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
@@ -40,6 +58,24 @@ export default function CourseDetailPage() {
     fetchCourseData();
   }, [id]);
 
+  const getChapterIcon = (title: string) => {
+    const t = title.toLowerCase();
+    if (t.includes('knowing myself')) return <UserCircle className="w-10 h-10 text-primary" />;
+    if (t.includes('managing emotions')) return <Smile className="w-10 h-10 text-primary" />;
+    if (t.includes('good manners')) return <Handshake className="w-10 h-10 text-primary" />;
+    if (t.includes('sharing and caring')) return <Heart className="w-10 h-10 text-primary" />;
+    if (t.includes('responsibility')) return <CheckCircle2 className="w-10 h-10 text-primary" />;
+    if (t.includes('healthy habits')) return <Apple className="w-10 h-10 text-primary" />;
+    if (t.includes('safety rules')) return <Shield className="w-10 h-10 text-primary" />;
+    if (t.includes('creative thinking')) return <Lightbulb className="w-10 h-10 text-primary" />;
+    if (t.includes('working with others')) return <Users className="w-10 h-10 text-primary" />;
+    if (t.includes('digital citizenship')) return <Globe className="w-10 h-10 text-primary" />;
+    if (t.includes('listening')) return <Ear className="w-10 h-10 text-primary" />;
+    if (t.includes('speaking')) return <MessageSquare className="w-10 h-10 text-primary" />;
+    if (t.includes('body language')) return <Eye className="w-10 h-10 text-primary" />;
+    return <BookOpen className="w-10 h-10 text-primary" />;
+  };
+
   if (loading) {
     return <div className="p-8 text-center font-bold text-primary">Loading course details...</div>;
   }
@@ -68,16 +104,13 @@ export default function CourseDetailPage() {
                     <TabsContent value="chapters">
                         <div className="space-y-4 pt-4">
                             {course.chapters?.map((chapter, index) => {
-                                const image = PlaceHolderImages.find(p => p.id === chapter.imageUrl);
                                 return (
                                     <Link href={`/dashboard/courses/${id}/chapters/${chapter.id}`} key={chapter.id}>
                                         <Card className="p-3 bg-card shadow-sm hover:bg-accent transition-all active:scale-95 group">
                                             <div className="flex items-center gap-4">
-                                                {image && (
-                                                    <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
-                                                        <Image src={image.imageUrl} alt={chapter.title} data-ai-hint={image.imageHint} fill className="object-cover" />
-                                                    </div>
-                                                )}
+                                                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                                                    {getChapterIcon(chapter.title)}
+                                                </div>
                                                 <div className="flex-1">
                                                     <h3 className="font-bold group-hover:text-primary transition-colors">Chapter {index + 1}: {chapter.title}</h3>
                                                     <p className="text-sm text-muted-foreground mb-1 line-clamp-2">{chapter.description}</p>
@@ -107,7 +140,7 @@ export default function CourseDetailPage() {
                                         <Card className="p-4 bg-card shadow-sm hover:bg-accent transition-colors">
                                             <div className="flex items-start gap-4">
                                                 {avatar && (
-                                                    <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                                                    <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
                                                         <Image src={avatar.imageUrl} alt={study.title} data-ai-hint={avatar.imageHint} fill className="object-cover" />
                                                     </div>
                                                 )}
