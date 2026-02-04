@@ -35,30 +35,6 @@ const getTimeLeft = (dueDate: string) => {
     return `${minutes} min${minutes > 1 ? 's' : ''} left`;
 };
 
-const getTagColor = (tag: string) => {
-    const colors: Record<string, string> = {
-        'Communication': 'bg-blue-100 text-blue-700',
-        'Storytelling': 'bg-purple-100 text-purple-700',
-        'Classroom': 'bg-slate-100 text-slate-700',
-        'Honesty': 'bg-green-100 text-green-700',
-        'Friendship': 'bg-pink-100 text-pink-700',
-        'Emotions': 'bg-orange-100 text-orange-700',
-        'Memory': 'bg-yellow-100 text-yellow-700',
-        'Social Skills': 'bg-emerald-100 text-emerald-700',
-        'Creativity': 'bg-indigo-100 text-indigo-700',
-        'Confidence': 'bg-rose-100 text-rose-700',
-        'Integrity': 'bg-teal-100 text-teal-700',
-        'Empathy': 'bg-cyan-100 text-cyan-700',
-        'Standing Up': 'bg-amber-100 text-amber-700',
-        'Responsibility': 'bg-violet-100 text-violet-700',
-        'Teamwork': 'bg-lime-100 text-lime-700',
-        'Fairness': 'bg-red-100 text-red-700',
-        'Decision Making': 'bg-blue-200 text-blue-800',
-        'Social Awareness': 'bg-indigo-200 text-indigo-800',
-    };
-    return colors[tag] || 'bg-gray-100 text-gray-700';
-};
-
 const getCaseStudyIcon = (title: string) => {
     const t = title.toLowerCase();
     if (t.includes('help')) return <HandHelping className="w-8 h-8 text-white" />;
@@ -181,9 +157,11 @@ export default function CaseStudiesPage() {
                                 <p className="text-sm text-muted-foreground line-clamp-2">{study.description}</p>
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                     {study.tags?.map(tag => (
-                                        <Badge key={tag} className={cn("border-none", getTagColor(tag))}>{tag}</Badge>
+                                        <Badge key={tag} variant="secondary" className="bg-primary/10 text-primary py-0 px-2 text-[10px] border-none font-bold">
+                                            {tag}
+                                        </Badge>
                                     ))}
-                                    {study.grade && <Badge variant="outline" className="border-primary/20">{study.grade}</Badge>}
+                                    {study.grade && <Badge variant="outline" className="border-primary/20 text-[10px]">{study.grade}</Badge>}
                                 </div>
                             </div>
                             <div className="text-right self-end space-y-1 shrink-0">

@@ -26,7 +26,11 @@ import {
   MessageCircle,
   Mic2,
   HelpCircle,
-  Volume2
+  Volume2,
+  HandHelping,
+  Pencil,
+  Squirrel,
+  Wallet
 } from 'lucide-react';
 import { getCourseById, getCaseStudiesForCourse } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -97,6 +101,21 @@ export default function CourseDetailPage() {
     return <BookOpen className="w-10 h-10 text-primary" />;
   };
 
+  const getCaseStudyIcon = (title: string) => {
+    const t = title.toLowerCase();
+    if (t.includes('help')) return <HandHelping className="w-6 h-6 text-primary" />;
+    if (t.includes('pencil')) return <Pencil className="w-6 h-6 text-primary" />;
+    if (t.includes('animals scared')) return <Squirrel className="w-6 h-6 text-primary" />;
+    if (t.includes('fox story')) return <BookOpen className="w-6 h-6 text-primary" />;
+    if (t.includes('introduce yourself')) return <UserCircle className="w-6 h-6 text-primary" />;
+    if (t.includes('superpower')) return <Zap className="w-6 h-6 text-primary" />;
+    if (t.includes('nyra')) return <Heart className="w-6 h-6 text-primary" />;
+    if (t.includes('ibrahim')) return <MessageCircle className="w-6 h-6 text-primary" />;
+    if (t.includes('wallet')) return <Wallet className="w-6 h-6 text-primary" />;
+    if (t.includes('team')) return <Users className="w-6 h-6 text-primary" />;
+    return <BookOpen className="w-6 h-6 text-primary" />;
+  };
+
   if (loading) {
     return <div className="p-8 text-center font-bold text-primary">Loading course details...</div>;
   }
@@ -154,17 +173,14 @@ export default function CourseDetailPage() {
                          <div className="space-y-4 pt-4">
                             {relatedCaseStudies.map((study) => {
                                 if (!study) return null;
-                                const avatar = PlaceHolderImages.find(p => p.id === 'avatar-nyra');
 
                                 return (
                                     <Link href={`/dashboard/case-studies/${study.id}`} key={study.id}>
                                         <Card className="p-4 bg-card shadow-sm hover:bg-accent transition-colors">
                                             <div className="flex items-start gap-4">
-                                                {avatar && (
-                                                    <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
-                                                        <Image src={avatar.imageUrl} alt={study.title} data-ai-hint={avatar.imageHint} fill className="object-cover" />
-                                                    </div>
-                                                )}
+                                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                                    {getCaseStudyIcon(study.title)}
+                                                </div>
                                                 <div className="flex-1">
                                                     <div className="flex justify-between items-start">
                                                         <h3 className="font-bold text-base">{study.title}</h3>
@@ -173,16 +189,14 @@ export default function CourseDetailPage() {
                                                         )}
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">Case study #{study.caseNumber}</p>
-                                                    <div className="flex gap-2 mt-1">
-                                                        {study.tags?.map(tag => {
-                                                             const badgeColor = 
-                                                                tag === 'Financial literacy' ? 'bg-yellow-200 text-yellow-800' :
-                                                                tag === 'Friendship' ? 'bg-purple-200 text-purple-800' :
-                                                                'bg-blue-200 text-blue-800';
-                                                            return <Badge key={tag} className={cn("border-none", badgeColor)}>{tag}</Badge>
-                                                        })}
+                                                    <div className="flex flex-wrap gap-2 mt-1">
+                                                        {study.tags?.map(tag => (
+                                                            <Badge key={tag} variant="secondary" className="bg-primary/5 text-primary text-[10px] py-0 px-2 border-none">
+                                                                {tag}
+                                                            </Badge>
+                                                        ))}
                                                     </div>
-                                                    <p className="text-sm text-muted-foreground mt-2">{study.description}</p>
+                                                    <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{study.description}</p>
                                                 </div>
                                             </div>
                                         </Card>
