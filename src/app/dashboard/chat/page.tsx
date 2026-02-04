@@ -69,6 +69,8 @@ export default function ChatPage() {
     const recognitionRef = useRef<any>(null);
     const hasInitializedGreeting = useRef(false);
     const lastAudioIdRef = useRef<string | null>(null);
+    const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const pendingTranscriptRef = useRef<string>('');
 
     // Turn Locking: Bot is busy if thinking or speaking
     const isBotBusy = isLoading || isSpeaking;
@@ -90,7 +92,7 @@ export default function ChatPage() {
             const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
             if (SpeechRecognition) {
                 const recognition = new SpeechRecognition();
-                recognition.continuous = false;
+                recognition.continuous = true;
                 recognition.interimResults = false;
                 recognition.lang = 'en-US';
 
@@ -100,12 +102,36 @@ export default function ChatPage() {
                         return;
                     }
                     setIsListening(true);
+                    pendingTranscriptRef.current = '';
                 };
                 recognition.onend = () => setIsListening(false);
                 recognition.onresult = (event: any) => {
                     if (isBotBusy) return;
-                    const transcript = event.results[0][0].transcript;
-                    if (transcript) handleSend(transcript);
+                    
+                    if (silenceTimerRef.current) {
+                        clearTimeout(silenceTimerRef.current);
+                    }
+
+                    let resultTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            resultTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    if (resultTranscript.trim()) {
+                        pendingTranscriptRef.current += ' ' + resultTranscript.trim();
+                        
+                        silenceTimerRef.current = setTimeout(() => {
+                            const finalTranscript = pendingTranscriptRef.current.trim();
+                            if (finalTranscript) {
+                                handleSend(finalTranscript);
+                                pendingTranscriptRef.current = '';
+                                recognition.stop();
+                            }
+                            silenceTimerRef.current = null;
+                        }, 2500);
+                    }
                 };
                 recognition.onerror = (event: any) => {
                     setIsListening(false);
@@ -122,6 +148,7 @@ export default function ChatPage() {
 
         return () => {
             if (recognitionRef.current) recognitionRef.current.stop();
+            if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
         };
     }, [isBotBusy]);
 
@@ -176,10 +203,19 @@ export default function ChatPage() {
         if (isBotBusy) return;
 
         if (isListening) {
+            if (silenceTimerRef.current) {
+                clearTimeout(silenceTimerRef.current);
+                silenceTimerRef.current = null;
+            }
+            if (pendingTranscriptRef.current.trim()) {
+                handleSend(pendingTranscriptRef.current.trim());
+                pendingTranscriptRef.current = '';
+            }
             recognitionRef.current.stop();
         } else {
             setInput('');
             setPermissionError(false);
+            pendingTranscriptRef.current = '';
             try {
                 recognitionRef.current.start();
             } catch (err) {
@@ -192,6 +228,11 @@ export default function ChatPage() {
         const messageText = textToSend || input;
         
         if (!messageText.trim() || isBotBusy) return;
+
+        if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+        }
 
         if (isListening && recognitionRef.current) {
             recognitionRef.current.stop();
@@ -209,9 +250,8 @@ export default function ChatPage() {
         }));
 
         try {
-            // Synchronized Path: Wait for BOTH text and audio
             const responseText = await chatWithNirmaan({ 
-                history: chatHistory.slice(0, -1), // previous history
+                history: chatHistory.slice(0, -1),
                 message: messageText 
             });
             
