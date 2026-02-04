@@ -192,7 +192,7 @@ const mockCourses: Course[] = [
         } 
       },
     ],
-    caseStudyIds: ['1', '2', '3', '4', '5', '6', '10']
+    caseStudyIds: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   },
   {
     id: '2',
@@ -549,7 +549,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "What should Anaya say to her teacher?",
             explanation: "Choose the best way for Anaya to ask for help."
         },
-        tags: ['Communication', 'Classroom']
+        tags: ['Communication', 'Social Skills']
     },
     {
         id: '6',
@@ -631,7 +631,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '31',
         status: 'Not Started',
         dueDate: getFutureDate(5),
-        category: 'Storytelling',
+        category: 'Communication',
         caseNumber: 47,
         points: 5,
         type: 'video',
@@ -642,7 +642,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Can you introduce yourself in 2–3 sentences?",
             explanation: "Tell your new friend your name and one thing you love to do!"
         },
-        tags: ['Communication', 'Social Skills']
+        tags: ['Communication', 'Confidence']
     },
     {
         id: '10',
@@ -683,7 +683,7 @@ const mockCaseStudies: CaseStudy[] = [
             dilemma: "Would you tell the teacher the truth, <br />OR <br />keep your friend's secret?",
             explanation: "Also explain why you think your choice is the best one."
         },
-        tags: ['Integrity', 'Friendship']
+        tags: ['Integrity', 'Decision Making']
     },
     {
         id: '2',
@@ -703,7 +703,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "If you were Ibrahim, how would you handle this?",
             explanation: "Explain your reasoning and what might happen after."
         },
-        tags: ['Empathy', 'Standing Up']
+        tags: ['Empathy', 'Social Awareness']
     },
     {
         id: '3',
@@ -756,7 +756,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "How do you respond to your teammate?",
             explanation: "Explain how you would ensure the work gets done fairly."
         },
-        tags: ['Teamwork', 'Fairness']
+        tags: ['Teamwork', 'Communication']
     }
 ];
 

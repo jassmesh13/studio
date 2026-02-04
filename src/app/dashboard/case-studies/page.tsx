@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getCaseStudies } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { Settings, BookOpen, LogOut, Clock, Pencil, HandHelping, Squirrel, UserCircle, Zap, Heart, MessageCircle, Wallet, Users } from 'lucide-react';
+import { Settings, BookOpen, LogOut, Clock, Pencil, HandHelping, Squirrel, UserCircle, Zap, Heart, MessageCircle, Wallet, Users, HelpCircle } from 'lucide-react';
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useEffect, useState } from 'react';
@@ -53,6 +53,8 @@ const getTagColor = (tag: string) => {
         'Responsibility': 'bg-violet-100 text-violet-700',
         'Teamwork': 'bg-lime-100 text-lime-700',
         'Fairness': 'bg-red-100 text-red-700',
+        'Decision Making': 'bg-blue-200 text-blue-800',
+        'Social Awareness': 'bg-indigo-200 text-indigo-800',
     };
     return colors[tag] || 'bg-gray-100 text-gray-700';
 };
@@ -111,7 +113,7 @@ export default function CaseStudiesPage() {
                 newTimeLeft[study.id] = getTimeLeft(study.dueDate);
             });
             setTimeLeft(newTimeLeft);
-        }, 60000); // Update every minute
+        }, 60000);
 
         return () => clearInterval(interval);
     }, [caseStudies]);
@@ -124,7 +126,7 @@ export default function CaseStudiesPage() {
     ];
 
     if (loading) {
-        return <div>Loading...</div>
+        return <div className="p-8 text-center font-bold text-primary">Loading case studies...</div>
     }
 
   return (
@@ -170,13 +172,13 @@ export default function CaseStudiesPage() {
                 <Link href={`/dashboard/case-studies/${study.id}`} key={study.id}>
                     <Card className="bg-accent/30 p-4 hover:bg-accent/50 transition-colors">
                         <div className="flex items-start gap-4">
-                            <div className="bg-primary p-3 rounded-lg relative">
+                            <div className="bg-primary p-3 rounded-lg relative shrink-0">
                                 {getCaseStudyIcon(study.title)}
                                 <div className="absolute -top-1 -right-1 bg-yellow-400 w-3 h-4 rounded-sm transform rotate-12"></div>
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{study.title}</h3>
-                                <p className="text-sm text-muted-foreground">{study.description}</p>
+                                <p className="text-sm text-muted-foreground line-clamp-2">{study.description}</p>
                                 <div className="flex flex-wrap items-center gap-2 mt-2">
                                     {study.tags?.map(tag => (
                                         <Badge key={tag} className={cn("border-none", getTagColor(tag))}>{tag}</Badge>
@@ -184,16 +186,16 @@ export default function CaseStudiesPage() {
                                     {study.grade && <Badge variant="outline" className="border-primary/20">{study.grade}</Badge>}
                                 </div>
                             </div>
-                            <div className="text-right self-end space-y-1">
+                            <div className="text-right self-end space-y-1 shrink-0">
                                 <div className="bg-green-100 text-green-700 p-2 rounded-md text-center text-xs font-bold">
                                     <p>+{study.points}</p>
                                     <p>Points</p>
                                 </div>
                                 <div className="flex items-center justify-end gap-1 text-red-500 text-xs font-semibold">
                                     <Clock className="w-3 h-3" />
-                                    <span>{timeLeft[study.id] || 'Loading...'}</span>
+                                    <span>{timeLeft[study.id] || 'Calculating...'}</span>
                                 </div>
-                                <p className="text-xs text-muted-foreground">Casestudy #{study.caseNumber}</p>
+                                <p className="text-xs text-muted-foreground truncate max-w-[80px]">#{study.caseNumber}</p>
                             </div>
                         </div>
                     </Card>
