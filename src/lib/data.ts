@@ -192,7 +192,7 @@ const mockCourses: Course[] = [
         } 
       },
     ],
-    caseStudyIds: ['1', '2', '3', '4', '5']
+    caseStudyIds: ['1', '2', '3', '4', '5', '6']
   },
   {
     id: '2',
@@ -644,6 +644,39 @@ const mockCaseStudies: CaseStudy[] = [
             explanation: "Choose the best way for Anaya to ask for help."
         },
         tags: ['Communication', 'Classroom']
+    },
+    {
+        id: '6',
+        title: 'The Lost Pencil',
+        description: 'A case study about being honest and helpful when finding something that isn\'t yours.',
+        imageUrl: '31',
+        status: 'Not Started',
+        dueDate: getFutureDate(6),
+        category: 'Character Building',
+        caseNumber: 44,
+        points: 5,
+        type: 'mcq',
+        grade: 'Grade 1-3',
+        mcqs: [
+            {
+                id: 'mcq-3',
+                question: 'You find a beautiful pencil on your classmate\'s desk. What should you do?',
+                correctOptionId: 'q3-opt2',
+                options: [
+                    { id: 'q3-opt1', text: "Put it in your bag because you like it." },
+                    { id: 'q3-opt2', text: "Ask the classmate if it's theirs or give it to the teacher." },
+                    { id: 'q3-opt3', text: "Throw it away so no one can have it." },
+                    { id: 'q3-opt4', text: 'Hide it under the desk.' }
+                ]
+            }
+        ],
+        content: {
+            scenario: "Sam finds a shiny blue pencil on the floor near his friend's desk. He really likes the pencil.",
+            quote: "",
+            prompt: "What is the right thing for Sam to do?",
+            explanation: "Think about how Sam can be a good friend and honest student."
+        },
+        tags: ['Honesty', 'Friendship']
     }
 ];
 
