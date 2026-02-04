@@ -2,6 +2,7 @@
 
 /**
  * @fileOverview Case Study Feedback Flow - Provides AI feedback for student responses using Gemini 2.5 Flash.
+ * Optimized to handle audio-only analysis for both video and audio submissions.
  */
 
 import { ai } from '@/ai/genkit';
@@ -12,7 +13,7 @@ const CaseStudyFeedbackInputSchema = z.object({
   question: z.string(),
   userAnswer: z.string().optional().describe('The student\'s answer text or transcript.'),
   answerType: z.enum(['text', 'audio', 'video', 'mcq']),
-  mediaDataUri: z.string().optional().describe('The recorded audio or video as a data URI.'),
+  mediaDataUri: z.string().optional().describe('The recorded audio track as a data URI.'),
   hasMedia: z.boolean().optional().default(false).describe('Flag indicating if media is provided.'),
 });
 
@@ -40,8 +41,8 @@ const feedbackPrompt = ai.definePrompt({
     Answer Type: {{{answerType}}}
 
     {{#if hasMedia}}
-    The student has provided a recorded response. Please evaluate the student's visual and spoken performance along with the transcript.
-    Student Response Media: {{media url=mediaDataUri}}
+    The student has provided a recorded audio response. Please evaluate the student's spoken performance (tone, confidence, and clarity) along with the transcript.
+    Student Response Audio: {{media url=mediaDataUri}}
     {{/if}}
 
     Student's Transcript/Answer: {{{userAnswer}}}

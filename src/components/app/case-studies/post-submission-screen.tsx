@@ -16,6 +16,61 @@ interface PostSubmissionScreenProps {
     recordedMediaURL?: string | null;
 }
 
+/**
+ * Utility to extract audio track from a video blob and return a WAV blob.
+ * This ensures we only send audio to the AI, reducing processing costs.
+ */
+async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const arrayBuffer = await videoBlob.arrayBuffer();
+    
+    try {
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        
+        // Simple WAV encoding logic
+        const numOfChan = audioBuffer.numberOfChannels;
+        const length = audioBuffer.length * numOfChan * 2 + 44;
+        const buffer = new ArrayBuffer(length);
+        const view = new DataView(buffer);
+        const channels = [];
+        let offset = 0;
+        let pos = 0;
+
+        const setUint16 = (data: number) => { view.setUint16(pos, data, true); pos += 2; };
+        const setUint32 = (data: number) => { view.setUint32(pos, data, true); pos += 4; };
+
+        // RIFF header
+        setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
+        // fmt chunk
+        setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
+        setUint32(audioBuffer.sampleRate); setUint32(audioBuffer.sampleRate * 2 * numOfChan);
+        setUint16(numOfChan * 2); setUint16(16); 
+        // data chunk
+        setUint32(0x61746164); setUint32(length - pos - 4);
+
+        for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
+            channels.push(audioBuffer.getChannelData(i));
+        }
+
+        while (pos < length) {
+            for (let i = 0; i < numOfChan; i++) {
+                let sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                sample = (sample < 0 ? sample * 0x8000 : sample * 0x7FFF);
+                view.setInt16(pos, sample, true);
+                pos += 2;
+            }
+            offset++;
+        }
+        
+        return new Blob([buffer], { type: "audio/wav" });
+    } catch (e) {
+        console.error("Audio extraction failed, falling back to original blob:", e);
+        return videoBlob;
+    } finally {
+        await audioContext.close();
+    }
+}
+
 export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL }: PostSubmissionScreenProps) {
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
@@ -24,7 +79,6 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
     const hasFetched = useRef(false);
 
     useEffect(() => {
-        // Ensure user is at the top of the screen to see the celebration
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         async function fetchFeedback() {
@@ -35,14 +89,17 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             try {
                 let mediaDataUri = undefined;
                 
-                // STEP 1: Video/Audio Processing
-                // We fetch the blob from the local URL and convert it to a data URI for the AI
                 if (recordedMediaURL) {
                     try {
                         const response = await fetch(recordedMediaURL);
-                        const blob = await response.blob();
+                        let blob = await response.blob();
                         
-                        // Only process if it's within a reasonable size for the AI flow
+                        // COST OPTIMIZATION: Extract only audio if the source is a video
+                        if (blob.type.startsWith('video/')) {
+                            console.log("Processing: Extracting audio track from video...");
+                            blob = await extractAudioFromVideo(blob);
+                        }
+                        
                         if (blob.size < 20 * 1024 * 1024) { 
                             mediaDataUri = await new Promise<string>((resolve, reject) => {
                                 const reader = new FileReader();
@@ -52,11 +109,10 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                             });
                         }
                     } catch (err) {
-                        console.error("Failed to convert media to data URI:", err);
+                        console.error("Failed to process media for AI:", err);
                     }
                 }
 
-                // STEP 2: Send to AI Flow
                 const result = await generateCaseStudyFeedback({
                     scenario: caseStudy.content?.scenario || "",
                     question: caseStudy.content?.prompt || "",
