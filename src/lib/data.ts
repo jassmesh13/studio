@@ -361,9 +361,150 @@ const mockCourses: Course[] = [
     lessons: 1780,
     classRank: 25,
     chapters: [
-        { id: 'c3-1', title: 'Listening Superpowers', completed: true, imageUrl: 'l2', description: 'Discover how to truly hear what others are saying.', content: { type: 'video', duration: '20 min' } },
-        { id: 'c3-2', title: 'Speaking with Confidence', completed: true, imageUrl: 'l1', description: 'Share your ideas clearly and confidently in front of others.', content: { type: 'pdf', pages: 40 } },
-        { id: 'c3-3', title: 'Understanding Body Language', completed: true, imageUrl: 'l2', description: 'Learn what people are saying without even speaking.', content: { type: 'quiz', questions: 12 } },
+      { 
+        id: 'c3-1', 
+        title: 'Everyday Communication', 
+        completed: true, 
+        imageUrl: 'l1', 
+        description: 'Learn how to talk and listen to friends and family.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is everyday communication, Nyra?",
+                    answer: "Nyra, everyday communication is how you talk and listen to people around you. It helps you share thoughts and feelings."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Good talking helps others understand you. It helps you make friends."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will practice speaking and listening through games. You will talk kindly every day."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c3-2', 
+        title: 'Listening Skills', 
+        completed: true, 
+        imageUrl: 'l2', 
+        description: 'Discover how to truly hear what others are saying.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is listening, Nyra?",
+                    answer: "Nyra, listening means paying attention when someone speaks. It means hearing with care."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Good listening helps you understand better. It shows respect to others."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will listen to stories and follow instructions. You will practice focused listening."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c3-3', 
+        title: 'Speaking Clearly', 
+        completed: true, 
+        imageUrl: 'l1', 
+        description: 'Share your ideas clearly and confidently.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is speaking clearly, Nyra?",
+                    answer: "Nyra, speaking clearly means talking slowly and loudly enough. It helps others hear you well."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Clear speech helps people understand your ideas. It makes you confident."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will read aloud and talk in class. You will practice clear words."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c3-4', 
+        title: 'Asking Questions', 
+        completed: false, 
+        imageUrl: 'l2', 
+        description: 'Learn to ask the right questions to learn more.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is asking questions, Nyra?",
+                    answer: "Nyra, asking questions means saying what you want to know. It helps you learn more."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Questions help clear your doubts. They make you smarter and curious."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will ask who, what, when, where, and why. You will practice during lessons."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c3-5', 
+        title: 'Storytelling', 
+        completed: false, 
+        imageUrl: 'l1', 
+        description: 'Learn to share events in a fun and orderly way.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is storytelling, Nyra?",
+                    answer: "Nyra, storytelling means sharing events in order. You tell what happened first, next, and last."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Stories help you express ideas in fun ways. They build creativity and confidence."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will use pictures and props to tell stories. You will speak in front of friends."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c3-6', 
+        title: 'Public Speaking Confidence', 
+        completed: false, 
+        imageUrl: 'l2', 
+        description: 'Develop the bravery to speak proudly in front of others.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is speaking with confidence, Nyra?",
+                    answer: "Nyra, speaking with confidence means talking without fear. You stand tall and speak proudly."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Confidence helps you share ideas bravely. It helps you shine in class."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will do show-and-tell and small presentations. You will practice again and again."
+                }
+            ]
+        } 
+      }
     ],
     caseStudyIds: ['3', '4']
   },
