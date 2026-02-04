@@ -14,14 +14,10 @@ interface PostSubmissionScreenProps {
     onDone: () => void;
     caseStudy: CaseStudy;
     userAnswer: string;
-    recordedMediaURL?: string | null;
+    recordedBlob?: Blob | null;
     selectedOptionId?: string | null;
 }
 
-/**
- * Utility to extract audio track from a video blob and return a WAV blob.
- * This ensures we only send audio to the AI, reducing processing costs.
- */
 async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const arrayBuffer = await videoBlob.arrayBuffer();
@@ -29,7 +25,6 @@ async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
     try {
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
         
-        // Simple WAV encoding logic
         const numOfChan = audioBuffer.numberOfChannels;
         const length = audioBuffer.length * numOfChan * 2 + 44;
         const buffer = new ArrayBuffer(length);
@@ -41,13 +36,10 @@ async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
         const setUint16 = (data: number) => { view.setUint16(pos, data, true); pos += 2; };
         const setUint32 = (data: number) => { view.setUint32(pos, data, true); pos += 4; };
 
-        // RIFF header
         setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157);
-        // fmt chunk
         setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan);
         setUint32(audioBuffer.sampleRate); setUint32(audioBuffer.sampleRate * 2 * numOfChan);
         setUint16(numOfChan * 2); setUint16(16); 
-        // data chunk
         setUint32(0x61746164); setUint32(length - pos - 4);
 
         for (let i = 0; i < audioBuffer.numberOfChannels; i++) {
@@ -73,7 +65,7 @@ async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
     }
 }
 
-export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL, selectedOptionId }: PostSubmissionScreenProps) {
+export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedBlob, selectedOptionId }: PostSubmissionScreenProps) {
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
     const [showCelebration, setShowCelebration] = useState(false);
@@ -95,10 +87,9 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             try {
                 let mediaDataUri = undefined;
                 
-                if (recordedMediaURL) {
+                if (recordedBlob) {
                     try {
-                        const response = await fetch(recordedMediaURL);
-                        let blob = await response.blob();
+                        let blob = recordedBlob;
                         
                         if (blob.type.startsWith('video/')) {
                             console.log("Processing: Extracting audio track from video...");
@@ -131,7 +122,6 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 setShowCelebration(true);
                 hasFetched.current = true;
 
-                // Generate TTS for growth insight
                 if (result.growthInsight) {
                   try {
                     const { audioUri } = await generateSpeech({ text: result.growthInsight });
@@ -151,7 +141,6 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 setFeedback(fallbackFeedback);
                 setShowCelebration(true);
 
-                // Fallback TTS
                 try {
                   const { audioUri } = await generateSpeech({ text: fallbackFeedback.growthInsight });
                   setTtsAudioUri(audioUri);
@@ -167,7 +156,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
         if (userAnswer && !hasFetched.current) {
             fetchFeedback();
         }
-    }, [caseStudy, userAnswer, recordedMediaURL]);
+    }, [caseStudy, userAnswer, recordedBlob]);
 
     const playTts = () => {
       if (audioRef.current && ttsAudioUri) {

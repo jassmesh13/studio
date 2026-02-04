@@ -28,6 +28,7 @@ export default function CaseStudyDetailPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const [recordedMediaURL, setRecordedMediaURL] = useState<string | null>(null);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [transcript, setTranscript] = useState<string>('');
   const [selectedMCQOption, setSelectedMCQOption] = useState<string | null>(null);
   const [finalAnswer, setFinalAnswer] = useState<string>('');
@@ -147,6 +148,7 @@ export default function CaseStudyDetailPage() {
 
       mediaRecorderRef.current.onstop = () => {
         const blob = new Blob(recordedChunksRef.current, { type: mimeType });
+        setRecordedBlob(blob);
         const url = URL.createObjectURL(blob);
         setRecordedMediaURL(url);
 
@@ -170,6 +172,7 @@ export default function CaseStudyDetailPage() {
     setRecordingStatus('idle');
     if (recordedMediaURL) URL.revokeObjectURL(recordedMediaURL);
     setRecordedMediaURL(null);
+    setRecordedBlob(null);
     setTranscript('');
     setFinalAnswer('');
     recordedChunksRef.current = [];
@@ -198,7 +201,7 @@ export default function CaseStudyDetailPage() {
                 onDone={() => router.push('/dashboard/case-studies')} 
                 caseStudy={caseStudy}
                 userAnswer={finalAnswer}
-                recordedMediaURL={recordedMediaURL}
+                recordedBlob={recordedBlob}
                 selectedOptionId={selectedMCQOption}
             />
         );
