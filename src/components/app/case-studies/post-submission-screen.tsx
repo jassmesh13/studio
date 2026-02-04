@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState, useRef } from "react";
@@ -206,41 +205,34 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 />
             )}
             
-            <div className={cn(
-                "mb-8 transform transition-all duration-700 ease-out",
-                !loading ? "scale-100 opacity-100" : "scale-90 opacity-100"
-            )}>
-                <div className="relative inline-block mb-4">
-                    {!loading && (
-                        <>
-                            <PartyPopper className="absolute -left-12 top-0 w-10 h-10 text-primary animate-bounce" />
-                            <PartyPopper className="absolute -right-12 top-0 w-10 h-10 text-primary animate-bounce [animation-delay:0.2s] scale-x-[-1]" />
-                        </>
-                    )}
-                    <Sparkles className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-400 animate-pulse" />
-                    
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-primary drop-shadow-sm tracking-tight animate-pop-in">
-                        {headerText}
-                    </h2>
-                </div>
-                <p className="text-lg text-muted-foreground font-medium max-w-sm mx-auto">
-                    You shared your thoughts beautifully. Every answer makes you a better leader! 🌟
-                </p>
-            </div>
-
             {loading ? (
-                <div className="flex flex-col items-center justify-center py-12 text-center gap-4 animate-in fade-in duration-500">
+                <div className="flex flex-col items-center justify-center py-24 text-center gap-6 animate-in fade-in duration-500">
                     <div className="relative">
-                        <Loader2 className="w-16 h-16 animate-spin text-primary" />
+                        <Loader2 className="w-20 h-20 animate-spin text-primary" />
                     </div>
-                    <h2 className="text-xl font-bold text-primary">Nirmaan is thinking...</h2>
-                    <p className="text-sm text-muted-foreground font-semibold">Analyzing your wonderful answer! ✨</p>
+                    <h2 className="text-2xl font-black text-primary">Nirmaan is thinking...</h2>
+                    <p className="text-base text-muted-foreground font-bold italic">Analyzing your wonderful answer! ✨</p>
                 </div>
             ) : (
                 <div className={cn(
-                    "space-y-6 transition-all duration-1000 delay-300",
+                    "space-y-6 transition-all duration-1000",
                     showCelebration ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
                 )}>
+                    <div className="mb-8 transform transition-all duration-700 ease-out">
+                        <div className="relative inline-block mb-4">
+                            <PartyPopper className="absolute -left-12 top-0 w-10 h-10 text-primary animate-bounce" />
+                            <PartyPopper className="absolute -right-12 top-0 w-10 h-10 text-primary animate-bounce [animation-delay:0.2s] scale-x-[-1]" />
+                            <Sparkles className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-400 animate-pulse" />
+                            
+                            <h2 className="text-4xl md:text-5xl font-extrabold text-primary drop-shadow-sm tracking-tight animate-pop-in">
+                                {headerText}
+                            </h2>
+                        </div>
+                        <p className="text-lg text-muted-foreground font-black max-w-sm mx-auto">
+                            You shared your thoughts beautifully. Every answer makes you a better leader! 🌟
+                        </p>
+                    </div>
+
                     <Card className="text-left bg-white shadow-xl border-primary/10 overflow-hidden">
                         <CardHeader className="bg-primary/5 pb-4">
                             <CardTitle className="flex items-center gap-2 text-primary text-2xl font-black">
