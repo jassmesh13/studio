@@ -3,8 +3,9 @@
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Heart, Star, Loader2, PartyPopper, Sparkles } from "lucide-react";
+import { Brain, Heart, Star, Loader2, PartyPopper, Sparkles, Volume2 } from "lucide-react";
 import { generateCaseStudyFeedback, type CaseStudyFeedbackOutput } from "@/ai/flows/case-study-feedback-flow";
+import { generateSpeech } from "@/ai/flows/tts-flow";
 import type { CaseStudy } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -76,8 +77,12 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
     const [showCelebration, setShowCelebration] = useState(false);
+    const [ttsAudioUri, setTtsAudioUri] = useState<string | null>(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    
     const fetchInProgress = useRef(false);
     const hasFetched = useRef(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -125,14 +130,34 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                 setFeedback(result);
                 setShowCelebration(true);
                 hasFetched.current = true;
+
+                // Generate TTS for growth insight
+                if (result.growthInsight) {
+                  try {
+                    const { audioUri } = await generateSpeech({ text: result.growthInsight });
+                    setTtsAudioUri(audioUri);
+                  } catch (ttsErr) {
+                    console.error("TTS generation failed", ttsErr);
+                  }
+                }
+
             } catch (error) {
                 console.error("Failed to generate AI feedback:", error);
-                setFeedback({
+                const fallbackFeedback: CaseStudyFeedbackOutput = {
                     analysis: "Thank you for sharing your thoughts! Every decision helps you learn more about who you want to be.",
                     growthInsight: "Keep thinking about how your actions affect others and yourself.",
                     skillBoosted: "Decision-Making"
-                });
+                };
+                setFeedback(fallbackFeedback);
                 setShowCelebration(true);
+
+                // Fallback TTS
+                try {
+                  const { audioUri } = await generateSpeech({ text: fallbackFeedback.growthInsight });
+                  setTtsAudioUri(audioUri);
+                } catch (ttsErr) {
+                   console.error("TTS generation failed", ttsErr);
+                }
             } finally {
                 setLoading(false);
                 fetchInProgress.current = false;
@@ -143,6 +168,17 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             fetchFeedback();
         }
     }, [caseStudy, userAnswer, recordedMediaURL]);
+
+    const playTts = () => {
+      if (audioRef.current && ttsAudioUri) {
+        setIsSpeaking(true);
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(e => {
+          console.warn("TTS Play blocked", e);
+          setIsSpeaking(false);
+        });
+      }
+    };
 
     let headerText = `Well done, ${userName}!`;
     if (caseStudy.type === 'mcq' && selectedOptionId) {
@@ -158,6 +194,15 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
 
     return (
         <div className="w-full max-w-lg mx-auto text-center px-4 pt-8">
+            <audio 
+              ref={audioRef} 
+              src={ttsAudioUri || ''} 
+              autoPlay 
+              onPlay={() => setIsSpeaking(true)}
+              onEnded={() => setIsSpeaking(false)}
+              className="hidden" 
+            />
+            
             <div className={cn(
                 "mb-8 transform transition-all duration-700 ease-out",
                 !loading ? "scale-100 opacity-100" : "scale-90 opacity-100"
@@ -205,16 +250,31 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                         </CardContent>
                     </Card>
 
-                    <Card className="text-left bg-white shadow-xl border-red-100">
-                        <CardHeader className="bg-red-50/50 pb-4">
+                    <Card className="text-left bg-white shadow-xl border-red-100 overflow-hidden">
+                        <CardHeader className="bg-red-50/50 pb-4 flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2 text-red-500 text-2xl font-black">
                                 <Heart className="w-7 h-7 fill-red-500" />
                                 Growth Insight
                             </CardTitle>
+                            {ttsAudioUri && (
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                onClick={playTts}
+                                className={cn("rounded-full", isSpeaking && "text-red-500 animate-pulse")}
+                              >
+                                <Volume2 className="w-6 h-6" />
+                              </Button>
+                            )}
                         </CardHeader>
                         <CardContent className="pt-6">
-                            <div className="bg-accent/50 p-5 rounded-2xl border-2 border-dashed border-primary/20">
+                            <div className="bg-accent/50 p-5 rounded-2xl border-2 border-dashed border-primary/20 relative group">
                                 <p className="font-black italic text-primary text-lg">"{feedback?.growthInsight}"</p>
+                                {isSpeaking && (
+                                  <div className="absolute -bottom-2 -right-2 bg-primary text-white p-1 rounded-full shadow-lg">
+                                    <Volume2 className="w-4 h-4 animate-ping" />
+                                  </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
