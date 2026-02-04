@@ -8,7 +8,7 @@ const mockUsers: User[] = [
   { id: '3', name: 'Suresh', avatarUrl: '3', points: 400, rank: 3 },
   { id: '4', name: 'David Evans', avatarUrl: '4', points: 350, rank: 4 },
   { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
-  { id: '6', name: 'Nyra (You)', avatarUrl: 'avatar-kid', points: 390, rank: 1438 },
+  { id: '6', name: 'Nyra', avatarUrl: 'avatar-kid', points: 390, rank: 1438 },
 ];
 
 const mockMainUser: User = { id: '6', name: 'Nyra', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
