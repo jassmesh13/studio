@@ -525,7 +525,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '31',
         status: 'Not Started',
         dueDate: getFutureDate(4),
-        category: 'Storytelling',
+        category: 'Communication',
         caseNumber: 43,
         points: 5,
         type: 'mcq',
@@ -549,7 +549,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "What should Anaya say to her teacher?",
             explanation: "Choose the best way for Anaya to ask for help."
         },
-        tags: ['Storytelling', 'Classroom']
+        tags: ['Communication', 'Classroom']
     },
     {
         id: '6',
@@ -602,7 +602,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Why did the animals get scared?",
             explanation: "Think about how the animals felt when they saw something they had never seen before."
         },
-        tags: ['Storytelling', 'Storytelling']
+        tags: ['Storytelling', 'Emotions']
     },
     {
         id: '8',
@@ -622,7 +622,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Can you tell what happened to the fox at the beginning, middle, and climax of the story?",
             explanation: "Try to remember the story steps: start, middle, and the most exciting part!"
         },
-        tags: ['Storytelling', 'Storytelling']
+        tags: ['Storytelling', 'Memory']
     },
     {
         id: '9',
@@ -642,7 +642,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Can you introduce yourself in 2–3 sentences?",
             explanation: "Tell your new friend your name and one thing you love to do!"
         },
-        tags: ['Storytelling', 'Social Skills']
+        tags: ['Communication', 'Social Skills']
     },
     {
         id: '10',
@@ -662,7 +662,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "If you had a superpower, what would it be and why?",
             explanation: "Think of something amazing you would love to be able to do to help others."
         },
-        tags: ['Creativity', 'Self-Awareness']
+        tags: ['Creativity', 'Confidence']
     },
     {
         id: '1',
@@ -671,7 +671,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '13',
         status: 'In Progress',
         dueDate: getFutureDate(2),
-        category: 'Financial literacy',
+        category: 'Ethics',
         caseNumber: 32,
         points: 5,
         type: 'video',
@@ -683,7 +683,7 @@ const mockCaseStudies: CaseStudy[] = [
             dilemma: "Would you tell the teacher the truth, <br />OR <br />keep your friend's secret?",
             explanation: "Also explain why you think your choice is the best one."
         },
-        tags: ['Financial literacy', 'Friendship']
+        tags: ['Integrity', 'Friendship']
     },
     {
         id: '2',
@@ -692,7 +692,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '14',
         status: 'Not Started',
         dueDate: getFutureDate(0, 6),
-        category: 'Emotional Intelligence',
+        category: 'Social Awareness',
         caseNumber: 38,
         points: 10,
         type: 'audio',
@@ -703,7 +703,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "If you were Ibrahim, how would you handle this?",
             explanation: "Explain your reasoning and what might happen after."
         },
-        tags: ['Emotional Intelligence']
+        tags: ['Empathy', 'Standing Up']
     },
     {
         id: '3',
@@ -745,7 +745,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '13',
         status: 'In Progress',
         dueDate: getFutureDate(3),
-        category: 'Emotional Intelligence',
+        category: 'Life Skills',
         caseNumber: 42,
         points: 10,
         type: 'video',

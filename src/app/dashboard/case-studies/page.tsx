@@ -35,6 +35,28 @@ const getTimeLeft = (dueDate: string) => {
     return `${minutes} min${minutes > 1 ? 's' : ''} left`;
 };
 
+const getTagColor = (tag: string) => {
+    const colors: Record<string, string> = {
+        'Communication': 'bg-blue-100 text-blue-700',
+        'Storytelling': 'bg-purple-100 text-purple-700',
+        'Classroom': 'bg-slate-100 text-slate-700',
+        'Honesty': 'bg-green-100 text-green-700',
+        'Friendship': 'bg-pink-100 text-pink-700',
+        'Emotions': 'bg-orange-100 text-orange-700',
+        'Memory': 'bg-yellow-100 text-yellow-700',
+        'Social Skills': 'bg-emerald-100 text-emerald-700',
+        'Creativity': 'bg-indigo-100 text-indigo-700',
+        'Confidence': 'bg-rose-100 text-rose-700',
+        'Integrity': 'bg-teal-100 text-teal-700',
+        'Empathy': 'bg-cyan-100 text-cyan-700',
+        'Standing Up': 'bg-amber-100 text-amber-700',
+        'Responsibility': 'bg-violet-100 text-violet-700',
+        'Teamwork': 'bg-lime-100 text-lime-700',
+        'Fairness': 'bg-red-100 text-red-700',
+    };
+    return colors[tag] || 'bg-gray-100 text-gray-700';
+};
+
 
 export default function CaseStudiesPage() {
     const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
@@ -129,13 +151,6 @@ export default function CaseStudiesPage() {
 
       <div className="grid gap-4">
         {caseStudies.map((study) => {
-            const badgeColor = 
-                study.category === 'Financial literacy' ? 'bg-yellow-200 text-yellow-800' :
-                study.category === 'Emotional Intelligence' ? 'bg-green-200 text-green-800' :
-                study.category === 'Cognitive Ability' ? 'bg-orange-200 text-orange-800' :
-                study.category === 'Storytelling' ? 'bg-blue-200 text-blue-800' :
-                'bg-blue-200 text-blue-800';
-
             return (
                 <Link href={`/dashboard/case-studies/${study.id}`} key={study.id}>
                     <Card className="bg-accent/30 p-4 hover:bg-accent/50 transition-colors">
@@ -147,9 +162,11 @@ export default function CaseStudiesPage() {
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{study.title}</h3>
                                 <p className="text-sm text-muted-foreground">{study.description}</p>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <Badge className={cn("border-none", badgeColor)}>{study.category}</Badge>
-                                    {study.grade && <Badge variant="outline">{study.grade}</Badge>}
+                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                    {study.tags?.map(tag => (
+                                        <Badge key={tag} className={cn("border-none", getTagColor(tag))}>{tag}</Badge>
+                                    ))}
+                                    {study.grade && <Badge variant="outline" className="border-primary/20">{study.grade}</Badge>}
                                 </div>
                             </div>
                             <div className="text-right self-end space-y-1">
