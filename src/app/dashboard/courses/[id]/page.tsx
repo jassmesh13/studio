@@ -18,7 +18,15 @@ import {
   Ear, 
   MessageSquare, 
   Eye, 
-  BookOpen 
+  BookOpen,
+  Brain,
+  Puzzle,
+  Palette,
+  Zap,
+  MessageCircle,
+  Mic2,
+  HelpCircle,
+  Volume2
 } from 'lucide-react';
 import { getCourseById, getCaseStudiesForCourse } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -60,6 +68,8 @@ export default function CourseDetailPage() {
 
   const getChapterIcon = (title: string) => {
     const t = title.toLowerCase();
+    
+    // Life Skills
     if (t.includes('knowing myself')) return <UserCircle className="w-10 h-10 text-primary" />;
     if (t.includes('managing emotions')) return <Smile className="w-10 h-10 text-primary" />;
     if (t.includes('good manners')) return <Handshake className="w-10 h-10 text-primary" />;
@@ -67,12 +77,23 @@ export default function CourseDetailPage() {
     if (t.includes('responsibility')) return <CheckCircle2 className="w-10 h-10 text-primary" />;
     if (t.includes('healthy habits')) return <Apple className="w-10 h-10 text-primary" />;
     if (t.includes('safety rules')) return <Shield className="w-10 h-10 text-primary" />;
-    if (t.includes('creative thinking')) return <Lightbulb className="w-10 h-10 text-primary" />;
-    if (t.includes('working with others')) return <Users className="w-10 h-10 text-primary" />;
-    if (t.includes('digital citizenship')) return <Globe className="w-10 h-10 text-primary" />;
+    
+    // 21st Century Skills
+    if (t.includes('critical thinking')) return <Brain className="w-10 h-10 text-primary" />;
+    if (t.includes('problem solving')) return <Puzzle className="w-10 h-10 text-primary" />;
+    if (t.includes('creativity')) return <Palette className="w-10 h-10 text-primary" />;
+    if (t.includes('teamwork')) return <Users className="w-10 h-10 text-primary" />;
+    if (t.includes('decision making')) return <Zap className="w-10 h-10 text-primary" />;
+    if (t.includes('digital skills')) return <Globe className="w-10 h-10 text-primary" />;
+    
+    // Communication Skills
+    if (t.includes('everyday communication')) return <MessageCircle className="w-10 h-10 text-primary" />;
     if (t.includes('listening')) return <Ear className="w-10 h-10 text-primary" />;
-    if (t.includes('speaking')) return <MessageSquare className="w-10 h-10 text-primary" />;
-    if (t.includes('body language')) return <Eye className="w-10 h-10 text-primary" />;
+    if (t.includes('speaking clearly')) return <Mic2 className="w-10 h-10 text-primary" />;
+    if (t.includes('asking questions')) return <HelpCircle className="w-10 h-10 text-primary" />;
+    if (t.includes('storytelling')) return <BookOpen className="w-10 h-10 text-primary" />;
+    if (t.includes('public speaking')) return <Volume2 className="w-10 h-10 text-primary" />;
+    
     return <BookOpen className="w-10 h-10 text-primary" />;
   };
 
