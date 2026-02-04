@@ -194,14 +194,16 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
 
     return (
         <div className="w-full max-w-lg mx-auto text-center px-4 pt-8">
-            <audio 
-              ref={audioRef} 
-              src={ttsAudioUri || ''} 
-              autoPlay 
-              onPlay={() => setIsSpeaking(true)}
-              onEnded={() => setIsSpeaking(false)}
-              className="hidden" 
-            />
+            {ttsAudioUri && (
+                <audio 
+                  ref={audioRef} 
+                  src={ttsAudioUri} 
+                  autoPlay 
+                  onPlay={() => setIsSpeaking(true)}
+                  onEnded={() => setIsSpeaking(false)}
+                  className="hidden" 
+                />
+            )}
             
             <div className={cn(
                 "mb-8 transform transition-all duration-700 ease-out",
