@@ -8,10 +8,10 @@ const mockUsers: User[] = [
   { id: '3', name: 'Suresh', avatarUrl: '3', points: 400, rank: 3 },
   { id: '4', name: 'David Evans', avatarUrl: '4', points: 350, rank: 4 },
   { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
-  { id: '6', name: 'Alia (You)', avatarUrl: 'avatar-kid', points: 390, rank: 1438 },
+  { id: '6', name: 'Nyra (You)', avatarUrl: 'avatar-kid', points: 390, rank: 1438 },
 ];
 
-const mockMainUser: User = { id: '6', name: 'Alia', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
+const mockMainUser: User = { id: '6', name: 'Nyra', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
 
 const mockCourses: Course[] = [
   {
@@ -572,7 +572,7 @@ const mockCaseStudies: CaseStudy[] = [
                 options: [
                     { id: 'q3-opt1', text: "Put it in your bag because you like it." },
                     { id: 'q3-opt2', text: "Ask the classmate if it's theirs or give it to the teacher." },
-                    { id: 'q3-opt3', text: "Throw it away so no one can have it." },
+                    { id: 'q3-opt3', text: "Ask the teacher to keep it." },
                     { id: 'q3-opt4', text: 'Hide it under the desk.' }
                 ]
             }
@@ -777,8 +777,8 @@ const mockGamificationData: Gamification = {
 
 const mockProfileData: Profile = {
     ...mockMainUser,
-    username: 'alia_sharma',
-    email: 'alia.sharma@example.com',
+    username: 'nyra_sharma',
+    email: 'nyra.sharma@example.com',
     phone: '123-456-7890',
     school: 'Delhi Public School',
     class: '10th',
