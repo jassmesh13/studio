@@ -192,7 +192,7 @@ const mockCourses: Course[] = [
         } 
       },
     ],
-    caseStudyIds: ['1', '2', '3', '4', '5', '6']
+    caseStudyIds: ['1', '2', '3', '4', '5', '6', '10']
   },
   {
     id: '2',
@@ -506,7 +506,7 @@ const mockCourses: Course[] = [
         } 
       }
     ],
-    caseStudyIds: ['3', '4']
+    caseStudyIds: ['3', '4', '7', '8', '9']
   },
 ];
 
@@ -677,6 +677,86 @@ const mockCaseStudies: CaseStudy[] = [
             explanation: "Think about how Sam can be a good friend and honest student."
         },
         tags: ['Honesty', 'Friendship']
+    },
+    {
+        id: '7',
+        title: 'Why Were the Animals Scared?',
+        description: 'A communication case study about the blue fox story.',
+        imageUrl: '30',
+        status: 'Not Started',
+        dueDate: getFutureDate(2),
+        category: 'Communication',
+        caseNumber: 45,
+        points: 5,
+        type: 'video',
+        grade: 'Grade 1-3',
+        content: {
+            scenario: "The animals saw a blue fox for the first time.",
+            quote: "",
+            prompt: "Why did the animals get scared?",
+            explanation: "Think about how the animals felt when they saw something they had never seen before."
+        },
+        tags: ['Communication', 'Storytelling']
+    },
+    {
+        id: '8',
+        title: 'What Happened in the Blue Fox Story?',
+        description: 'Practice your storytelling skills by retelling the blue fox story.',
+        imageUrl: '31',
+        status: 'Not Started',
+        dueDate: getFutureDate(3),
+        category: 'Communication',
+        caseNumber: 46,
+        points: 10,
+        type: 'video',
+        grade: 'Grade 1-3',
+        content: {
+            scenario: "You listened to the story of the blue fox in class.",
+            quote: "",
+            prompt: "Can you tell what happened to the fox at the beginning, middle, and climax of the story?",
+            explanation: "Try to remember the story steps: start, middle, and the most exciting part!"
+        },
+        tags: ['Communication', 'Storytelling']
+    },
+    {
+        id: '9',
+        title: 'Introduce Yourself',
+        description: 'Learn how to introduce yourself to new friends.',
+        imageUrl: '31',
+        status: 'Not Started',
+        dueDate: getFutureDate(5),
+        category: 'Communication',
+        caseNumber: 47,
+        points: 5,
+        type: 'video',
+        grade: 'Grade 1-3',
+        content: {
+            scenario: "Imagine you are meeting a new friend in school.",
+            quote: "",
+            prompt: "Can you introduce yourself in 2–3 sentences?",
+            explanation: "Tell your new friend your name and one thing you love to do!"
+        },
+        tags: ['Communication', 'Social Skills']
+    },
+    {
+        id: '10',
+        title: 'Your Superpower',
+        description: 'A creative case study about discovering your unique strengths.',
+        imageUrl: '35',
+        status: 'Not Started',
+        dueDate: getFutureDate(4),
+        category: 'Life Skills',
+        caseNumber: 48,
+        points: 5,
+        type: 'video',
+        grade: 'Grade 1-3',
+        content: {
+            scenario: "In class, everyone shared their superpower.",
+            quote: "",
+            prompt: "If you had a superpower, what would it be and why?",
+            explanation: "Think of something amazing you would love to be able to do to help others."
+        },
+        tags: ['Creativity', 'Self-Awareness']
     }
 ];
 
