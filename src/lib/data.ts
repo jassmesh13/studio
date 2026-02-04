@@ -8,6 +8,7 @@ const mockUsers: User[] = [
   { id: '3', name: 'Suresh', avatarUrl: '3', points: 400, rank: 3 },
   { id: '4', name: 'David Evans', avatarUrl: '4', points: 350, rank: 4 },
   { id: '5', name: 'Emily Frank', avatarUrl: '5', points: 300, rank: 5 },
+  { id: '6', name: 'Alia (You)', avatarUrl: 'avatar-kid', points: 390, rank: 1438 },
 ];
 
 const mockMainUser: User = { id: '6', name: 'Alia', avatarUrl: 'avatar-kid', points: 390, rank: 1438 };
@@ -767,6 +768,8 @@ const mockGamificationData: Gamification = {
         { id: '2', name: 'Streak Starter', icon: 'Flame', description: 'Maintain a 3-day streak', imageUrl: '21' },
         { id: '3', name: 'Top Learner', icon: 'Crown', description: 'Reach the top 10 on the leaderboard', imageUrl: '22' },
         { id: '4-pro', name: 'Case Study Pro', icon: 'Briefcase', description: 'Complete 3 case studies', imageUrl: '23' },
+        { id: '5-hero', name: 'Honest Hero', icon: 'Heart', description: 'Make an honest choice in a case study', imageUrl: '20' },
+        { id: '6-star', name: 'Word Master', icon: 'Zap', description: 'Submit a high-quality video response', imageUrl: '22' },
     ],
     leaderboard: mockUsers.sort((a, b) => b.points - a.points).map((user, index) => ({...user, rank: index + 1})),
     streak: 5,
