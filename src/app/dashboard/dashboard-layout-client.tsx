@@ -5,8 +5,11 @@ import { AppSidebar } from '@/components/app/app-sidebar';
 export function DashboardLayoutClient({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
-    // For the chat page, we want a full-screen experience without the default dashboard layout
-    if (pathname === '/dashboard/chat') {
+    // Check if we are on the chat page or viewing a course chapter lesson
+    // We want a full-screen experience without the sidebar or default dashboard styles for these views
+    const isSidebarHidden = pathname === '/dashboard/chat' || pathname.includes('/chapters/');
+
+    if (isSidebarHidden) {
         return <>{children}</>;
     }
 
