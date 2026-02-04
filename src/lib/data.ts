@@ -1,8 +1,6 @@
 'use server';
 
 import type { User, Course, CaseStudy, Task, Gamification, Profile, School, Habit } from '@/lib/types';
-import { db } from './firebase';
-import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 
 const mockUsers: User[] = [
   { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
@@ -25,8 +23,31 @@ const mockCourses: Course[] = [
     lessons: 1438,
     classRank: 56,
     chapters: [
-      { id: 'c1-1', title: 'Everyday Communication', completed: true, imageUrl: 'l1', description: 'Learn how to talk and listen to friends and family.', content: { type: 'video', duration: '15 min' } },
-      { id: 'c1-2', title: 'Making Smart Choices', completed: true, imageUrl: 'l2', description: 'Discover how to make good decisions in tricky situations.', content: { type: 'pdf', pages: 25 } },
+      { 
+        id: 'c1-1', 
+        title: 'Knowing Myself', 
+        completed: true, 
+        imageUrl: 'l1', 
+        description: 'Discover who you are and what makes you special.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is knowing yourself, Nyra?",
+                    answer: "Nyra, knowing yourself means understanding your feelings and likes. It helps you know what you are good at."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "When you understand yourself, you feel confident and happy. You can make better choices every day."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will talk about your feelings and strengths in fun activities. You will draw and share about yourself."
+                }
+            ]
+        } 
+      },
+      { id: 'c1-2', title: 'Making Smart Choices', completed: true, imageUrl: 'l2', description: 'Discover how to make good decisions in tricky situations.', content: { type: 'video', duration: '15 min' } },
       { id: 'c1-3', title: 'Understanding Your Feelings', completed: true, imageUrl: 'l1', description: 'Explore different emotions and how to manage them.', content: { type: 'quiz', questions: 10 } },
       { id: 'c1-4', title: 'Being a Good Friend', completed: true, imageUrl: 'l2', description: 'Find out what it means to be a supportive and kind friend.', content: { type: 'video', duration: '45 min' } },
       { id: 'c1-5', title: 'Solving Problems', completed: false, imageUrl: 'l1', description: 'Get tools to solve puzzles and challenges in your daily life.', content: { type: 'video', duration: '45 min' } },

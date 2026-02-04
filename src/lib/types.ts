@@ -15,10 +15,11 @@ export type Chapter = {
     description?: string;
     imageUrl?: string;
     content: {
-        type: 'video' | 'pdf' | 'quiz';
+        type: 'video' | 'pdf' | 'quiz' | 'text';
         duration?: string;
         pages?: number;
         questions?: number;
+        body?: { question: string; answer: string }[];
     }
 };
 
