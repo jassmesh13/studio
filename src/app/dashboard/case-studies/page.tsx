@@ -133,6 +133,7 @@ export default function CaseStudiesPage() {
                 study.category === 'Financial literacy' ? 'bg-yellow-200 text-yellow-800' :
                 study.category === 'Emotional Intelligence' ? 'bg-green-200 text-green-800' :
                 study.category === 'Cognitive Ability' ? 'bg-orange-200 text-orange-800' :
+                study.category === 'Storytelling' ? 'bg-blue-200 text-blue-800' :
                 'bg-blue-200 text-blue-800';
 
             return (

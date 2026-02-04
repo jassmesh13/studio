@@ -525,7 +525,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '31',
         status: 'Not Started',
         dueDate: getFutureDate(4),
-        category: 'Communication',
+        category: 'Storytelling',
         caseNumber: 43,
         points: 5,
         type: 'mcq',
@@ -549,7 +549,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "What should Anaya say to her teacher?",
             explanation: "Choose the best way for Anaya to ask for help."
         },
-        tags: ['Communication', 'Classroom']
+        tags: ['Storytelling', 'Classroom']
     },
     {
         id: '6',
@@ -591,7 +591,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '30',
         status: 'Not Started',
         dueDate: getFutureDate(2),
-        category: 'Communication',
+        category: 'Storytelling',
         caseNumber: 45,
         points: 5,
         type: 'video',
@@ -602,7 +602,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Why did the animals get scared?",
             explanation: "Think about how the animals felt when they saw something they had never seen before."
         },
-        tags: ['Communication', 'Storytelling']
+        tags: ['Storytelling', 'Storytelling']
     },
     {
         id: '8',
@@ -611,7 +611,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '31',
         status: 'Not Started',
         dueDate: getFutureDate(3),
-        category: 'Communication',
+        category: 'Storytelling',
         caseNumber: 46,
         points: 10,
         type: 'video',
@@ -622,7 +622,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Can you tell what happened to the fox at the beginning, middle, and climax of the story?",
             explanation: "Try to remember the story steps: start, middle, and the most exciting part!"
         },
-        tags: ['Communication', 'Storytelling']
+        tags: ['Storytelling', 'Storytelling']
     },
     {
         id: '9',
@@ -631,7 +631,7 @@ const mockCaseStudies: CaseStudy[] = [
         imageUrl: '31',
         status: 'Not Started',
         dueDate: getFutureDate(5),
-        category: 'Communication',
+        category: 'Storytelling',
         caseNumber: 47,
         points: 5,
         type: 'video',
@@ -642,7 +642,7 @@ const mockCaseStudies: CaseStudy[] = [
             prompt: "Can you introduce yourself in 2–3 sentences?",
             explanation: "Tell your new friend your name and one thing you love to do!"
         },
-        tags: ['Communication', 'Social Skills']
+        tags: ['Storytelling', 'Social Skills']
     },
     {
         id: '10',
