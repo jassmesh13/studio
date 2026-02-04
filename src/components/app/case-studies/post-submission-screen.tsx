@@ -35,12 +35,15 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
             try {
                 let mediaDataUri = undefined;
                 
+                // STEP 1: Video/Audio Processing
+                // We fetch the blob from the local URL and convert it to a data URI for the AI
                 if (recordedMediaURL) {
                     try {
                         const response = await fetch(recordedMediaURL);
                         const blob = await response.blob();
                         
-                        if (blob.size < 10 * 1024 * 1024) { 
+                        // Only process if it's within a reasonable size for the AI flow
+                        if (blob.size < 20 * 1024 * 1024) { 
                             mediaDataUri = await new Promise<string>((resolve, reject) => {
                                 const reader = new FileReader();
                                 reader.onloadend = () => resolve(reader.result as string);
@@ -53,6 +56,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     }
                 }
 
+                // STEP 2: Send to AI Flow
                 const result = await generateCaseStudyFeedback({
                     scenario: caseStudy.content?.scenario || "",
                     question: caseStudy.content?.prompt || "",
@@ -61,6 +65,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     mediaDataUri: mediaDataUri,
                     hasMedia: !!mediaDataUri
                 });
+                
                 setFeedback(result);
                 setShowCelebration(true);
                 hasFetched.current = true;
@@ -113,7 +118,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                         <Loader2 className="w-16 h-16 animate-spin text-primary" />
                     </div>
                     <h2 className="text-xl font-bold text-primary">Nirmaan is thinking...</h2>
-                    <p className="text-sm text-muted-foreground">Analyzing your wonderful answer! ✨</p>
+                    <p className="text-sm text-muted-foreground font-semibold">Analyzing your wonderful answer! ✨</p>
                 </div>
             ) : (
                 <div className={cn(
@@ -127,7 +132,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                                 Nirmaan's Thoughts
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-6 text-lg leading-relaxed text-foreground/90 font-bold">
+                        <CardContent className="pt-6 text-lg leading-relaxed text-foreground font-black">
                             <p>{feedback?.analysis}</p>
                         </CardContent>
                     </Card>

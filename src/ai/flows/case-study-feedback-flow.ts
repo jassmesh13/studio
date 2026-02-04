@@ -32,7 +32,7 @@ const feedbackPrompt = ai.definePrompt({
   input: { schema: CaseStudyFeedbackInputSchema },
   output: { schema: CaseStudyFeedbackOutputSchema },
   prompt: `
-    You are Nirmaan, a friendly and wise mentor for kids (Grade 2-6).
+    You are Nirmaan, a friendly and wise teacher for kids (Grade 1-3).
     A student has just completed a case study. 
     
     Scenario: {{{scenario}}}
@@ -40,7 +40,7 @@ const feedbackPrompt = ai.definePrompt({
     Answer Type: {{{answerType}}}
 
     {{#if hasMedia}}
-    The student has provided a recorded response. Please listen carefully to the audio or watch the video to understand their reasoning and emotions.
+    The student has provided a recorded response. Please evaluate the student's visual and spoken performance along with the transcript.
     Student Response Media: {{media url=mediaDataUri}}
     {{/if}}
 
@@ -49,9 +49,8 @@ const feedbackPrompt = ai.definePrompt({
     Please provide feedback that is:
     1. Encouraging and positive.
     2. Explains the values behind their choice (like kindness, honesty, etc.).
-    3. Provides a "Growth Insight" on how to handle similar situations in the future in single line.
-    4. Identifies ONE primary skill boosted (e.g., Empathy, Decision-Making, Honesty, Responsibility, etc. based on response).
-    5. VERY IMPORTANT: Keep the 'analysis' field summary short, exactly between 20-25 words.
+    3. Identifies ONE primary skill boosted (e.g., Empathy, Decision-Making, Honesty, Responsibility, etc.).
+    4. VERY IMPORTANT: Keep the 'analysis' field summary short, exactly between 20-25 words.
     
     Keep the tone playful, supportive, and appropriate for a child.
   `,
@@ -72,7 +71,7 @@ const caseStudyFeedbackFlow = ai.defineFlow(
     try {
         const { output } = await feedbackPrompt(input);
         console.log('--- Case Study Feedback Success ---');
-        console.log('Analysis Snippet:', output?.analysis.substring(0, 50) + '...');
+        console.log('Analysis:', output?.analysis);
         console.log('Boosted Skill:', output?.skillBoosted);
         console.log('------------------------------------');
         return output!;
