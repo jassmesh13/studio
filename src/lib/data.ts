@@ -204,9 +204,150 @@ const mockCourses: Course[] = [
     lessons: 1230,
     classRank: 15,
     chapters: [
-        { id: 'c2-1', title: 'Creative Thinking', completed: true, imageUrl: 'l1', description: 'Unleash your imagination and come up with new ideas.', content: { type: 'video', duration: '25 min' } },
-        { id: 'c2-2', title: 'Working With Others', completed: true, imageUrl: 'l2', description: 'Learn the secrets of successful teamwork and collaboration.', content: { type: 'pdf', pages: 30 } },
-        { id: 'c2-3', title: 'Digital Citizenship', completed: false, imageUrl: 'l1', description: 'Navigate the online world safely and responsibly.', content: { type: 'quiz', questions: 15 } },
+      { 
+        id: 'c2-1', 
+        title: 'Critical Thinking', 
+        completed: true, 
+        imageUrl: 'l1', 
+        description: 'Think carefully before you decide and understand problems.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is critical thinking, Nyra?",
+                    answer: "Nyra, critical thinking means thinking carefully before you decide. It helps you understand problems."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Thinking clearly helps you choose right answers. It makes learning easier."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will solve puzzles and tricky questions. You will ask why and how."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c2-2', 
+        title: 'Problem Solving', 
+        completed: true, 
+        imageUrl: 'l2', 
+        description: 'Find ways to fix challenges step by step.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is problem solving, Nyra?",
+                    answer: "Nyra, problem solving means finding ways to fix challenges. It helps you think step by step."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Solving problems makes you brave and smart. You can handle difficult situations."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will try different ideas and solutions. You will practice with fun tasks."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c2-3', 
+        title: 'Creativity and Imagination', 
+        completed: false, 
+        imageUrl: 'l1', 
+        description: 'Make new ideas using your imagination.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is creativity, Nyra?",
+                    answer: "Nyra, creativity means making new ideas using your imagination. You can draw, build, or tell stories."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Creative thinking helps you express yourself. It makes learning fun."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will do art, craft, and storytelling activities. You will create something new."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c2-4', 
+        title: 'Teamwork', 
+        completed: false, 
+        imageUrl: 'l2', 
+        description: 'Work together with others to finish a task.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is teamwork, Nyra?",
+                    answer: "Nyra, teamwork means working together with others. Everyone helps to finish a task."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Teamwork makes big tasks easier. It helps you make good friends."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will play group games and projects. You will share roles and help each other."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c2-5', 
+        title: 'Decision Making', 
+        completed: false, 
+        imageUrl: 'l1', 
+        description: 'Choose what is right or best by thinking before acting.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What is decision making, Nyra?",
+                    answer: "Nyra, decision making means choosing what is right or best. You think before you act."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Good decisions keep you safe and happy. They help you grow smarter."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will talk about choices and outcomes. You will practice picking the best option."
+                }
+            ]
+        } 
+      },
+      { 
+        id: 'c2-6', 
+        title: 'Digital Skills', 
+        completed: false, 
+        imageUrl: 'l2', 
+        description: 'Use computers and tablets safely and wisely.', 
+        content: { 
+            type: 'text',
+            body: [
+                {
+                    question: "1. What are digital skills, Nyra?",
+                    answer: "Nyra, digital skills mean using computers and tablets safely. You learn to use technology wisely."
+                },
+                {
+                    question: "2. Why should you learn this, Nyra?",
+                    answer: "Technology helps you learn new things. Using it safely protects you."
+                },
+                {
+                    question: "3. How will you learn this, Nyra?",
+                    answer: "You will use simple apps and follow rules. You will practice safe online behavior."
+                }
+            ]
+        } 
+      }
     ],
     caseStudyIds: ['1', '2']
   },
