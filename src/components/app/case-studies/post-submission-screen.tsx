@@ -97,7 +97,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
         if (loading) {
             interval = setInterval(() => {
                 setFactIndex(prev => (prev + 1) % funFacts.length);
-            }, 5000);
+            }, 8000); // Updated to 8 seconds for better readability
         }
         return () => clearInterval(interval);
     }, [loading]);
