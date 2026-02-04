@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getCaseStudies } from '@/lib/data';
 import { cn } from '@/lib/utils';
-import { Settings, BookOpen, LogOut, Clock } from 'lucide-react';
+import { Settings, BookOpen, LogOut, Clock, Pencil, HandHelping, Squirrel, UserCircle, Zap, Heart, MessageCircle, Wallet, Users } from 'lucide-react';
 import Image from 'next/image';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useEffect, useState } from 'react';
@@ -55,6 +55,21 @@ const getTagColor = (tag: string) => {
         'Fairness': 'bg-red-100 text-red-700',
     };
     return colors[tag] || 'bg-gray-100 text-gray-700';
+};
+
+const getCaseStudyIcon = (title: string) => {
+    const t = title.toLowerCase();
+    if (t.includes('help')) return <HandHelping className="w-8 h-8 text-white" />;
+    if (t.includes('pencil')) return <Pencil className="w-8 h-8 text-white" />;
+    if (t.includes('animals scared')) return <Squirrel className="w-8 h-8 text-white" />;
+    if (t.includes('fox story')) return <BookOpen className="w-8 h-8 text-white" />;
+    if (t.includes('introduce yourself')) return <UserCircle className="w-8 h-8 text-white" />;
+    if (t.includes('superpower')) return <Zap className="w-8 h-8 text-white" />;
+    if (t.includes('nyra')) return <Heart className="w-8 h-8 text-white" />;
+    if (t.includes('ibrahim')) return <MessageCircle className="w-8 h-8 text-white" />;
+    if (t.includes('wallet')) return <Wallet className="w-8 h-8 text-white" />;
+    if (t.includes('team')) return <Users className="w-8 h-8 text-white" />;
+    return <BookOpen className="w-8 h-8 text-white" />;
 };
 
 
@@ -155,9 +170,9 @@ export default function CaseStudiesPage() {
                 <Link href={`/dashboard/case-studies/${study.id}`} key={study.id}>
                     <Card className="bg-accent/30 p-4 hover:bg-accent/50 transition-colors">
                         <div className="flex items-start gap-4">
-                            <div className="bg-yellow-400 p-3 rounded-lg relative">
-                                <BookOpen className="w-8 h-8 text-white" />
-                                <div className="absolute -top-1 -right-1 bg-red-500 w-3 h-4 rounded-sm transform rotate-12"></div>
+                            <div className="bg-primary p-3 rounded-lg relative">
+                                {getCaseStudyIcon(study.title)}
+                                <div className="absolute -top-1 -right-1 bg-yellow-400 w-3 h-4 rounded-sm transform rotate-12"></div>
                             </div>
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{study.title}</h3>

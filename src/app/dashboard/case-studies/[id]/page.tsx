@@ -2,7 +2,7 @@
 import { notFound, useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { getCaseStudyById } from '@/lib/data';
-import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Mic, Video, Volume2, Square, Circle, Send, RefreshCw, AlertCircle, Pencil, HandHelping, Squirrel, UserCircle, Zap, Heart, MessageCircle, Wallet, Users, BookOpen } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -191,6 +191,21 @@ export default function CaseStudyDetailPage() {
     setRecordingStatus('submitted');
   };
 
+  const getCaseStudyIcon = (title: string) => {
+    const t = title.toLowerCase();
+    if (t.includes('help')) return <HandHelping className="w-5 h-5" />;
+    if (t.includes('pencil')) return <Pencil className="w-5 h-5" />;
+    if (t.includes('animals scared')) return <Squirrel className="w-5 h-5" />;
+    if (t.includes('fox story')) return <BookOpen className="w-5 h-5" />;
+    if (t.includes('introduce yourself')) return <UserCircle className="w-5 h-5" />;
+    if (t.includes('superpower')) return <Zap className="w-5 h-5" />;
+    if (t.includes('nyra')) return <Heart className="w-5 h-5" />;
+    if (t.includes('ibrahim')) return <MessageCircle className="w-5 h-5" />;
+    if (t.includes('wallet')) return <Wallet className="w-5 h-5" />;
+    if (t.includes('team')) return <Users className="w-5 h-5" />;
+    return <BookOpen className="w-5 h-5" />;
+  };
+
   const renderResponseUI = () => {
     if (!caseStudy) return null;
 
@@ -338,7 +353,7 @@ export default function CaseStudyDetailPage() {
           <ArrowLeft className="w-6 h-6" />
         </Button>
         <div className="bg-primary/20 text-primary p-2 rounded-lg">
-          <Image src="https://picsum.photos/seed/nirmaan/48/48" alt="Nirmaan Logo" width={24} height={24} className="h-auto rounded-md" />
+          {getCaseStudyIcon(caseStudy.title)}
         </div>
         <div className="text-right flex-grow">
           <p className="text-sm font-semibold text-muted-foreground">Case Study #{caseStudy.caseNumber}</p>
