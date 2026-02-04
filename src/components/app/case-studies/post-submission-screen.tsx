@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useRef } from "react";
@@ -185,9 +186,9 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
         const mcq = caseStudy.mcqs?.[0];
         if (mcq && mcq.correctOptionId) {
             if (selectedOptionId === mcq.correctOptionId) {
-                headerText = `Correct answer, ${userName}! Great thinking!`;
+                headerText = `Correct answer, ${userName}!`;
             } else {
-                headerText = `That’s not quite right, ${userName}. Let’s think about it again.`;
+                headerText = `That's not quite right, ${userName}!`;
             }
         }
     }
