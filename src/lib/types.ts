@@ -1,5 +1,3 @@
-
-
 import type { LucideIcon } from 'lucide-react';
 
 export type User = {
@@ -49,6 +47,7 @@ export type MCQ = {
     id: string;
     question: string;
     options: { id: string; text: string; }[];
+    correctOptionId?: string;
 }
 
 export type CaseStudy = {

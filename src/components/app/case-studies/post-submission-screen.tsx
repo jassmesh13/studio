@@ -14,6 +14,7 @@ interface PostSubmissionScreenProps {
     caseStudy: CaseStudy;
     userAnswer: string;
     recordedMediaURL?: string | null;
+    selectedOptionId?: string | null;
 }
 
 /**
@@ -71,7 +72,7 @@ async function extractAudioFromVideo(videoBlob: Blob): Promise<Blob> {
     }
 }
 
-export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL }: PostSubmissionScreenProps) {
+export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, recordedMediaURL, selectedOptionId }: PostSubmissionScreenProps) {
     const [feedback, setFeedback] = useState<CaseStudyFeedbackOutput | null>(null);
     const [loading, setLoading] = useState(true);
     const [showCelebration, setShowCelebration] = useState(false);
@@ -94,7 +95,6 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                         const response = await fetch(recordedMediaURL);
                         let blob = await response.blob();
                         
-                        // COST OPTIMIZATION: Extract only audio if the source is a video
                         if (blob.type.startsWith('video/')) {
                             console.log("Processing: Extracting audio track from video...");
                             blob = await extractAudioFromVideo(blob);
@@ -144,6 +144,18 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
         }
     }, [caseStudy, userAnswer, recordedMediaURL]);
 
+    let headerText = `Well done, ${userName}!`;
+    if (caseStudy.type === 'mcq' && selectedOptionId) {
+        const mcq = caseStudy.mcqs?.[0];
+        if (mcq && mcq.correctOptionId) {
+            if (selectedOptionId === mcq.correctOptionId) {
+                headerText = `Correct answer, ${userName}! Great thinking!`;
+            } else {
+                headerText = `That’s not quite right, ${userName}. Let’s think about it again.`;
+            }
+        }
+    }
+
     return (
         <div className="w-full max-w-lg mx-auto text-center px-4 pt-8">
             <div className={cn(
@@ -160,7 +172,7 @@ export function PostSubmissionScreen({ userName, onDone, caseStudy, userAnswer, 
                     <Sparkles className="absolute -top-6 left-1/2 -translate-x-1/2 w-8 h-8 text-yellow-400 animate-pulse" />
                     
                     <h2 className="text-4xl md:text-5xl font-extrabold text-primary drop-shadow-sm tracking-tight animate-pop-in">
-                        Well done, {userName}!
+                        {headerText}
                     </h2>
                 </div>
                 <p className="text-lg text-muted-foreground font-medium max-w-sm mx-auto">

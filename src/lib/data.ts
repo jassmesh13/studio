@@ -1,13 +1,8 @@
-
-
 'use server';
 
 import type { User, Course, CaseStudy, Task, Gamification, Profile, School, Habit } from '@/lib/types';
 import { db } from './firebase';
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
-
-// MOCK DATA - This will be used as a fallback or for initial setup.
-// In a real application, you would remove this and only use Firestore.
 
 const mockUsers: User[] = [
   { id: '1', name: 'Rashmi', avatarUrl: '1', points: 500, rank: 1 },
@@ -137,6 +132,7 @@ const mockCaseStudies: CaseStudy[] = [
             {
                 id: 'mcq-1',
                 question: 'You find a wallet on the playground with 500 rupees in it. What do you do?',
+                correctOptionId: 'q1-opt3',
                 options: [
                     { id: 'q1-opt1', text: 'Keep the money. Finders keepers!' },
                     { id: 'q1-opt2', text: 'Look for an ID and return it to the owner.' },
@@ -189,6 +185,7 @@ const mockCaseStudies: CaseStudy[] = [
             {
                 id: 'mcq-2',
                 question: 'What should Anaya say to her teacher?',
+                correctOptionId: 'q2-opt2',
                 options: [
                     { id: 'q2-opt1', text: "This is too hard." },
                     { id: 'q2-opt2', text: "Ma’am, I don’t understand this question. Can you please help me?" },
@@ -248,7 +245,7 @@ const mockPendingTasks: Task[] = [
 
 const mockWhatsNew: { id: string; title: string; description: string; date: string; imageUrl: string; }[] = [
     { id: '1', title: 'Upgrade Curriculum & Boost Admissions', description: 'Nirmaan | Upgrade your School Curriculum', date: '2024-08-20', imageUrl: '30' },
-    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '20_24-08-25', imageUrl: '31' },
+    { id: '2', title: 'UNLOCK Your Child\'s True Potential', description: 'Nirmaan | Provide Holistic Education for your kids (English)', date: '2024-08-25', imageUrl: '31' },
     { id: '3', title: 'Doctor\'s Day Celebration', description: 'Join us in celebrating the heroes in white coats.', date: '2024-09-01', imageUrl: '32' },
 ];
 
@@ -296,87 +293,20 @@ const mockHabits: Habit[] = [
     }
 ];
 
-// DATA FETCHING FUNCTIONS - These functions will fetch data from Firestore.
-// For now, they return mock data to keep the app working during development.
-
-// To enable Firestore, uncomment the code inside each function and comment out the mock data return.
-
 export async function getCourses(): Promise<Course[]> {
-    // return mockCourses;
-    
-    // UNCOMMENT THIS TO USE FIRESTORE
-    /*
-    try {
-        const coursesCollection = collection(db, 'courses');
-        const courseSnapshot = await getDocs(coursesCollection);
-        const coursesList = courseSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
-        return coursesList;
-    } catch (error) {
-        console.error("Error fetching courses: ", error);
-        return []; // Return empty array on error
-    }
-    */
    return mockCourses;
 }
 
 export async function getCourseById(id: string): Promise<Course | null> {
-    // return mockCourses.find((c) => c.id === id) || null;
-
-    // UNCOMMENT THIS TO USE FIRESTORE
-    /*
-    try {
-        const courseDoc = doc(db, 'courses', id);
-        const courseSnapshot = await getDoc(courseDoc);
-        if (courseSnapshot.exists()) {
-            return { id: courseSnapshot.id, ...courseSnapshot.data() } as Course;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.error(`Error fetching course ${id}: `, error);
-        return null;
-    }
-    */
     const course = mockCourses.find((c) => c.id === id);
     return course ? { ...course } : null;
 }
 
 export async function getCaseStudies(): Promise<CaseStudy[]> {
-    // return mockCaseStudies;
-
-    // UNCOMMENT THIS TO USE FIRESTORE
-    /*
-    try {
-        const caseStudiesCollection = collection(db, 'caseStudies');
-        const caseStudySnapshot = await getDocs(caseStudiesCollection);
-        const caseStudiesList = caseStudySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CaseStudy));
-        return caseStudiesList;
-    } catch (error) {
-        console.error("Error fetching case studies: ", error);
-        return [];
-    }
-    */
    return mockCaseStudies;
 }
 
 export async function getCaseStudyById(id: string): Promise<CaseStudy | null> {
-    // return mockCaseStudies.find((c) => c.id === id) || null;
-
-    // UNCOMMENT THIS TO USE FIRESTORE
-    /*
-    try {
-        const caseStudyDoc = doc(db, 'caseStudies', id);
-        const caseStudySnapshot = await getDoc(caseStudyDoc);
-        if (caseStudySnapshot.exists()) {
-            return { id: caseStudySnapshot.id, ...caseStudySnapshot.data() } as CaseStudy;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.error(`Error fetching case study ${id}: `, error);
-        return null;
-    }
-    */
     const caseStudy = mockCaseStudies.find((c) => c.id === id);
     return caseStudy ? { ...caseStudy } : null;
 }
@@ -384,19 +314,6 @@ export async function getCaseStudyById(id: string): Promise<CaseStudy | null> {
 export async function getCaseStudiesForCourse(caseStudyIds: string[]): Promise<CaseStudy[]> {
     const allCaseStudies = await getCaseStudies();
     return allCaseStudies.filter(cs => caseStudyIds.includes(cs.id));
-
-    // UNCOMMENT THIS TO USE FIRESTORE
-    /*
-    try {
-        const caseStudiesRef = collection(db, 'caseStudies');
-        const q = query(caseStudiesRef, where('id', 'in', caseStudyIds));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as CaseStudy));
-    } catch (error) {
-        console.error("Error fetching case studies for course: ", error);
-        return [];
-    }
-    */
 }
 
 
@@ -413,7 +330,6 @@ export async function getProfileData(): Promise<Profile> {
 }
 
 
-// Functions to get mock data that was previously exported directly
 export async function getPendingTasks(): Promise<Task[]> {
     return mockPendingTasks;
 }

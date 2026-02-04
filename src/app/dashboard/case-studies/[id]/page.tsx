@@ -33,7 +33,7 @@ export default function CaseStudyDetailPage() {
   const [finalAnswer, setFinalAnswer] = useState<string>('');
 
   const recognitionRef = useRef<any>(null);
-  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null); // ✅ ADDED
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null); 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
 
@@ -61,7 +61,6 @@ export default function CaseStudyDetailPage() {
         recognitionRef.current.lang = 'en-US';
 
         recognitionRef.current.onresult = (event: any) => {
-          // ✅ Cancel pending silence stop if speech resumes
           if (silenceTimerRef.current) {
             clearTimeout(silenceTimerRef.current);
             silenceTimerRef.current = null;
@@ -79,7 +78,6 @@ export default function CaseStudyDetailPage() {
         };
 
         recognitionRef.current.onspeechend = () => {
-          // ✅ Start 2.5s silence grace timer
           if (recordingStatus === 'recording' && !silenceTimerRef.current) {
             silenceTimerRef.current = setTimeout(() => {
               stopRecording();
@@ -190,10 +188,6 @@ export default function CaseStudyDetailPage() {
     setRecordingStatus('submitted');
   };
 
-
-
-
-
   const renderResponseUI = () => {
     if (!caseStudy) return null;
 
@@ -205,6 +199,7 @@ export default function CaseStudyDetailPage() {
                 caseStudy={caseStudy}
                 userAnswer={finalAnswer}
                 recordedMediaURL={recordedMediaURL}
+                selectedOptionId={selectedMCQOption}
             />
         );
     }
