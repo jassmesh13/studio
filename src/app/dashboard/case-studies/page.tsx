@@ -50,6 +50,20 @@ const getCaseStudyIcon = (title: string) => {
     return <BookOpen className="w-8 h-8 text-white" />;
 };
 
+const getTagColor = (tag: string) => {
+    const t = tag.toLowerCase();
+    if (t.includes('communication') || t.includes('speaking')) return 'bg-blue-100 text-blue-700 border-blue-200';
+    if (t.includes('honesty') || t.includes('integrity') || t.includes('ethics')) return 'bg-green-100 text-green-700 border-green-200';
+    if (t.includes('friendship') || t.includes('social')) return 'bg-pink-100 text-pink-700 border-pink-200';
+    if (t.includes('storytelling')) return 'bg-purple-100 text-purple-700 border-purple-200';
+    if (t.includes('emotions') || t.includes('empathy')) return 'bg-orange-100 text-orange-700 border-orange-200';
+    if (t.includes('creativity')) return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+    if (t.includes('decision') || t.includes('thinking')) return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+    if (t.includes('responsibility') || t.includes('habit')) return 'bg-amber-100 text-amber-700 border-amber-200';
+    if (t.includes('teamwork')) return 'bg-teal-100 text-teal-700 border-teal-200';
+    return 'bg-primary/10 text-primary border-primary/20';
+};
+
 
 export default function CaseStudiesPage() {
     const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
@@ -65,7 +79,7 @@ export default function CaseStudiesPage() {
                 const isAGrade13 = a.grade === 'Grade 1-3';
                 const isBGrade13 = b.grade === 'Grade 1-3';
                 if (isAGrade13 && !isBGrade13) return -1;
-                if (!isAGrade13 && isBGrade13) return 1;
+                if (!isBGrade13 && isAGrade13) return 1;
                 return 0;
             });
 
@@ -155,13 +169,20 @@ export default function CaseStudiesPage() {
                             <div className="flex-1">
                                 <h3 className="font-bold text-lg">{study.title}</h3>
                                 <p className="text-sm text-muted-foreground line-clamp-2">{study.description}</p>
-                                <div className="flex flex-wrap items-center gap-2 mt-2">
+                                <div className="flex flex-wrap items-center gap-2 mt-3">
                                     {study.tags?.map(tag => (
-                                        <Badge key={tag} variant="secondary" className="bg-primary/10 text-primary py-0 px-2 text-[10px] border-none font-bold">
+                                        <Badge 
+                                            key={tag} 
+                                            variant="outline" 
+                                            className={cn(
+                                                "py-0.5 px-2.5 text-[11px] font-extrabold uppercase tracking-tight transition-all",
+                                                getTagColor(tag)
+                                            )}
+                                        >
                                             {tag}
                                         </Badge>
                                     ))}
-                                    {study.grade && <Badge variant="outline" className="border-primary/20 text-[10px]">{study.grade}</Badge>}
+                                    {study.grade && <Badge variant="outline" className="border-primary/20 text-[10px] h-5">{study.grade}</Badge>}
                                 </div>
                             </div>
                             <div className="text-right self-end space-y-1 shrink-0">

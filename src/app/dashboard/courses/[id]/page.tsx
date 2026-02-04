@@ -116,6 +116,20 @@ export default function CourseDetailPage() {
     return <BookOpen className="w-6 h-6 text-primary" />;
   };
 
+  const getTagColor = (tag: string) => {
+    const t = tag.toLowerCase();
+    if (t.includes('communication') || t.includes('speaking')) return 'bg-blue-100 text-blue-700 border-blue-200';
+    if (t.includes('honesty') || t.includes('integrity') || t.includes('ethics')) return 'bg-green-100 text-green-700 border-green-200';
+    if (t.includes('friendship') || t.includes('social')) return 'bg-pink-100 text-pink-700 border-pink-200';
+    if (t.includes('storytelling')) return 'bg-purple-100 text-purple-700 border-purple-200';
+    if (t.includes('emotions') || t.includes('empathy')) return 'bg-orange-100 text-orange-700 border-orange-200';
+    if (t.includes('creativity')) return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+    if (t.includes('decision') || t.includes('thinking')) return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+    if (t.includes('responsibility') || t.includes('habit')) return 'bg-amber-100 text-amber-700 border-amber-200';
+    if (t.includes('teamwork')) return 'bg-teal-100 text-teal-700 border-teal-200';
+    return 'bg-primary/10 text-primary border-primary/20';
+  };
+
   if (loading) {
     return <div className="p-8 text-center font-bold text-primary">Loading course details...</div>;
   }
@@ -189,9 +203,16 @@ export default function CourseDetailPage() {
                                                         )}
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">Case study #{study.caseNumber}</p>
-                                                    <div className="flex flex-wrap gap-2 mt-1">
+                                                    <div className="flex flex-wrap gap-2 mt-2">
                                                         {study.tags?.map(tag => (
-                                                            <Badge key={tag} variant="secondary" className="bg-primary/5 text-primary text-[10px] py-0 px-2 border-none">
+                                                            <Badge 
+                                                                key={tag} 
+                                                                variant="outline" 
+                                                                className={cn(
+                                                                    "py-0.5 px-2 text-[10px] font-bold uppercase transition-all",
+                                                                    getTagColor(tag)
+                                                                )}
+                                                            >
                                                                 {tag}
                                                             </Badge>
                                                         ))}
