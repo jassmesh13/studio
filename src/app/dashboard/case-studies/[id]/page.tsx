@@ -18,7 +18,7 @@ export default function CaseStudyDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const router = useRouter();
-  
+
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,17 +33,18 @@ export default function CaseStudyDetailPage() {
   const [finalAnswer, setFinalAnswer] = useState<string>('');
 
   const recognitionRef = useRef<any>(null);
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null); // ✅ ADDED
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
 
   const fetchCaseStudy = useCallback(async () => {
-      const study = await getCaseStudyById(id);
-      if (!study) {
-        notFound();
-      } else {
-        setCaseStudy(study);
-      }
-      setLoading(false);
+    const study = await getCaseStudyById(id);
+    if (!study) {
+      notFound();
+    } else {
+      setCaseStudy(study);
+    }
+    setLoading(false);
   }, [id]);
 
   useEffect(() => {
@@ -60,6 +61,12 @@ export default function CaseStudyDetailPage() {
         recognitionRef.current.lang = 'en-US';
 
         recognitionRef.current.onresult = (event: any) => {
+          // ✅ Cancel pending silence stop if speech resumes
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+          }
+
           let finalTranscript = '';
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
@@ -68,6 +75,16 @@ export default function CaseStudyDetailPage() {
           }
           if (finalTranscript) {
             setTranscript(prev => prev + ' ' + finalTranscript);
+          }
+        };
+
+        recognitionRef.current.onspeechend = () => {
+          // ✅ Start 2.5s silence grace timer
+          if (recordingStatus === 'recording' && !silenceTimerRef.current) {
+            silenceTimerRef.current = setTimeout(() => {
+              stopRecording();
+              silenceTimerRef.current = null;
+            }, 2500);
           }
         };
 
@@ -83,8 +100,9 @@ export default function CaseStudyDetailPage() {
         URL.revokeObjectURL(recordedMediaURL);
       }
       if (recognitionRef.current) recognitionRef.current.stop();
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     };
-  }, [stream, recordedMediaURL]);
+  }, [stream, recordedMediaURL, recordingStatus]);
 
   const handlePermissions = async () => {
     if (!caseStudy) return;
@@ -97,66 +115,52 @@ export default function CaseStudyDetailPage() {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ video: !isAudioOnly, audio: true });
       setStream(mediaStream);
       setRecordingStatus('recording');
-      
+
       if (recognitionRef.current) {
         setTranscript('');
-        try {
-          recognitionRef.current.start();
-        } catch (e) {
-          console.warn("Recognition already started or error:", e);
-        }
+        recognitionRef.current.start();
       }
     } catch (error) {
       console.error('Error accessing media devices:', error);
       setPermissionError(true);
       setRecordingStatus('idle');
-      toast({ 
-        variant: 'destructive', 
-        title: 'Permission Denied', 
-        description: 'Please enable camera and microphone permissions in your browser settings.' 
+      toast({
+        variant: 'destructive',
+        title: 'Permission Denied',
+        description: 'Please enable camera and microphone permissions in your browser settings.',
       });
     }
   };
-  
+
   useEffect(() => {
     if (recordingStatus === 'recording' && stream && caseStudy) {
       if (caseStudy.type === 'video' && videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play().catch(e => console.error("Error playing video preview:", e));
+        videoRef.current.play().catch(() => {});
       }
-      
+
       const mimeType = caseStudy.type === 'video' ? 'video/webm' : 'audio/webm';
-      const finalMimeType = MediaRecorder.isTypeSupported(mimeType) ? mimeType : '';
-      
-      if (!finalMimeType) {
-        toast({ variant: 'destructive', title: 'Unsupported Format', description: `Your browser does not support recording in ${mimeType} format.` });
-        setRecordingStatus('idle');
-        return;
-      }
-      
-      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: finalMimeType });
+      mediaRecorderRef.current = new MediaRecorder(stream, { mimeType });
 
       recordedChunksRef.current = [];
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          recordedChunksRef.current.push(event.data);
-        }
+      mediaRecorderRef.current.ondataavailable = event => {
+        if (event.data.size > 0) recordedChunksRef.current.push(event.data);
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(recordedChunksRef.current, { type: finalMimeType });
+        const blob = new Blob(recordedChunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setRecordedMediaURL(url);
 
         setRecordingStatus('recorded');
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
-        if (recognitionRef.current) recognitionRef.current.stop();
+        recognitionRef.current?.stop();
       };
 
       mediaRecorderRef.current.start();
     }
-  }, [recordingStatus, stream, caseStudy, toast]);
+  }, [recordingStatus, stream, caseStudy]);
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && recordingStatus === 'recording') {
@@ -166,9 +170,7 @@ export default function CaseStudyDetailPage() {
 
   const handleRetry = () => {
     setRecordingStatus('idle');
-    if (recordedMediaURL) {
-      URL.revokeObjectURL(recordedMediaURL);
-    }
+    if (recordedMediaURL) URL.revokeObjectURL(recordedMediaURL);
     setRecordedMediaURL(null);
     setTranscript('');
     setFinalAnswer('');
@@ -178,14 +180,19 @@ export default function CaseStudyDetailPage() {
 
   const handleSubmit = () => {
     if (!caseStudy) return;
-    
-    const studentAnswer = caseStudy.type === 'mcq' 
-        ? (caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || "No option selected")
-        : transcript || "Media Response";
-    
+
+    const studentAnswer =
+      caseStudy.type === 'mcq'
+        ? caseStudy.mcqs?.flatMap(m => m.options).find(o => o.id === selectedMCQOption)?.text || 'No option selected'
+        : transcript || 'Media Response';
+
     setFinalAnswer(studentAnswer);
     setRecordingStatus('submitted');
   };
+
+
+
+
 
   const renderResponseUI = () => {
     if (!caseStudy) return null;

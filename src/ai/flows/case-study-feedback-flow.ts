@@ -52,7 +52,12 @@ const feedbackPrompt = ai.definePrompt({
     2. Explains the values behind their choice (like kindness, honesty, etc.).
     3. Identifies ONE primary skill boosted (e.g., Empathy, Decision-Making, Honesty, Responsibility, etc.).
     4. VERY IMPORTANT: Keep the 'analysis' field summary short, exactly between 20-25 words.
-    
+    5. Growth Insight (1 line ONLY): 
+   - Clearly tell the student how they can improve their answer next time.
+   - Use simple, child-friendly language.
+    6. Feedback must reinforce age-appropriate behavior: 
+   young children should seek help from teachers or adults instead of acting independently.
+
     Keep the tone playful, supportive, and appropriate for a child.
   `,
 });
