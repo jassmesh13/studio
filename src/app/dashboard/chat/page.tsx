@@ -93,7 +93,7 @@ export default function ChatPage() {
             if (SpeechRecognition) {
                 const recognition = new SpeechRecognition();
                 recognition.continuous = true;
-                recognition.interimResults = false;
+                recognition.interimResults = true;
                 recognition.lang = 'en-US';
 
                 recognition.onstart = () => {
@@ -130,7 +130,7 @@ export default function ChatPage() {
                                 recognition.stop();
                             }
                             silenceTimerRef.current = null;
-                        }, 2500);
+                        }, 2500); // 2.5 seconds silence grace period
                     }
                 };
                 recognition.onerror = (event: any) => {
@@ -282,7 +282,7 @@ export default function ChatPage() {
 
     if (!isMounted) return null;
 
-    const userAvatar = mainUser ? PlaceHolderImages.find(p => p.id === mainUser.avatarUrl) : null;
+    const initials = mainUser ? mainUser.name.split(' ').map(n => n[0]).join('').toUpperCase() : '';
 
     return (
         <div className="flex flex-col h-screen bg-background overflow-hidden">
@@ -326,9 +326,8 @@ export default function ChatPage() {
                                 <p className="whitespace-pre-wrap text-base leading-relaxed">{message.text}</p>
                             </div>
                              {message.role === 'user' && mainUser && (
-                                <Avatar className="w-10 h-10 ring-2 ring-primary/20">
-                                    {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt={mainUser.name} data-ai-hint={userAvatar.imageHint} />}
-                                    <AvatarFallback>{mainUser.name.charAt(0)}</AvatarFallback>
+                                <Avatar className="w-10 h-10 ring-2 ring-primary/20 bg-primary/10">
+                                    <AvatarFallback className="font-bold text-primary">{initials}</AvatarFallback>
                                 </Avatar>
                              )}
                         </div>

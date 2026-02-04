@@ -1,5 +1,3 @@
-
-
 import { LeaderboardWidget } from "@/components/app/dashboard/leaderboard-widget";
 import { PendingTasks } from "@/components/app/dashboard/pending-tasks";
 import { WhatsNew } from "@/components/app/dashboard/whats-new";
@@ -19,16 +17,15 @@ import { ChatAICard } from "@/components/app/dashboard/chat-ai-card";
 
 async function MainUserSection() {
     const mainUser = await getMainUser();
-    const userAvatar = PlaceHolderImages.find(p => p.id === mainUser.avatarUrl);
+    const initials = mainUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
 
     return (
         <>
             <div className="bg-accent rounded-2xl p-4 flex flex-col items-center text-center relative">
                 <LeaderboardWidget />
                 <div className="absolute -bottom-8">
-                    <Avatar className="w-16 h-16 border-4 border-white">
-                        {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt={mainUser.name} data-ai-hint={userAvatar.imageHint}/>}
-                        <AvatarFallback>{mainUser.name.charAt(0)}</AvatarFallback>
+                    <Avatar className="w-16 h-16 border-4 border-white bg-primary/10">
+                        <AvatarFallback className="text-xl font-bold text-primary">{initials}</AvatarFallback>
                     </Avatar>
                 </div>
             </div>

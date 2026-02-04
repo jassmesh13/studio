@@ -1,4 +1,3 @@
-
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getGamificationData } from "@/lib/data";
@@ -35,10 +34,7 @@ export function LeaderboardWidget() {
     const user2 = topThree.find(u => u.rank === 2);
     const user3 = topThree.find(u => u.rank === 3);
 
-    const user1Avatar = user1 ? PlaceHolderImages.find(p => p.id === user1.avatarUrl) : null;
-    const user2Avatar = user2 ? PlaceHolderImages.find(p => p.id === user2.avatarUrl) : null;
-    const user3Avatar = user3 ? PlaceHolderImages.find(p => p.id === user3.avatarUrl) : null;
-
+    const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
     return (
         <div className="w-full">
@@ -51,9 +47,8 @@ export function LeaderboardWidget() {
                 {/* 2nd Place */}
                 {user2 && (
                     <div className="flex flex-col items-center w-1/4">
-                        <Avatar className="w-12 h-12 border-2 border-slate-300">
-                           {user2Avatar && <AvatarImage src={user2Avatar.imageUrl} alt={user2.name} data-ai-hint={user2Avatar.imageHint} />}
-                           <AvatarFallback>{user2.name.charAt(0)}</AvatarFallback>
+                        <Avatar className="w-12 h-12 border-2 border-slate-300 bg-primary/10">
+                           <AvatarFallback className="font-bold text-primary">{getInitials(user2.name)}</AvatarFallback>
                         </Avatar>
                         <p className="text-sm font-semibold mt-1 truncate">{user2.name}</p>
                         <div className="bg-primary/80 text-white rounded-lg p-2 mt-1 w-full text-center">
@@ -66,9 +61,8 @@ export function LeaderboardWidget() {
                 {/* 1st Place */}
                 {user1 && (
                      <div className="flex flex-col items-center w-1/3">
-                        <Avatar className="w-16 h-16 border-4 border-yellow-400">
-                           {user1Avatar && <AvatarImage src={user1Avatar.imageUrl} alt={user1.name} data-ai-hint={user1Avatar.imageHint} />}
-                           <AvatarFallback>{user1.name.charAt(0)}</AvatarFallback>
+                        <Avatar className="w-16 h-16 border-4 border-yellow-400 bg-primary/10">
+                           <AvatarFallback className="text-xl font-bold text-primary">{getInitials(user1.name)}</AvatarFallback>
                         </Avatar>
                         <p className="text-base font-bold mt-1 text-primary truncate">{user1.name}</p>
                         <div className="bg-primary text-white rounded-lg p-4 mt-1 w-full text-center">
@@ -81,9 +75,8 @@ export function LeaderboardWidget() {
                 {/* 3rd Place */}
                 {user3 && (
                     <div className="flex flex-col items-center w-1/4">
-                        <Avatar className="w-12 h-12 border-2 border-amber-600">
-                           {user3Avatar && <AvatarImage src={user3Avatar.imageUrl} alt={user3.name} data-ai-hint={user3Avatar.imageHint} />}
-                           <AvatarFallback>{user3.name.charAt(0)}</AvatarFallback>
+                        <Avatar className="w-12 h-12 border-2 border-amber-600 bg-primary/10">
+                           <AvatarFallback className="font-bold text-primary">{getInitials(user3.name)}</AvatarFallback>
                         </Avatar>
                         <p className="text-sm font-semibold mt-1 truncate">{user3.name}</p>
                         <div className="bg-primary/70 text-white rounded-lg p-2 mt-1 w-full text-center">

@@ -48,7 +48,7 @@ const navItems = [
 
 export function Header() {
     const pathname = usePathname();
-    const userAvatar = PlaceHolderImages.find(p => p.id === mainUser.avatarUrl);
+    const initials = mainUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
 
     const pathSegments = pathname.split('/').filter(Boolean);
 
@@ -121,9 +121,8 @@ export function Header() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-            <Avatar>
-                {userAvatar && <AvatarImage src={userAvatar.imageUrl} alt={mainUser.name} data-ai-hint={userAvatar.imageHint}/>}
-                <AvatarFallback>{mainUser.name.charAt(0)}</AvatarFallback>
+            <Avatar className="bg-primary/10">
+                <AvatarFallback className="font-bold text-primary">{initials}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>

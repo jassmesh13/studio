@@ -1,4 +1,3 @@
-
 'use client';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,6 +33,7 @@ export default function GamificationPage() {
         return <div>Loading...</div>;
     }
 
+    const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
     <div>
@@ -90,15 +90,13 @@ export default function GamificationPage() {
                     </TableHeader>
                     <TableBody>
                     {gamificationData.leaderboard.map((user) => {
-                        const avatar = PlaceHolderImages.find(p => p.id === user.avatarUrl);
                         return (
                         <TableRow key={user.id} className={cn(user.id === mainUser.id && 'bg-accent')}>
                             <TableCell className="font-bold text-lg">{user.rank}</TableCell>
                             <TableCell>
                             <div className="flex items-center gap-3">
-                                <Avatar className="h-9 w-9">
-                                    {avatar && <AvatarImage src={avatar.imageUrl} alt={user.name} data-ai-hint={avatar.imageHint} />}
-                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                <Avatar className="h-9 w-9 bg-primary/10">
+                                    <AvatarFallback className="font-bold text-primary">{getInitials(user.name)}</AvatarFallback>
                                 </Avatar>
                                 <span>{user.name}</span>
                             </div>
